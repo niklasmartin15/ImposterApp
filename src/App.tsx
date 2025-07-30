@@ -4,6 +4,7 @@ import { useGameStore } from './stores/gameStore';
 import { NameInputScreen } from './screens/NameInputScreen';
 import { MainLobbyScreen } from './screens/MainLobbyScreen';
 import { OfflineSetupScreen } from './screens/OfflineSetupScreen';
+import { OfflineGameScreen } from './screens/OfflineGameScreen';
 
 export const App: React.FC = () => {
   const { currentPhase } = useGameStore();
@@ -16,6 +17,8 @@ export const App: React.FC = () => {
         return <MainLobbyScreen />;
       case 'offlineSetup':
         return <OfflineSetupScreen />;
+      case 'offlineGame':
+        return <OfflineGameScreen />;
       default:
         return <NameInputScreen />;
     }

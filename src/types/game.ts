@@ -31,6 +31,14 @@ export interface OfflineGameSettings {
   playerCount: number;
   imposterCount: number;
   playerNames: string[];
+  assignedRoles?: OfflinePlayerRole[];
+  currentWord?: string;
 }
 
-export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'gameRoom' | 'playing' | 'voting' | 'results';
+export interface OfflinePlayerRole {
+  playerName: string;
+  isImposter: boolean;
+  hasSeenCard: boolean;
+}
+
+export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'offlineGame' | 'gameRoom' | 'playing' | 'voting' | 'results';

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { GamePhase, OfflineGameSettings } from '../types/game';
+import { GamePhase, OfflineGameSettings, OfflinePlayerRole } from '../types/game';
 
 interface GameState {
   // Player info
@@ -20,6 +20,8 @@ interface GameState {
   setOfflineImposterCount: (count: number) => void;
   setOfflinePlayerName: (index: number, name: string) => void;
   resetOfflineSettings: () => void;
+  startOfflineGame: () => void;
+  togglePlayerCardSeen: (playerName: string) => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -31,6 +33,8 @@ export const useGameStore = create<GameState>((set) => ({
     playerCount: 4,
     imposterCount: 1,
     playerNames: ['', '', '', ''],
+    assignedRoles: [],
+    currentWord: 'Testwort',
   },
   
   // Actions
@@ -76,6 +80,43 @@ export const useGameStore = create<GameState>((set) => ({
       playerCount: 4,
       imposterCount: 1,
       playerNames: ['', '', '', ''],
+      assignedRoles: [],
+      currentWord: 'Testwort',
     }
+  }),
+
+  startOfflineGame: () => set((state) => {
+    // Assign roles randomly
+    const playerNames = state.offlineSettings.playerNames.filter(name => name.trim() !== '');
+    const shuffledPlayers = [...playerNames].sort(() => Math.random() - 0.5);
+    
+    const assignedRoles = shuffledPlayers.map((playerName, index) => ({
+      playerName,
+      isImposter: index < state.offlineSettings.imposterCount,
+      hasSeenCard: false
+    }));
+
+    return {
+      offlineSettings: {
+        ...state.offlineSettings,
+        assignedRoles
+      },
+      currentPhase: 'offlineGame' as GamePhase
+    };
+  }),
+
+  togglePlayerCardSeen: (playerName: string) => set((state) => {
+    const newRoles = state.offlineSettings.assignedRoles?.map(role => 
+      role.playerName === playerName 
+        ? { ...role, hasSeenCard: !role.hasSeenCard }
+        : role
+    ) || [];
+
+    return {
+      offlineSettings: {
+        ...state.offlineSettings,
+        assignedRoles: newRoles
+      }
+    };
   }),
 }));

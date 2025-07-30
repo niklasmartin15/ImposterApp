@@ -17,7 +17,8 @@ export const OfflineSetupScreen: React.FC = () => {
     setOfflinePlayerCount, 
     setOfflineImposterCount, 
     setOfflinePlayerName,
-    setCurrentPhase 
+    setCurrentPhase,
+    startOfflineGame
   } = useGameStore();
 
   const handlePlayerCountChange = (increment: boolean) => {
@@ -57,9 +58,8 @@ export const OfflineSetupScreen: React.FC = () => {
       return;
     }
 
-    // TODO: Start offline game
-    console.log('Offline Spiel starten mit:', offlineSettings);
-    Alert.alert('Spiel startet', 'Das Offline-Spiel wird bald implementiert!');
+    // Start offline game
+    startOfflineGame();
   };
 
   const handleBack = () => {
