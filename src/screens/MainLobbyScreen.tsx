@@ -14,8 +14,9 @@ export const MainLobbyScreen: React.FC = () => {
   const [showOnlineDropdown, setShowOnlineDropdown] = useState(false);
 
   const handleOfflineGame = () => {
-    // TODO: Implement offline game logic
-    console.log('Offline Spiel starten geklickt!');
+    // Navigate to offline setup screen
+    const { setCurrentPhase } = useGameStore.getState();
+    setCurrentPhase('offlineSetup');
   };
 
   const handleOnlineGame = () => {
@@ -50,7 +51,7 @@ export const MainLobbyScreen: React.FC = () => {
         <View style={styles.gameInfoContainer}>
           <Text style={styles.gameTitle}>🕵️ Imposter</Text>
           <Text style={styles.gameDescription}>
-            Bereit für eine Runde voller Geheimnisse und Täuschung?
+            Version 1.0.0
           </Text>
         </View>
 

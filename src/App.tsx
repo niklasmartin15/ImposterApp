@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { useGameStore } from './stores/gameStore';
 import { NameInputScreen } from './screens/NameInputScreen';
 import { MainLobbyScreen } from './screens/MainLobbyScreen';
+import { OfflineSetupScreen } from './screens/OfflineSetupScreen';
 
 export const App: React.FC = () => {
   const { currentPhase } = useGameStore();
@@ -13,6 +14,8 @@ export const App: React.FC = () => {
         return <NameInputScreen />;
       case 'mainLobby':
         return <MainLobbyScreen />;
+      case 'offlineSetup':
+        return <OfflineSetupScreen />;
       default:
         return <NameInputScreen />;
     }

@@ -27,4 +27,10 @@ export interface LobbySettings {
   chatEnabled: boolean;
 }
 
-export type GamePhase = 'nameInput' | 'mainLobby' | 'gameRoom' | 'playing' | 'voting' | 'results';
+export interface OfflineGameSettings {
+  playerCount: number;
+  imposterCount: number;
+  playerNames: string[];
+}
+
+export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'gameRoom' | 'playing' | 'voting' | 'results';

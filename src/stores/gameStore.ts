@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { GamePhase } from '../types/game';
+import { GamePhase, OfflineGameSettings } from '../types/game';
 
 interface GameState {
   // Player info
@@ -9,10 +9,17 @@ interface GameState {
   // Game state
   currentPhase: GamePhase;
   
+  // Offline game settings
+  offlineSettings: OfflineGameSettings;
+  
   // Actions
   setPlayerName: (name: string) => void;
   setCurrentPhase: (phase: GamePhase) => void;
   generatePlayerId: () => void;
+  setOfflinePlayerCount: (count: number) => void;
+  setOfflineImposterCount: (count: number) => void;
+  setOfflinePlayerName: (index: number, name: string) => void;
+  resetOfflineSettings: () => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -20,9 +27,55 @@ export const useGameStore = create<GameState>((set) => ({
   playerName: '',
   playerId: '',
   currentPhase: 'nameInput',
+  offlineSettings: {
+    playerCount: 4,
+    imposterCount: 1,
+    playerNames: ['', '', '', ''],
+  },
   
   // Actions
   setPlayerName: (name: string) => set({ playerName: name }),
   setCurrentPhase: (phase: GamePhase) => set({ currentPhase: phase }),
   generatePlayerId: () => set({ playerId: `player_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` }),
+  
+  // Offline game actions
+  setOfflinePlayerCount: (count: number) => set((state) => {
+    const newPlayerNames = Array(count).fill('').map((_, index) => 
+      state.offlineSettings.playerNames[index] || ''
+    );
+    return {
+      offlineSettings: {
+        ...state.offlineSettings,
+        playerCount: count,
+        playerNames: newPlayerNames,
+        imposterCount: Math.min(state.offlineSettings.imposterCount, Math.max(1, count - 1))
+      }
+    };
+  }),
+  
+  setOfflineImposterCount: (count: number) => set((state) => ({
+    offlineSettings: {
+      ...state.offlineSettings,
+      imposterCount: count
+    }
+  })),
+  
+  setOfflinePlayerName: (index: number, name: string) => set((state) => {
+    const newPlayerNames = [...state.offlineSettings.playerNames];
+    newPlayerNames[index] = name;
+    return {
+      offlineSettings: {
+        ...state.offlineSettings,
+        playerNames: newPlayerNames
+      }
+    };
+  }),
+  
+  resetOfflineSettings: () => set({
+    offlineSettings: {
+      playerCount: 4,
+      imposterCount: 1,
+      playerNames: ['', '', '', ''],
+    }
+  }),
 }));
