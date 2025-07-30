@@ -139,30 +139,46 @@ export const VotingScreen: React.FC = () => {
           {/* Spieler zur Auswahl */}
           <View style={styles.playersContainer}>
             <Text style={styles.playersTitle}>Spieler auswählen:</Text>
-            {otherPlayers.map((player) => (
-              <TouchableOpacity
-                key={player}
-                style={[
-                  styles.playerButton,
-                  selectedPlayer === player && styles.playerButtonSelected,
-                  { borderColor: getPlayerColor(player) }
-                ]}
-                onPress={() => setSelectedPlayer(player)}
-              >
-                <Text style={[
-                  styles.playerButtonText,
-                  selectedPlayer === player && styles.playerButtonTextSelected,
-                  { color: getPlayerColor(player) }
-                ]}>
-                  {player}
-                </Text>
-                {getVoteCount(player) > 0 && (
-                  <View style={styles.voteCountBadge}>
-                    <Text style={styles.voteCountText}>{getVoteCount(player)}</Text>
+            {otherPlayers.map((player) => {
+              const playerColor = getPlayerColor(player);
+              const isSelected = selectedPlayer === player;
+              
+              return (
+                <TouchableOpacity
+                  key={player}
+                  style={[
+                    styles.playerButton,
+                    { borderColor: playerColor },
+                    isSelected && {
+                      backgroundColor: `${playerColor}30`, // 30% Transparenz der Spielerfarbe
+                      borderWidth: 3,
+                      transform: [{ scale: 1.05 }], // Etwas größer machen
+                    }
+                  ]}
+                  onPress={() => setSelectedPlayer(player)}
+                >
+                  <View style={styles.playerButtonContent}>
+                    <Text style={[
+                      styles.playerButtonText,
+                      isSelected && styles.playerButtonTextSelected,
+                      { color: playerColor }
+                    ]}>
+                      {player}
+                    </Text>
+                    {isSelected && (
+                      <View style={styles.currentChoiceBadge}>
+                        <Text style={styles.currentChoiceText}>aktuelle Wahl</Text>
+                      </View>
+                    )}
                   </View>
-                )}
-              </TouchableOpacity>
-            ))}
+                  {getVoteCount(player) > 0 && (
+                    <View style={styles.voteCountBadge}>
+                      <Text style={styles.voteCountText}>{getVoteCount(player)}</Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              );
+            })}
           </View>
 
           {/* Submit Button */}
@@ -377,14 +393,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  playerButtonSelected: {
-    backgroundColor: '#1a2747',
+  playerButtonContent: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   playerButtonText: {
     fontSize: 18,
     fontWeight: '600',
   },
   playerButtonTextSelected: {
+    fontWeight: 'bold',
+  },
+  currentChoiceBadge: {
+    backgroundColor: '#4CAF50',
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    marginLeft: 12,
+  },
+  currentChoiceText: {
+    color: '#fff',
+    fontSize: 10,
     fontWeight: 'bold',
   },
   voteCountBadge: {
