@@ -28,12 +28,14 @@ interface GameState {
   submitPlayerClue: (clue: string) => void;
   nextPlayer: () => void;
   startNextRound: () => void;
+  isPlayerImposter: (playerName: string) => boolean;
+  guessWord: (playerName: string, guessedWord: string) => 'correct' | 'incorrect';
   startVoting: () => void;
   submitVote: (targetName: string) => void;
   nextVoter: () => void;
 }
 
-export const useGameStore = create<GameState>((set) => ({
+export const useGameStore = create<GameState>((set, get) => ({
   // Initial state
   playerName: '',
   playerId: '',
@@ -332,4 +334,14 @@ export const useGameStore = create<GameState>((set) => ({
       }
     };
   }),
+
+  isPlayerImposter: (playerName: string) => get().offlineSettings.assignedRoles?.find(role => role.playerName === playerName)?.isImposter || false,
+
+  guessWord: (playerName: string, guessedWord: string) => {
+    const state = get();
+    const correctWord = state.offlineSettings.currentWordPair?.realWord?.toLowerCase().trim();
+    const guess = guessedWord.toLowerCase().trim();
+    
+    return correctWord === guess ? 'correct' as const : 'incorrect' as const;
+  },
 }));

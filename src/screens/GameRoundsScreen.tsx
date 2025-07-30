@@ -32,11 +32,14 @@ export const GameRoundsScreen: React.FC = () => {
     submitPlayerClue, 
     nextPlayer, 
     setCurrentPhase,
-    startNextRound
+    isPlayerImposter,
+    guessWord
   } = useGameStore();
   
   const [currentClue, setCurrentClue] = useState('');
   const [showAllClues, setShowAllClues] = useState(false);
+  const [showWordGuessDropdown, setShowWordGuessDropdown] = useState(false);
+  const [guessedWord, setGuessedWord] = useState('');
 
   // Funktion um Spielerfarbe zu bekommen
   const getPlayerColor = (playerName: string): string => {
@@ -69,8 +72,23 @@ export const GameRoundsScreen: React.FC = () => {
     nextPlayer();
   };
 
-  const handleBackToCards = () => {
-    setCurrentPhase('offlineGame');
+  const handleWordGuess = () => {
+    if (guessedWord.trim() === '') {
+      return;
+    }
+
+    const result = guessWord(currentPlayer, guessedWord.trim());
+    
+    if (result === 'correct') {
+      // Imposter hat gewonnen
+      alert(`🎉 Richtig geraten! "${guessedWord}" ist korrekt. Der Imposter ${currentPlayer} gewinnt das Spiel!`);
+    } else {
+      // Imposter hat verloren
+      alert(`❌ Falsch geraten! "${guessedWord}" ist nicht korrekt. Der Imposter ${currentPlayer} verliert das Spiel!`);
+    }
+    
+    // Spiel beenden oder zu den Ergebnissen
+    setCurrentPhase('votingResults'); // Zeige Ergebnisse an
   };
 
   return (
@@ -170,12 +188,54 @@ export const GameRoundsScreen: React.FC = () => {
               </Text>
             </TouchableOpacity>
 
+            {/* Wort Raten Dropdown */}
             <TouchableOpacity 
-              style={styles.backButton}
-              onPress={handleBackToCards}
+              style={styles.wordGuessButton}
+              onPress={() => setShowWordGuessDropdown(!showWordGuessDropdown)}
             >
-              <Text style={styles.backButtonText}>← Zurück zu den Karten</Text>
+              <Text style={styles.wordGuessButtonText}>
+                🎯 Wort Raten {showWordGuessDropdown ? '▼' : '▶'}
+              </Text>
             </TouchableOpacity>
+
+            {showWordGuessDropdown && (
+              <View style={styles.wordGuessContainer}>
+                {isPlayerImposter(currentPlayer) ? (
+                  <View style={styles.imposterGuessContainer}>
+                    <Text style={styles.imposterGuessTitle}>🕵️ Du bist der Imposter!</Text>
+                    <Text style={styles.imposterGuessHint}>
+                      Rate das Lösungswort. Richtig = Du gewinnst! Falsch = Du verlierst!
+                    </Text>
+                    <TextInput
+                      style={styles.wordGuessInput}
+                      value={guessedWord}
+                      onChangeText={setGuessedWord}
+                      placeholder="Dein Wort-Tipp..."
+                      placeholderTextColor="#888"
+                      autoCapitalize="words"
+                    />
+                    <TouchableOpacity 
+                      style={[
+                        styles.wordGuessSubmitButton,
+                        guessedWord.trim() === '' && styles.wordGuessSubmitButtonDisabled
+                      ]}
+                      onPress={handleWordGuess}
+                      disabled={guessedWord.trim() === ''}
+                    >
+                      <Text style={styles.wordGuessSubmitButtonText}>
+                        🎯 Wort raten
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <View style={styles.nonImposterContainer}>
+                    <Text style={styles.nonImposterText}>
+                      ✋ Diese Funktion ist nur für Imposter verfügbar
+                    </Text>
+                  </View>
+                )}
+              </View>
+            )}
           </View>
 
           {/* Spielregeln */}
@@ -395,5 +455,82 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#bbb',
     textAlign: 'center',
+  },
+  wordGuessButton: {
+    backgroundColor: '#0f3460',
+    borderWidth: 2,
+    borderColor: '#2196F3',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  wordGuessButtonText: {
+    fontSize: 16,
+    color: '#2196F3',
+    fontWeight: '600',
+  },
+  wordGuessContainer: {
+    backgroundColor: '#16213e',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#0f3460',
+  },
+  imposterGuessContainer: {
+    alignItems: 'center',
+  },
+  imposterGuessTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#e94560',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  imposterGuessHint: {
+    fontSize: 14,
+    color: '#bbb',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  wordGuessInput: {
+    backgroundColor: '#0f3460',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#2196F3',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: '#eee',
+    width: '100%',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  wordGuessSubmitButton: {
+    backgroundColor: '#e94560',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  wordGuessSubmitButtonDisabled: {
+    backgroundColor: '#666',
+  },
+  wordGuessSubmitButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  nonImposterContainer: {
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  nonImposterText: {
+    fontSize: 16,
+    color: '#888',
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
 });
