@@ -103,11 +103,17 @@ export const useGameStore = create<GameState>((set) => ({
   startOfflineGame: () => set((state) => {
     // Assign roles randomly
     const playerNames = state.offlineSettings.playerNames.filter(name => name.trim() !== '');
-    const shuffledPlayers = [...playerNames].sort(() => Math.random() - 0.5);
     
-    const assignedRoles = shuffledPlayers.map((playerName, index) => ({
+    // Erstelle ein Array mit allen Spieler-Indizes und mische es
+    const playerIndices = Array.from({ length: playerNames.length }, (_, i) => i);
+    const shuffledIndices = [...playerIndices].sort(() => Math.random() - 0.5);
+    
+    // Wähle zufällige Positionen für die Imposter aus
+    const imposterIndices = shuffledIndices.slice(0, state.offlineSettings.imposterCount);
+    
+    const assignedRoles = playerNames.map((playerName, index) => ({
       playerName,
-      isImposter: index < state.offlineSettings.imposterCount,
+      isImposter: imposterIndices.includes(index),
       hasSeenCard: false
     }));
 
