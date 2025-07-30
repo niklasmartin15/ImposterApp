@@ -142,7 +142,7 @@ export const OfflineSetupScreen: React.FC = () => {
                   placeholderTextColor="#666"
                   value={name}
                   onChangeText={(text) => setOfflinePlayerName(index, text)}
-                  maxLength={20}
+                  maxLength={12}
                   autoCapitalize="words"
                   autoCorrect={false}
                 />
