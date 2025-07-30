@@ -10,6 +10,22 @@ import {
 } from 'react-native';
 import { useGameStore } from '../stores/gameStore';
 
+// Farbschema für Spieler (ohne Rot)
+const PLAYER_COLORS = [
+  '#4CAF50', // Grün
+  '#2196F3', // Blau
+  '#FF9800', // Orange
+  '#9C27B0', // Lila
+  '#00BCD4', // Cyan
+  '#8BC34A', // Hellgrün
+  '#3F51B5', // Indigo
+  '#FFC107', // Gelb
+  '#607D8B', // Blaugrau
+  '#795548', // Braun
+  '#E91E63', // Pink
+  '#009688', // Teal
+];
+
 export const GameRoundsScreen: React.FC = () => {
   const { 
     offlineSettings, 
@@ -19,6 +35,13 @@ export const GameRoundsScreen: React.FC = () => {
   } = useGameStore();
   
   const [currentClue, setCurrentClue] = useState('');
+
+  // Funktion um Spielerfarbe zu bekommen
+  const getPlayerColor = (playerName: string): string => {
+    if (!offlineSettings.currentRound) return PLAYER_COLORS[0];
+    const playerIndex = offlineSettings.currentRound.playerOrder.indexOf(playerName);
+    return PLAYER_COLORS[playerIndex % PLAYER_COLORS.length];
+  };
 
   const currentRound = offlineSettings.currentRound;
   if (!currentRound) {
@@ -60,7 +83,12 @@ export const GameRoundsScreen: React.FC = () => {
               <Text style={styles.cluesTitle}>💭 Bisherige Hinweise:</Text>
               {currentRound.clues.map((clue, index) => (
                 <View key={index} style={styles.clueItem}>
-                  <Text style={styles.cluePlayerName}>{clue.playerName}:</Text>
+                  <Text style={[
+                    styles.cluePlayerName, 
+                    { color: getPlayerColor(clue.playerName) }
+                  ]}>
+                    {clue.playerName}:
+                  </Text>
                   <Text style={styles.clueText}>{clue.clue}</Text>
                 </View>
               ))}
@@ -68,9 +96,17 @@ export const GameRoundsScreen: React.FC = () => {
           )}
 
           {/* Aktueller Spieler */}
-          <View style={styles.currentPlayerContainer}>
+          <View style={[
+            styles.currentPlayerContainer,
+            { borderColor: getPlayerColor(currentPlayer) }
+          ]}>
             <Text style={styles.currentPlayerTitle}>🎮 Du bist dran:</Text>
-            <Text style={styles.currentPlayerName}>{currentPlayer}</Text>
+            <Text style={[
+              styles.currentPlayerName, 
+              { color: getPlayerColor(currentPlayer) }
+            ]}>
+              {currentPlayer}
+            </Text>
             <Text style={styles.instructionText}>
               Gib einen Hinweis zu deinem Wort ab:
             </Text>
@@ -182,7 +218,6 @@ const styles = StyleSheet.create({
   cluePlayerName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#e94560',
     marginRight: 8,
   },
   clueText: {
@@ -197,7 +232,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24,
     borderWidth: 2,
-    borderColor: '#e94560',
   },
   currentPlayerTitle: {
     fontSize: 18,
@@ -208,7 +242,6 @@ const styles = StyleSheet.create({
   currentPlayerName: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#e94560',
     marginBottom: 12,
   },
   instructionText: {
