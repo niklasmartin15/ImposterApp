@@ -39,6 +39,9 @@ export interface OfflineGameSettings {
   assignedRoles?: OfflinePlayerRole[];
   currentWordPair?: WordPair;
   currentRound?: GameRound;
+  currentRoundNumber: number;
+  maxRounds: number;
+  allClues: PlayerClue[]; // Speichert alle Hinweise aus allen Runden
 }
 
 export interface OfflinePlayerRole {
@@ -50,6 +53,7 @@ export interface OfflinePlayerRole {
 export interface PlayerClue {
   playerName: string;
   clue: string;
+  roundNumber: number;
 }
 
 export interface GameRound {

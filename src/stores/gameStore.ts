@@ -27,6 +27,7 @@ interface GameState {
   startGameRounds: () => void;
   submitPlayerClue: (clue: string) => void;
   nextPlayer: () => void;
+  startNextRound: () => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -40,6 +41,9 @@ export const useGameStore = create<GameState>((set) => ({
     playerNames: ['', '', '', ''],
     assignedRoles: [],
     currentWordPair: getRandomWordPair(),
+    currentRoundNumber: 1,
+    maxRounds: 2,
+    allClues: [],
   },
   
   // Actions
@@ -87,6 +91,9 @@ export const useGameStore = create<GameState>((set) => ({
       playerNames: ['', '', '', ''],
       assignedRoles: [],
       currentWordPair: getRandomWordPair(),
+      currentRoundNumber: 1,
+      maxRounds: 2,
+      allClues: [],
     }
   }),
 
@@ -159,14 +166,17 @@ export const useGameStore = create<GameState>((set) => ({
     const currentPlayer = state.offlineSettings.currentRound.playerOrder[state.offlineSettings.currentRound.currentPlayerIndex];
     const newClue: PlayerClue = {
       playerName: currentPlayer,
-      clue: clue
+      clue: clue,
+      roundNumber: state.offlineSettings.currentRoundNumber
     };
 
     const updatedClues = [...state.offlineSettings.currentRound.clues, newClue];
+    const allClues = [...state.offlineSettings.allClues, newClue];
 
     return {
       offlineSettings: {
         ...state.offlineSettings,
+        allClues: allClues,
         currentRound: {
           ...state.offlineSettings.currentRound,
           clues: updatedClues
@@ -181,16 +191,52 @@ export const useGameStore = create<GameState>((set) => ({
     const nextIndex = state.offlineSettings.currentRound.currentPlayerIndex + 1;
     const isRoundComplete = nextIndex >= state.offlineSettings.currentRound.playerOrder.length;
 
+    if (isRoundComplete) {
+      // Prüfe ob es weitere Runden gibt
+      const isLastRound = state.offlineSettings.currentRoundNumber >= state.offlineSettings.maxRounds;
+      
+      return {
+        offlineSettings: {
+          ...state.offlineSettings,
+          currentRound: {
+            ...state.offlineSettings.currentRound,
+            isComplete: true
+          }
+        },
+        // Bei der letzten Runde zur Abstimmung, sonst direkt zur nächsten Runde
+        currentPhase: isLastRound ? 'voting' as GamePhase : 'gameStarting' as GamePhase
+      };
+    }
+
     return {
       offlineSettings: {
         ...state.offlineSettings,
         currentRound: {
           ...state.offlineSettings.currentRound,
-          currentPlayerIndex: isRoundComplete ? state.offlineSettings.currentRound.currentPlayerIndex : nextIndex,
-          isComplete: isRoundComplete
+          currentPlayerIndex: nextIndex
+        }
+      }
+    };
+  }),
+
+  startNextRound: () => set((state) => {
+    // Verwende die gleiche Spielerreihenfolge wie in der vorherigen Runde
+    const currentPlayerOrder = state.offlineSettings.currentRound?.playerOrder || 
+      state.offlineSettings.playerNames.filter(name => name.trim() !== '');
+    
+    return {
+      offlineSettings: {
+        ...state.offlineSettings,
+        currentRoundNumber: state.offlineSettings.currentRoundNumber + 1,
+        currentWordPair: getRandomWordPair(),
+        currentRound: {
+          playerOrder: currentPlayerOrder, // Gleiche Reihenfolge beibehalten
+          currentPlayerIndex: 0,
+          clues: [],
+          isComplete: false
         }
       },
-      currentPhase: isRoundComplete ? 'voting' as GamePhase : 'gameRounds' as GamePhase
+      currentPhase: 'gameRounds' as GamePhase
     };
   }),
 }));

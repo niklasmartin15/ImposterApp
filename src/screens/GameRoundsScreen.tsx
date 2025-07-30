@@ -31,7 +31,8 @@ export const GameRoundsScreen: React.FC = () => {
     offlineSettings, 
     submitPlayerClue, 
     nextPlayer, 
-    setCurrentPhase 
+    setCurrentPhase,
+    startNextRound
   } = useGameStore();
   
   const [currentClue, setCurrentClue] = useState('');
@@ -52,10 +53,11 @@ export const GameRoundsScreen: React.FC = () => {
   const currentPlayer = currentRound.playerOrder[currentRound.currentPlayerIndex];
   const isLastPlayer = currentRound.currentPlayerIndex === currentRound.playerOrder.length - 1;
 
-  // Bestimme welche Hinweise angezeigt werden sollen
+  // Bestimme welche Hinweise angezeigt werden sollen (alle aus allen Runden)
+  const allCluesFromAllRounds = offlineSettings.allClues || [];
   const cluestoShow = showAllClues 
-    ? currentRound.clues 
-    : currentRound.clues.slice(-2); // Nur die letzten 2 Hinweise
+    ? allCluesFromAllRounds 
+    : allCluesFromAllRounds.slice(-2); // Nur die letzten 2 Hinweise
 
   const handleSubmitClue = () => {
     if (currentClue.trim() === '') {
@@ -77,18 +79,18 @@ export const GameRoundsScreen: React.FC = () => {
         <View style={styles.content}>
           {/* Header mit Fortschritt */}
           <View style={styles.headerContainer}>
-            <Text style={styles.title}>🎯 Runde 1</Text>
+            <Text style={styles.title}>🎯 Runde {offlineSettings.currentRoundNumber} von {offlineSettings.maxRounds}</Text>
             <Text style={styles.progressText}>
               Spieler {currentRound.currentPlayerIndex + 1} von {currentRound.playerOrder.length}
             </Text>
           </View>
 
           {/* Bisherige Hinweise */}
-          {currentRound.clues.length > 0 && (
+          {allCluesFromAllRounds.length > 0 && (
             <View style={styles.cluesContainer}>
               <View style={styles.cluesHeader}>
                 <Text style={styles.cluesTitle}>💭 Bisherige Hinweise:</Text>
-                {currentRound.clues.length > 2 && (
+                {allCluesFromAllRounds.length > 2 && (
                   <TouchableOpacity 
                     style={styles.showAllButton}
                     onPress={() => setShowAllClues(!showAllClues)}
@@ -105,14 +107,14 @@ export const GameRoundsScreen: React.FC = () => {
                     styles.cluePlayerName, 
                     { color: getPlayerColor(clue.playerName) }
                   ]}>
-                    {clue.playerName}:
+                    {clue.playerName} (R{clue.roundNumber}):
                   </Text>
                   <Text style={styles.clueText}>{clue.clue}</Text>
                 </View>
               ))}
-              {!showAllClues && currentRound.clues.length > 2 && (
+              {!showAllClues && allCluesFromAllRounds.length > 2 && (
                 <Text style={styles.hiddenCluesText}>
-                  ... und {currentRound.clues.length - 2} weitere Hinweise
+                  ... und {allCluesFromAllRounds.length - 2} weitere Hinweise
                 </Text>
               )}
             </View>
@@ -160,7 +162,11 @@ export const GameRoundsScreen: React.FC = () => {
               disabled={currentClue.trim() === ''}
             >
               <Text style={styles.submitButtonText}>
-                {isLastPlayer ? '🏁 Runde beenden' : '➡️ Weiter'}
+                {isLastPlayer && offlineSettings.currentRoundNumber < offlineSettings.maxRounds 
+                  ? `➡️ Weiter (Runde ${offlineSettings.currentRoundNumber + 1})` 
+                  : isLastPlayer 
+                  ? '🏁 Runde beenden' 
+                  : '➡️ Weiter'}
               </Text>
             </TouchableOpacity>
 
@@ -368,5 +374,26 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#bbb',
     marginBottom: 4,
+  },
+  roundCompleteContainer: {
+    backgroundColor: '#16213e',
+    borderRadius: 12,
+    padding: 24,
+    marginBottom: 20,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#e94560',
+  },
+  roundCompleteTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#e94560',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  roundCompleteSubtitle: {
+    fontSize: 16,
+    color: '#bbb',
+    textAlign: 'center',
   },
 });

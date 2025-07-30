@@ -9,7 +9,7 @@ import {
 import { useGameStore } from '../stores/gameStore';
 
 export const GameStartingScreen: React.FC = () => {
-  const { setCurrentPhase } = useGameStore();
+  const { setCurrentPhase, startNextRound, offlineSettings } = useGameStore();
   const fadeAnim = useMemo(() => new Animated.Value(0), []);
   const scaleAnim = useMemo(() => new Animated.Value(0.5), []);
 
@@ -31,11 +31,17 @@ export const GameStartingScreen: React.FC = () => {
 
     // Navigate to game rounds after animation
     const timer = setTimeout(() => {
-      setCurrentPhase('gameRounds');
+      if (offlineSettings.currentRound?.isComplete && offlineSettings.currentRoundNumber < offlineSettings.maxRounds) {
+        // Start next round
+        startNextRound();
+      } else {
+        // Start first round or continue current round
+        setCurrentPhase('gameRounds');
+      }
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, [fadeAnim, scaleAnim, setCurrentPhase]);
+  }, [fadeAnim, scaleAnim, setCurrentPhase, startNextRound, offlineSettings]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -50,7 +56,9 @@ export const GameStartingScreen: React.FC = () => {
           ]}
         >
           <Text style={styles.title}>🎮</Text>
-          <Text style={styles.subtitle}>Spiel beginnt!</Text>
+          <Text style={styles.subtitle}>
+            {offlineSettings.currentRoundNumber === 1 ? 'Spiel beginnt!' : `Runde ${offlineSettings.currentRoundNumber} beginnt!`}
+          </Text>
           <Text style={styles.description}>
             Bereitet euch vor...
           </Text>
