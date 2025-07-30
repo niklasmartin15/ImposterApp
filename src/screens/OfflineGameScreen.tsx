@@ -17,7 +17,8 @@ export const OfflineGameScreen: React.FC = () => {
     offlineSettings, 
     togglePlayerCardSeen,
     setCurrentPhase,
-    generateNewWordPair
+    generateNewWordPair,
+    startGameRounds
   } = useGameStore();
 
   const handleBack = () => {
@@ -46,9 +47,8 @@ export const OfflineGameScreen: React.FC = () => {
             <View style={styles.cardBack}>
               <Text style={styles.cardPlayerNameSmall}>{role.playerName}</Text>
               {role.isImposter ? (
-                <View style={styles.imposterContent}>
-                  <Text style={styles.imposterText}>🕵️ IMPOSTER</Text>
-                  <Text style={styles.imposterSubtext}>Hinweis: {offlineSettings.currentWordPair?.imposterHint}</Text>
+                <View style={styles.imposterContent}>              <Text style={styles.imposterText}>🕵️ IMPOSTER</Text>
+              <Text style={styles.imposterSubtext}>{offlineSettings.currentWordPair?.imposterHint}</Text>
                 </View>
               ) : (
                 <View style={styles.wordContent}>
@@ -99,8 +99,7 @@ export const OfflineGameScreen: React.FC = () => {
             <TouchableOpacity 
               style={styles.continueButton}
               onPress={() => {
-                // TODO: Continue to game phase
-                console.log('Weiter zum Spiel');
+                startGameRounds();
               }}
             >
               <Text style={styles.continueButtonText}>🎮 Spiel beginnen</Text>
@@ -208,14 +207,14 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   cardPlayerName: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#eee',
     textAlign: 'center',
     marginBottom: 16,
   },
   cardPlayerNameSmall: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
     color: '#bbb',
     textAlign: 'center',
@@ -238,14 +237,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   imposterText: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
     color: '#e94560',
     textAlign: 'center',
     marginBottom: 8,
   },
   imposterSubtext: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#e94560',
     textAlign: 'center',
     fontStyle: 'italic',
@@ -256,13 +255,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   wordLabel: {
-    fontSize: 18,
+    fontSize: 20,
     color: '#bbb',
     textAlign: 'center',
     marginBottom: 8,
   },
   wordText: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: 'bold',
     color: '#eee',
     textAlign: 'center',

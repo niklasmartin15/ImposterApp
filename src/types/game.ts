@@ -38,6 +38,7 @@ export interface OfflineGameSettings {
   playerNames: string[];
   assignedRoles?: OfflinePlayerRole[];
   currentWordPair?: WordPair;
+  currentRound?: GameRound;
 }
 
 export interface OfflinePlayerRole {
@@ -46,4 +47,16 @@ export interface OfflinePlayerRole {
   hasSeenCard: boolean;
 }
 
-export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'offlineGame' | 'gameRoom' | 'playing' | 'voting' | 'results';
+export interface PlayerClue {
+  playerName: string;
+  clue: string;
+}
+
+export interface GameRound {
+  playerOrder: string[];
+  currentPlayerIndex: number;
+  clues: PlayerClue[];
+  isComplete: boolean;
+}
+
+export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'offlineGame' | 'gameStarting' | 'gameRounds' | 'gameRoom' | 'playing' | 'voting' | 'results';

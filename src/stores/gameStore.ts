@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { GamePhase, OfflineGameSettings, OfflinePlayerRole } from '../types/game';
+import { GamePhase, OfflineGameSettings, OfflinePlayerRole, GameRound, PlayerClue } from '../types/game';
 import { getRandomWordPair } from '../data/wordPairs';
 
 interface GameState {
@@ -24,6 +24,9 @@ interface GameState {
   startOfflineGame: () => void;
   togglePlayerCardSeen: (playerName: string) => void;
   generateNewWordPair: () => void;
+  startGameRounds: () => void;
+  submitPlayerClue: (clue: string) => void;
+  nextPlayer: () => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -128,4 +131,66 @@ export const useGameStore = create<GameState>((set) => ({
       currentWordPair: getRandomWordPair()
     }
   })),
+
+  startGameRounds: () => set((state) => {
+    // Zufällige Spielerreihenfolge generieren
+    const playerNames = state.offlineSettings.assignedRoles?.map(role => role.playerName) || [];
+    const shuffledPlayerOrder = [...playerNames].sort(() => Math.random() - 0.5);
+    
+    const newRound: GameRound = {
+      playerOrder: shuffledPlayerOrder,
+      currentPlayerIndex: 0,
+      clues: [],
+      isComplete: false
+    };
+
+    return {
+      offlineSettings: {
+        ...state.offlineSettings,
+        currentRound: newRound
+      },
+      currentPhase: 'gameStarting' as GamePhase
+    };
+  }),
+
+  submitPlayerClue: (clue: string) => set((state) => {
+    if (!state.offlineSettings.currentRound) return state;
+
+    const currentPlayer = state.offlineSettings.currentRound.playerOrder[state.offlineSettings.currentRound.currentPlayerIndex];
+    const newClue: PlayerClue = {
+      playerName: currentPlayer,
+      clue: clue
+    };
+
+    const updatedClues = [...state.offlineSettings.currentRound.clues, newClue];
+
+    return {
+      offlineSettings: {
+        ...state.offlineSettings,
+        currentRound: {
+          ...state.offlineSettings.currentRound,
+          clues: updatedClues
+        }
+      }
+    };
+  }),
+
+  nextPlayer: () => set((state) => {
+    if (!state.offlineSettings.currentRound) return state;
+
+    const nextIndex = state.offlineSettings.currentRound.currentPlayerIndex + 1;
+    const isRoundComplete = nextIndex >= state.offlineSettings.currentRound.playerOrder.length;
+
+    return {
+      offlineSettings: {
+        ...state.offlineSettings,
+        currentRound: {
+          ...state.offlineSettings.currentRound,
+          currentPlayerIndex: isRoundComplete ? state.offlineSettings.currentRound.currentPlayerIndex : nextIndex,
+          isComplete: isRoundComplete
+        }
+      },
+      currentPhase: isRoundComplete ? 'voting' as GamePhase : 'gameRounds' as GamePhase
+    };
+  }),
 }));
