@@ -35,6 +35,7 @@ export const GameRoundsScreen: React.FC = () => {
   } = useGameStore();
   
   const [currentClue, setCurrentClue] = useState('');
+  const [showAllClues, setShowAllClues] = useState(false);
 
   // Funktion um Spielerfarbe zu bekommen
   const getPlayerColor = (playerName: string): string => {
@@ -50,6 +51,11 @@ export const GameRoundsScreen: React.FC = () => {
 
   const currentPlayer = currentRound.playerOrder[currentRound.currentPlayerIndex];
   const isLastPlayer = currentRound.currentPlayerIndex === currentRound.playerOrder.length - 1;
+
+  // Bestimme welche Hinweise angezeigt werden sollen
+  const cluestoShow = showAllClues 
+    ? currentRound.clues 
+    : currentRound.clues.slice(-2); // Nur die letzten 2 Hinweise
 
   const handleSubmitClue = () => {
     if (currentClue.trim() === '') {
@@ -80,8 +86,20 @@ export const GameRoundsScreen: React.FC = () => {
           {/* Bisherige Hinweise */}
           {currentRound.clues.length > 0 && (
             <View style={styles.cluesContainer}>
-              <Text style={styles.cluesTitle}>💭 Bisherige Hinweise:</Text>
-              {currentRound.clues.map((clue, index) => (
+              <View style={styles.cluesHeader}>
+                <Text style={styles.cluesTitle}>💭 Bisherige Hinweise:</Text>
+                {currentRound.clues.length > 2 && (
+                  <TouchableOpacity 
+                    style={styles.showAllButton}
+                    onPress={() => setShowAllClues(!showAllClues)}
+                  >
+                    <Text style={styles.showAllButtonText}>
+                      {showAllClues ? 'Weniger' : 'Alle anzeigen'}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+              {cluestoShow.map((clue, index) => (
                 <View key={index} style={styles.clueItem}>
                   <Text style={[
                     styles.cluePlayerName, 
@@ -92,6 +110,11 @@ export const GameRoundsScreen: React.FC = () => {
                   <Text style={styles.clueText}>{clue.clue}</Text>
                 </View>
               ))}
+              {!showAllClues && currentRound.clues.length > 2 && (
+                <Text style={styles.hiddenCluesText}>
+                  ... und {currentRound.clues.length - 2} weitere Hinweise
+                </Text>
+              )}
             </View>
           )}
 
@@ -210,6 +233,25 @@ const styles = StyleSheet.create({
     color: '#eee',
     marginBottom: 12,
   },
+  cluesHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  showAllButton: {
+    backgroundColor: '#0f3460',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#2196F3',
+  },
+  showAllButtonText: {
+    color: '#2196F3',
+    fontSize: 12,
+    fontWeight: '600',
+  },
   clueItem: {
     flexDirection: 'row',
     marginBottom: 8,
@@ -224,6 +266,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#eee',
     flex: 1,
+  },
+  hiddenCluesText: {
+    fontSize: 14,
+    color: '#888',
+    fontStyle: 'italic',
+    textAlign: 'center',
+    marginTop: 8,
   },
   currentPlayerContainer: {
     backgroundColor: '#0f3460',
