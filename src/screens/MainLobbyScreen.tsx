@@ -10,7 +10,6 @@ import {
 import { useGameStore } from '../stores/gameStore';
 
 export const MainLobbyScreen: React.FC = () => {
-  const { playerName } = useGameStore();
   const [showOnlineDropdown, setShowOnlineDropdown] = useState(false);
 
   const handleOfflineGame = () => {
@@ -35,19 +34,9 @@ export const MainLobbyScreen: React.FC = () => {
     setShowOnlineDropdown(false);
   };
 
-  const handleBack = () => {
-    const { setCurrentPhase } = useGameStore.getState();
-    setCurrentPhase('nameInput');
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.welcomeText}>Willkommen,</Text>
-          <Text style={styles.playerName}>{playerName}! 👋</Text>
-        </View>
-
         <View style={styles.gameInfoContainer}>
           <Text style={styles.gameTitle}>🕵️ Imposter</Text>
           <Text style={styles.gameDescription}>
@@ -96,13 +85,6 @@ export const MainLobbyScreen: React.FC = () => {
               </View>
             )}
           </View>
-
-          <TouchableOpacity 
-            style={styles.backButton}
-            onPress={handleBack}
-          >
-            <Text style={styles.backButtonText}>← Namen ändern</Text>
-          </TouchableOpacity>
         </View>
 
         <View style={styles.comingSoonContainer}>
@@ -128,22 +110,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 32,
     justifyContent: 'center',
-  },
-  headerContainer: {
-    alignItems: 'center',
-    marginBottom: 40,
-  },
-  welcomeText: {
-    fontSize: 24,
-    color: '#bbb',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  playerName: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#eee',
-    textAlign: 'center',
   },
   gameInfoContainer: {
     alignItems: 'center',
@@ -276,19 +242,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#fff',
-  },
-  backButton: {
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: '#0f3460',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  backButtonText: {
-    fontSize: 16,
-    color: '#bbb',
   },
   comingSoonContainer: {
     backgroundColor: '#16213e',

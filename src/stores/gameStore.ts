@@ -37,7 +37,7 @@ export const useGameStore = create<GameState>((set) => ({
   // Initial state
   playerName: '',
   playerId: '',
-  currentPhase: 'nameInput',
+  currentPhase: 'mainLobby',
   offlineSettings: {
     playerCount: 4,
     imposterCount: 1,
