@@ -338,19 +338,15 @@ export const useGameStore = create<GameState>((set, get) => ({
   isPlayerImposter: (playerName: string) => get().offlineSettings.assignedRoles?.find(role => role.playerName === playerName)?.isImposter || false,
 
   guessWord: (playerName: string, guessedWord: string) => set((state) => {
+    // Evaluate guess and store result, do not change phase here
     const correctWord = state.offlineSettings.currentWordPair?.word?.toLowerCase().trim();
     const guess = guessedWord.toLowerCase().trim();
     const isWin = correctWord === guess;
-    
     return {
       offlineSettings: {
         ...state.offlineSettings,
-        wordGuessResult: {
-          isWin: isWin,
-          guessedWord: guessedWord
-        }
-      },
-      currentPhase: 'wordGuessResults' as GamePhase
+        wordGuessResult: { isWin, guessedWord }
+      }
     };
   }),
 }));

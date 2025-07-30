@@ -77,18 +77,19 @@ export const GameRoundsScreen: React.FC = () => {
       return;
     }
 
-    const result = guessWord(currentPlayer, guessedWord.trim());
-    
-    if (result === 'correct') {
-      // Imposter hat gewonnen
-      alert(`🎉 Richtig geraten! "${guessedWord}" ist korrekt. Der Imposter ${currentPlayer} gewinnt das Spiel!`);
+    const trimmedGuess = guessedWord.trim();
+    const correctWord = offlineSettings.currentWordPair?.word.trim().toLowerCase();
+    const isWin = trimmedGuess.toLowerCase() === correctWord;
+    // Speichere Ergebnis
+    guessWord(currentPlayer, trimmedGuess);
+    if (isWin) {
+      // Direkt zum Endscreen
+      setCurrentPhase('wordGuessResults');
     } else {
-      // Imposter hat verloren
-      alert(`❌ Falsch geraten! "${guessedWord}" ist nicht korrekt. Der Imposter ${currentPlayer} verliert das Spiel!`);
+      // Falscher Versuch: Runde wird fortgesetzt
+      setShowWordGuessDropdown(false);
+      setGuessedWord('');
     }
-    
-    // Spiel beenden oder zu den Ergebnissen
-    setCurrentPhase('votingResults'); // Zeige Ergebnisse an
   };
 
   return (
