@@ -119,30 +119,6 @@ export const VotingScreen: React.FC = () => {
             )}
           </View>
 
-          {/* Bisherige Votes anzeigen */}
-          {votingState.votes.length > 0 && (
-            <View style={styles.votesContainer}>
-              <Text style={styles.votesTitle}>📊 Bisherige Stimmen</Text>
-              {votingState.votes.map((vote, index) => (
-                <View key={index} style={styles.voteItem}>
-                  <Text style={[
-                    styles.voterName, 
-                    { color: getPlayerColor(vote.voterName) }
-                  ]}>
-                    {vote.voterName}
-                  </Text>
-                  <Text style={styles.voteArrow}>→</Text>
-                  <Text style={[
-                    styles.targetName, 
-                    { color: getPlayerColor(vote.targetName) }
-                  ]}>
-                    {vote.targetName}
-                  </Text>
-                </View>
-              ))}
-            </View>
-          )}
-
           {/* Aktueller Wähler */}
           <View style={[
             styles.currentVoterContainer,
@@ -204,6 +180,30 @@ export const VotingScreen: React.FC = () => {
               </Text>
             </TouchableOpacity>
           </View>
+
+          {/* Bisherige Votes anzeigen */}
+          {votingState.votes.length > 0 && (
+            <View style={styles.votesContainer}>
+              <Text style={styles.votesTitle}>📊 Bisherige Stimmen</Text>
+              {votingState.votes.map((vote, index) => (
+                <View key={index} style={styles.voteItem}>
+                  <Text style={[
+                    styles.voterName, 
+                    { color: getPlayerColor(vote.voterName) }
+                  ]}>
+                    {vote.voterName}
+                  </Text>
+                  <Text style={styles.voteArrow}>→</Text>
+                  <Text style={[
+                    styles.targetName, 
+                    { color: getPlayerColor(vote.targetName) }
+                  ]}>
+                    {vote.targetName}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
