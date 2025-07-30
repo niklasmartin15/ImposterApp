@@ -69,8 +69,8 @@ export const VotingResultsScreen: React.FC = () => {
       const eliminatedPlayer = sortedPlayers[0]?.[0];
       const isImposterEliminated = imposters.includes(eliminatedPlayer);
 
-      if (!isImposterEliminated && !offlineSettings.wordGuessAttempted) {
-        // Imposter wurde nicht gefangen und hat noch nicht geraten -> Letzte Chance
+      if (isImposterEliminated && !offlineSettings.wordGuessAttempted) {
+        // Ein Imposter wurde gefangen und hat noch nicht geraten -> Letzte Chance
         const timer = setTimeout(() => {
           setCurrentPhase('imposterLastChance');
         }, 3000); // 3 Sekunden anzeigen, dann zur letzten Chance
