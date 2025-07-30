@@ -199,7 +199,7 @@ export const useGameStore = create<GameState>((set) => ({
       const isLastRound = state.offlineSettings.currentRoundNumber >= state.offlineSettings.maxRounds;
       
       if (isLastRound) {
-        // Letzte Runde beendet - zur Abstimmung
+        // Letzte Runde beendet - zur Voting-Start Animation
         return {
           offlineSettings: {
             ...state.offlineSettings,
@@ -208,7 +208,7 @@ export const useGameStore = create<GameState>((set) => ({
               isComplete: true
             }
           },
-          currentPhase: 'voting' as GamePhase
+          currentPhase: 'votingStart' as GamePhase
         };
       } else {
         // Runde beendet, aber noch weitere Runden - erhöhe Rundennummer und gehe zu gameStarting

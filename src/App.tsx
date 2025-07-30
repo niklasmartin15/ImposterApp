@@ -8,6 +8,7 @@ import { OfflineGameScreen } from './screens/OfflineGameScreen';
 import { GameStartingScreen } from './screens/GameStartingScreen';
 import { GameRoundsScreen } from './screens/GameRoundsScreen';
 import { VotingScreen } from './screens/VotingScreen';
+import { VotingStartScreen } from './screens/VotingStartScreen';
 import { VotingAnimationScreen } from './screens/VotingAnimationScreen';
 import { VotingResultsScreen } from './screens/VotingResultsScreen';
 
@@ -28,6 +29,8 @@ export const App: React.FC = () => {
         return <GameStartingScreen />;
       case 'gameRounds':
         return <GameRoundsScreen />;
+      case 'votingStart':
+        return <VotingStartScreen />;
       case 'voting':
         return <VotingScreen />;
       case 'votingAnimation':

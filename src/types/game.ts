@@ -76,4 +76,4 @@ export interface VotingState {
   playerOrder: string[];
 }
 
-export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'offlineGame' | 'gameStarting' | 'gameRounds' | 'voting' | 'votingAnimation' | 'votingResults' | 'gameRoom' | 'playing' | 'results';
+export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'offlineGame' | 'gameStarting' | 'gameRounds' | 'votingStart' | 'voting' | 'votingAnimation' | 'votingResults' | 'gameRoom' | 'playing' | 'results';
