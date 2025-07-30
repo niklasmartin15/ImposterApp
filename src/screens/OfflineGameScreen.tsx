@@ -16,7 +16,8 @@ export const OfflineGameScreen: React.FC = () => {
   const { 
     offlineSettings, 
     togglePlayerCardSeen,
-    setCurrentPhase 
+    setCurrentPhase,
+    generateNewWordPair
   } = useGameStore();
 
   const handleBack = () => {
@@ -47,12 +48,12 @@ export const OfflineGameScreen: React.FC = () => {
               {role.isImposter ? (
                 <View style={styles.imposterContent}>
                   <Text style={styles.imposterText}>🕵️ IMPOSTER</Text>
-                  <Text style={styles.imposterSubtext}>Du bist der Verräter!</Text>
+                  <Text style={styles.imposterSubtext}>Hinweis: {offlineSettings.currentWordPair?.imposterHint}</Text>
                 </View>
               ) : (
                 <View style={styles.wordContent}>
                   <Text style={styles.wordLabel}>Dein Wort:</Text>
-                  <Text style={styles.wordText}>{offlineSettings.currentWord}</Text>
+                  <Text style={styles.wordText}>{offlineSettings.currentWordPair?.realWord}</Text>
                 </View>
               )}
               <Text style={styles.cardHintSmall}>👆 Zum Verstecken</Text>
@@ -76,6 +77,9 @@ export const OfflineGameScreen: React.FC = () => {
             <Text style={styles.infoText}>
               🎯 {offlineSettings.imposterCount} von {offlineSettings.playerCount} Spielern sind Imposter
             </Text>
+            <Text style={styles.currentWordText}>
+              🎮 Aktuelles Wort: {offlineSettings.currentWordPair?.realWord}
+            </Text>
           </View>
 
           <View style={styles.cardsContainer}>
@@ -85,6 +89,16 @@ export const OfflineGameScreen: React.FC = () => {
           </View>
 
           <View style={styles.buttonContainer}>
+            <TouchableOpacity 
+              style={styles.newWordButton}
+              onPress={() => {
+                generateNewWordPair();
+                console.log('Neues Wort generiert');
+              }}
+            >
+              <Text style={styles.newWordButtonText}>🎲 Neues Wort</Text>
+            </TouchableOpacity>
+
             <TouchableOpacity 
               style={styles.continueButton}
               onPress={() => {
@@ -149,6 +163,13 @@ const styles = StyleSheet.create({
     color: '#eee',
     textAlign: 'center',
     fontWeight: '500',
+  },
+  currentWordText: {
+    fontSize: 14,
+    color: '#e94560',
+    textAlign: 'center',
+    fontWeight: '600',
+    marginTop: 8,
   },
   cardsContainer: {
     flexDirection: 'row',
@@ -251,6 +272,24 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginBottom: 20,
+  },
+  newWordButton: {
+    backgroundColor: '#0f3460',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 12,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+  },
+  newWordButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
   },
   continueButton: {
     backgroundColor: '#e94560',

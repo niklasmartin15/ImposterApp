@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { GamePhase, OfflineGameSettings, OfflinePlayerRole } from '../types/game';
+import { getRandomWordPair } from '../data/wordPairs';
 
 interface GameState {
   // Player info
@@ -22,6 +23,7 @@ interface GameState {
   resetOfflineSettings: () => void;
   startOfflineGame: () => void;
   togglePlayerCardSeen: (playerName: string) => void;
+  generateNewWordPair: () => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -34,7 +36,7 @@ export const useGameStore = create<GameState>((set) => ({
     imposterCount: 1,
     playerNames: ['', '', '', ''],
     assignedRoles: [],
-    currentWord: 'Testwort',
+    currentWordPair: getRandomWordPair(),
   },
   
   // Actions
@@ -81,7 +83,7 @@ export const useGameStore = create<GameState>((set) => ({
       imposterCount: 1,
       playerNames: ['', '', '', ''],
       assignedRoles: [],
-      currentWord: 'Testwort',
+      currentWordPair: getRandomWordPair(),
     }
   }),
 
@@ -119,4 +121,11 @@ export const useGameStore = create<GameState>((set) => ({
       }
     };
   }),
+
+  generateNewWordPair: () => set((state) => ({
+    offlineSettings: {
+      ...state.offlineSettings,
+      currentWordPair: getRandomWordPair()
+    }
+  })),
 }));

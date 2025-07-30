@@ -27,12 +27,17 @@ export interface LobbySettings {
   chatEnabled: boolean;
 }
 
+export interface WordPair {
+  realWord: string;
+  imposterHint: string;
+}
+
 export interface OfflineGameSettings {
   playerCount: number;
   imposterCount: number;
   playerNames: string[];
   assignedRoles?: OfflinePlayerRole[];
-  currentWord?: string;
+  currentWordPair?: WordPair;
 }
 
 export interface OfflinePlayerRole {
