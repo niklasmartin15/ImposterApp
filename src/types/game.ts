@@ -44,6 +44,8 @@ export interface OfflineGameSettings {
   allClues: PlayerClue[]; // Speichert alle Hinweise aus allen Runden
   votingState?: VotingState;
   wordGuessResult?: WordGuessResult;
+  wordGuessAttempted: boolean; // Ob bereits ein Wort-Raten-Versuch gemacht wurde
+  wordGuessingDisabled: boolean; // Ob Wort-Raten deaktiviert ist (nach falschem Versuch)
 }
 
 export interface OfflinePlayerRole {
@@ -82,4 +84,4 @@ export interface WordGuessResult {
   guessedWord: string;
 }
 
-export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'offlineGame' | 'gameStarting' | 'gameRounds' | 'votingStart' | 'voting' | 'votingAnimation' | 'votingResults' | 'wordGuessResults' | 'gameRoom' | 'playing' | 'results';
+export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'offlineGame' | 'gameStarting' | 'gameRounds' | 'votingStart' | 'voting' | 'votingAnimation' | 'votingResults' | 'imposterLastChance' | 'wordGuessResults' | 'gameRoom' | 'playing' | 'results';

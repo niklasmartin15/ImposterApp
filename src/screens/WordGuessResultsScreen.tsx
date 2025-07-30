@@ -48,7 +48,23 @@ export const WordGuessResultsScreen: React.FC = () => {
   };
 
   if (!offlineSettings.wordGuessResult || !offlineSettings.currentWordPair) {
-    return null;
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={[styles.content, { justifyContent: 'center', alignItems: 'center' }]}>
+          <Text style={{ color: '#eee', fontSize: 18, textAlign: 'center' }}>
+            Fehler: Kein Wort-Raten-Ergebnis gefunden.
+          </Text>
+          <TouchableOpacity 
+            style={styles.newGameButton}
+            onPress={() => setCurrentPhase('gameRounds')}
+          >
+            <Text style={styles.newGameButtonText}>
+              🔄 Zurück zum Spiel
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
   }
 
   const { isWin, guessedWord } = offlineSettings.wordGuessResult;

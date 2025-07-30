@@ -30,6 +30,7 @@ interface GameState {
   startNextRound: () => void;
   isPlayerImposter: (playerName: string) => boolean;
   guessWord: (playerName: string, guessedWord: string) => void;
+  canImposterGuessWord: (playerName: string) => boolean;
   startVoting: () => void;
   submitVote: (targetName: string) => void;
   nextVoter: () => void;
@@ -49,6 +50,8 @@ export const useGameStore = create<GameState>((set, get) => ({
     currentRoundNumber: 1,
     maxRounds: 2,
     allClues: [],
+    wordGuessAttempted: false,
+    wordGuessingDisabled: false,
   },
   
   // Actions
@@ -108,6 +111,8 @@ export const useGameStore = create<GameState>((set, get) => ({
       currentRoundNumber: 1,
       maxRounds: 2,
       allClues: [],
+      wordGuessAttempted: false,
+      wordGuessingDisabled: false,
     }
   }),
 
@@ -337,15 +342,32 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   isPlayerImposter: (playerName: string) => get().offlineSettings.assignedRoles?.find(role => role.playerName === playerName)?.isImposter || false,
 
+  canImposterGuessWord: (playerName: string) => {
+    const state = get();
+    const isImposter = state.offlineSettings.assignedRoles?.find(role => role.playerName === playerName)?.isImposter || false;
+    
+    // Nur Imposter können raten
+    if (!isImposter) return false;
+    
+    // Wenn Wort-Raten deaktiviert ist, kann nicht geraten werden
+    if (state.offlineSettings.wordGuessingDisabled) return false;
+    
+    // Imposter kann raten, solange noch kein Versuch gemacht wurde oder nur 1 Versuch erlaubt ist
+    return !state.offlineSettings.wordGuessAttempted;
+  },
+
   guessWord: (playerName: string, guessedWord: string) => set((state) => {
     // Evaluate guess and store result, do not change phase here
     const correctWord = state.offlineSettings.currentWordPair?.word?.toLowerCase().trim();
     const guess = guessedWord.toLowerCase().trim();
     const isWin = correctWord === guess;
+    
     return {
       offlineSettings: {
         ...state.offlineSettings,
-        wordGuessResult: { isWin, guessedWord }
+        wordGuessResult: { isWin, guessedWord },
+        wordGuessAttempted: true,
+        wordGuessingDisabled: !isWin, // Deaktiviere Raten wenn falsch geraten
       }
     };
   }),

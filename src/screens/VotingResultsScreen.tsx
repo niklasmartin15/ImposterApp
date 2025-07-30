@@ -39,11 +39,50 @@ export const VotingResultsScreen: React.FC = () => {
     return PLAYER_COLORS[playerIndex % PLAYER_COLORS.length];
   };
 
-  if (!offlineSettings.votingState || !offlineSettings.assignedRoles) {
+  // Berechne Voting-Ergebnisse
+  const votingState = offlineSettings.votingState;
+  const assignedRoles = offlineSettings.assignedRoles;
+
+  // Prüfe ob Imposter "letzte Chance" bekommen soll
+  React.useEffect(() => {
+    if (votingState && assignedRoles) {
+      // Stimmen zählen
+      const voteCount: { [playerName: string]: number } = {};
+      votingState.playerOrder.forEach(player => {
+        voteCount[player] = 0;
+      });
+      
+      votingState.votes.forEach(vote => {
+        voteCount[vote.targetName]++;
+      });
+
+      // Spieler nach Stimmenanzahl sortieren
+      const sortedPlayers = Object.entries(voteCount)
+        .sort(([,a], [,b]) => b - a);
+
+      // Überprüfe wer die Imposter sind
+      const imposters = assignedRoles
+        .filter(role => role.isImposter)
+        .map(role => role.playerName);
+
+      // Finde den Spieler mit den meisten Stimmen
+      const eliminatedPlayer = sortedPlayers[0]?.[0];
+      const isImposterEliminated = imposters.includes(eliminatedPlayer);
+
+      if (!isImposterEliminated && !offlineSettings.wordGuessAttempted) {
+        // Imposter wurde nicht gefangen und hat noch nicht geraten -> Letzte Chance
+        const timer = setTimeout(() => {
+          setCurrentPhase('imposterLastChance');
+        }, 3000); // 3 Sekunden anzeigen, dann zur letzten Chance
+        
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [votingState, assignedRoles, offlineSettings.wordGuessAttempted, setCurrentPhase]);
+
+  if (!votingState || !assignedRoles) {
     return null;
   }
-
-  const votingState = offlineSettings.votingState;
   
   // Stimmen zählen
   const voteCount: { [playerName: string]: number } = {};
@@ -60,7 +99,7 @@ export const VotingResultsScreen: React.FC = () => {
     .sort(([,a], [,b]) => b - a);
 
   // Überprüfe wer die Imposter sind
-  const imposters = offlineSettings.assignedRoles
+  const imposters = assignedRoles
     .filter(role => role.isImposter)
     .map(role => role.playerName);
 

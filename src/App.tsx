@@ -11,6 +11,7 @@ import { VotingScreen } from './screens/VotingScreen';
 import { VotingStartScreen } from './screens/VotingStartScreen';
 import { VotingAnimationScreen } from './screens/VotingAnimationScreen';
 import { VotingResultsScreen } from './screens/VotingResultsScreen';
+import { ImposterLastChanceScreen } from './screens/ImposterLastChanceScreen';
 import { WordGuessResultsScreen } from './screens/WordGuessResultsScreen';
 
 export const App: React.FC = () => {
@@ -38,6 +39,8 @@ export const App: React.FC = () => {
         return <VotingAnimationScreen />;
       case 'votingResults':
         return <VotingResultsScreen />;
+      case 'imposterLastChance':
+        return <ImposterLastChanceScreen />;
       case 'wordGuessResults':
         return <WordGuessResultsScreen />;
       default:
