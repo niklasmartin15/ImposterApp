@@ -11,6 +11,7 @@ import { VotingScreen } from './screens/VotingScreen';
 import { VotingStartScreen } from './screens/VotingStartScreen';
 import { VotingAnimationScreen } from './screens/VotingAnimationScreen';
 import { VotingResultsScreen } from './screens/VotingResultsScreen';
+import { WordGuessResultsScreen } from './screens/WordGuessResultsScreen';
 
 export const App: React.FC = () => {
   const { currentPhase } = useGameStore();
@@ -37,6 +38,8 @@ export const App: React.FC = () => {
         return <VotingAnimationScreen />;
       case 'votingResults':
         return <VotingResultsScreen />;
+      case 'wordGuessResults':
+        return <WordGuessResultsScreen />;
       default:
         return <NameInputScreen />;
     }

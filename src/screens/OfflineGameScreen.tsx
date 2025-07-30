@@ -54,8 +54,8 @@ export const OfflineGameScreen: React.FC = () => {
                 <Text style={styles.wordLabel}>Dein Wort:</Text>
                 <Text style={[
                   styles.wordText,
-                  (offlineSettings.currentWordPair?.realWord?.length || 0) > 8 && styles.wordTextLong
-                ]}>{offlineSettings.currentWordPair?.realWord}</Text>
+                  (offlineSettings.currentWordPair?.word?.length || 0) > 8 && styles.wordTextLong
+                ]}>{offlineSettings.currentWordPair?.word}</Text>
               </View>
               )}
               <Text style={styles.cardHintSmall}>👆 Zum Verstecken</Text>

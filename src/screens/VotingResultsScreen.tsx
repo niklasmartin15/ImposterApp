@@ -152,7 +152,7 @@ export const VotingResultsScreen: React.FC = () => {
                   {imposter}
                 </Text>
                 <Text style={styles.imposterHint}>
-                  Hinweis: "{offlineSettings.currentWordPair?.imposterHint}"
+                  Hinweis: &quot;{offlineSettings.currentWordPair?.imposterHint}&quot;
                 </Text>
               </View>
             ))}
@@ -162,7 +162,7 @@ export const VotingResultsScreen: React.FC = () => {
           <View style={styles.wordContainer}>
             <Text style={styles.wordTitle}>💡 Das Wort war:</Text>
             <Text style={styles.wordText}>
-              {offlineSettings.currentWordPair?.realWord}
+              {offlineSettings.currentWordPair?.word}
             </Text>
           </View>
 

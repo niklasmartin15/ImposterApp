@@ -28,7 +28,7 @@ export interface LobbySettings {
 }
 
 export interface WordPair {
-  realWord: string;
+  word: string;
   imposterHint: string;
 }
 
@@ -43,6 +43,7 @@ export interface OfflineGameSettings {
   maxRounds: number;
   allClues: PlayerClue[]; // Speichert alle Hinweise aus allen Runden
   votingState?: VotingState;
+  wordGuessResult?: WordGuessResult;
 }
 
 export interface OfflinePlayerRole {
@@ -76,4 +77,9 @@ export interface VotingState {
   playerOrder: string[];
 }
 
-export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'offlineGame' | 'gameStarting' | 'gameRounds' | 'votingStart' | 'voting' | 'votingAnimation' | 'votingResults' | 'gameRoom' | 'playing' | 'results';
+export interface WordGuessResult {
+  isWin: boolean;
+  guessedWord: string;
+}
+
+export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'offlineGame' | 'gameStarting' | 'gameRounds' | 'votingStart' | 'voting' | 'votingAnimation' | 'votingResults' | 'wordGuessResults' | 'gameRoom' | 'playing' | 'results';

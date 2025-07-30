@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { GamePhase, OfflineGameSettings, OfflinePlayerRole, GameRound, PlayerClue, Vote, VotingState } from '../types/game';
+import { GamePhase, OfflineGameSettings, OfflinePlayerRole, GameRound, PlayerClue, Vote, VotingState, WordGuessResult } from '../types/game';
 import { getRandomWordPair } from '../data/wordPairs';
 
 interface GameState {
@@ -29,7 +29,7 @@ interface GameState {
   nextPlayer: () => void;
   startNextRound: () => void;
   isPlayerImposter: (playerName: string) => boolean;
-  guessWord: (playerName: string, guessedWord: string) => 'correct' | 'incorrect';
+  guessWord: (playerName: string, guessedWord: string) => void;
   startVoting: () => void;
   submitVote: (targetName: string) => void;
   nextVoter: () => void;
@@ -337,11 +337,20 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   isPlayerImposter: (playerName: string) => get().offlineSettings.assignedRoles?.find(role => role.playerName === playerName)?.isImposter || false,
 
-  guessWord: (playerName: string, guessedWord: string) => {
-    const state = get();
-    const correctWord = state.offlineSettings.currentWordPair?.realWord?.toLowerCase().trim();
+  guessWord: (playerName: string, guessedWord: string) => set((state) => {
+    const correctWord = state.offlineSettings.currentWordPair?.word?.toLowerCase().trim();
     const guess = guessedWord.toLowerCase().trim();
+    const isWin = correctWord === guess;
     
-    return correctWord === guess ? 'correct' as const : 'incorrect' as const;
-  },
+    return {
+      offlineSettings: {
+        ...state.offlineSettings,
+        wordGuessResult: {
+          isWin: isWin,
+          guessedWord: guessedWord
+        }
+      },
+      currentPhase: 'wordGuessResults' as GamePhase
+    };
+  }),
 }));
