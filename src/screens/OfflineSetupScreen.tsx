@@ -21,6 +21,21 @@ export const OfflineSetupScreen: React.FC = () => {
     startOfflineGame
   } = useGameStore();
 
+  // Berechne die maximale Anzahl der Imposter
+  const getMaxImposters = () => {
+    // Maximale Imposter: höchstens die Hälfte der Spieler
+    const halfPlayers = Math.floor(offlineSettings.playerCount / 2);
+    
+    // Aber wenn Spieler/Imposter < 2 wäre, reduziere die maximale Anzahl
+    let maxImposters = halfPlayers;
+    while (maxImposters > 0 && offlineSettings.playerCount / maxImposters < 2) {
+      maxImposters--;
+    }
+    
+    // Mindestens 1 Imposter, höchstens playerCount - 1
+    return Math.max(1, Math.min(maxImposters, offlineSettings.playerCount - 1));
+  };
+
   const handlePlayerCountChange = (increment: boolean) => {
     const newCount = increment 
       ? Math.min(offlineSettings.playerCount + 1, 12) 
@@ -29,7 +44,8 @@ export const OfflineSetupScreen: React.FC = () => {
   };
 
   const handleImposterCountChange = (increment: boolean) => {
-    const maxImposters = Math.max(1, offlineSettings.playerCount - 1);
+    const maxImposters = getMaxImposters();
+    
     const newCount = increment 
       ? Math.min(offlineSettings.imposterCount + 1, maxImposters) 
       : Math.max(offlineSettings.imposterCount - 1, 1);
@@ -119,14 +135,14 @@ export const OfflineSetupScreen: React.FC = () => {
               </View>
               
               <TouchableOpacity 
-                style={[styles.counterButton, offlineSettings.imposterCount >= Math.max(1, offlineSettings.playerCount - 1) && styles.counterButtonDisabled]}
+                style={[styles.counterButton, offlineSettings.imposterCount >= getMaxImposters() && styles.counterButtonDisabled]}
                 onPress={() => handleImposterCountChange(true)}
-                disabled={offlineSettings.imposterCount >= Math.max(1, offlineSettings.playerCount - 1)}
+                disabled={offlineSettings.imposterCount >= getMaxImposters()}
               >
-                <Text style={[styles.counterButtonText, offlineSettings.imposterCount >= Math.max(1, offlineSettings.playerCount - 1) && styles.counterButtonTextDisabled]}>+</Text>
+                <Text style={[styles.counterButtonText, offlineSettings.imposterCount >= getMaxImposters() && styles.counterButtonTextDisabled]}>+</Text>
               </TouchableOpacity>
             </View>
-            <Text style={styles.settingHint}>1-{Math.max(1, offlineSettings.playerCount - 1)} Imposter</Text>
+            <Text style={styles.settingHint}>1-{getMaxImposters()} Imposter</Text>
           </View>
 
           {/* Player Names */}

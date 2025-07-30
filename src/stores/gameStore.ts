@@ -59,12 +59,21 @@ export const useGameStore = create<GameState>((set) => ({
     const newPlayerNames = Array(count).fill('').map((_, index) => 
       state.offlineSettings.playerNames[index] || ''
     );
+    
+    // Berechne die maximale Anzahl der Imposter basierend auf der neuen Spieleranzahl
+    const halfPlayers = Math.floor(count / 2);
+    let maxImposters = halfPlayers;
+    while (maxImposters > 0 && count / maxImposters < 2) {
+      maxImposters--;
+    }
+    maxImposters = Math.max(1, Math.min(maxImposters, count - 1));
+    
     return {
       offlineSettings: {
         ...state.offlineSettings,
         playerCount: count,
         playerNames: newPlayerNames,
-        imposterCount: Math.min(state.offlineSettings.imposterCount, Math.max(1, count - 1))
+        imposterCount: Math.min(state.offlineSettings.imposterCount, maxImposters)
       }
     };
   }),
