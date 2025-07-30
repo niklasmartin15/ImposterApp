@@ -77,9 +77,6 @@ export const OfflineGameScreen: React.FC = () => {
             <Text style={styles.infoText}>
               🎯 {offlineSettings.imposterCount} von {offlineSettings.playerCount} Spielern sind Imposter
             </Text>
-            <Text style={styles.currentWordText}>
-              🎮 Aktuelles Wort: {offlineSettings.currentWordPair?.realWord}
-            </Text>
           </View>
 
           <View style={styles.cardsContainer}>
@@ -211,26 +208,26 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   cardPlayerName: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#eee',
     textAlign: 'center',
     marginBottom: 16,
   },
   cardPlayerNameSmall: {
-    fontSize: 14,
+    fontSize: 18,
     fontWeight: '600',
     color: '#bbb',
     textAlign: 'center',
     marginBottom: 12,
   },
   cardHint: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#888',
     textAlign: 'center',
   },
   cardHintSmall: {
-    fontSize: 10,
+    fontSize: 12,
     color: '#666',
     textAlign: 'center',
     marginTop: 12,
@@ -241,14 +238,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   imposterText: {
-    fontSize: 20,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#e94560',
     textAlign: 'center',
     marginBottom: 8,
   },
   imposterSubtext: {
-    fontSize: 12,
+    fontSize: 16,
     color: '#e94560',
     textAlign: 'center',
     fontStyle: 'italic',
@@ -259,13 +256,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   wordLabel: {
-    fontSize: 14,
+    fontSize: 18,
     color: '#bbb',
     textAlign: 'center',
     marginBottom: 8,
   },
   wordText: {
-    fontSize: 22,
+    fontSize: 32,
     fontWeight: 'bold',
     color: '#eee',
     textAlign: 'center',
