@@ -165,7 +165,7 @@ export const GameRoundsScreen: React.FC = () => {
                 {isLastPlayer && offlineSettings.currentRoundNumber < offlineSettings.maxRounds 
                   ? `➡️ Weiter (Runde ${offlineSettings.currentRoundNumber + 1})` 
                   : isLastPlayer 
-                  ? '🏁 Runde beenden' 
+                  ? '🗳️ Zur Abstimmung' 
                   : '➡️ Weiter'}
               </Text>
             </TouchableOpacity>

@@ -42,6 +42,7 @@ export interface OfflineGameSettings {
   currentRoundNumber: number;
   maxRounds: number;
   allClues: PlayerClue[]; // Speichert alle Hinweise aus allen Runden
+  votingState?: VotingState;
 }
 
 export interface OfflinePlayerRole {
@@ -63,4 +64,16 @@ export interface GameRound {
   isComplete: boolean;
 }
 
-export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'offlineGame' | 'gameStarting' | 'gameRounds' | 'gameRoom' | 'playing' | 'voting' | 'results';
+export interface Vote {
+  voterName: string;
+  targetName: string;
+}
+
+export interface VotingState {
+  votes: Vote[];
+  currentVoterIndex: number;
+  isComplete: boolean;
+  playerOrder: string[];
+}
+
+export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'offlineGame' | 'gameStarting' | 'gameRounds' | 'voting' | 'votingAnimation' | 'votingResults' | 'gameRoom' | 'playing' | 'results';

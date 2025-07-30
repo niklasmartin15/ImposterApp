@@ -7,6 +7,9 @@ import { OfflineSetupScreen } from './screens/OfflineSetupScreen';
 import { OfflineGameScreen } from './screens/OfflineGameScreen';
 import { GameStartingScreen } from './screens/GameStartingScreen';
 import { GameRoundsScreen } from './screens/GameRoundsScreen';
+import { VotingScreen } from './screens/VotingScreen';
+import { VotingAnimationScreen } from './screens/VotingAnimationScreen';
+import { VotingResultsScreen } from './screens/VotingResultsScreen';
 
 export const App: React.FC = () => {
   const { currentPhase } = useGameStore();
@@ -25,6 +28,12 @@ export const App: React.FC = () => {
         return <GameStartingScreen />;
       case 'gameRounds':
         return <GameRoundsScreen />;
+      case 'voting':
+        return <VotingScreen />;
+      case 'votingAnimation':
+        return <VotingAnimationScreen />;
+      case 'votingResults':
+        return <VotingResultsScreen />;
       default:
         return <NameInputScreen />;
     }

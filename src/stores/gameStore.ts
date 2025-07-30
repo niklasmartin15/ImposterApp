@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { GamePhase, OfflineGameSettings, OfflinePlayerRole, GameRound, PlayerClue } from '../types/game';
+import { GamePhase, OfflineGameSettings, OfflinePlayerRole, GameRound, PlayerClue, Vote, VotingState } from '../types/game';
 import { getRandomWordPair } from '../data/wordPairs';
 
 interface GameState {
@@ -28,6 +28,9 @@ interface GameState {
   submitPlayerClue: (clue: string) => void;
   nextPlayer: () => void;
   startNextRound: () => void;
+  startVoting: () => void;
+  submitVote: (targetName: string) => void;
+  nextVoter: () => void;
 }
 
 export const useGameStore = create<GameState>((set) => ({
@@ -242,5 +245,76 @@ export const useGameStore = create<GameState>((set) => ({
   startNextRound: () => set((state) => {
     // Diese Funktion wird nicht mehr verwendet, da nextPlayer() alles übernimmt
     return state;
+  }),
+
+  startVoting: () => set((state) => {
+    if (!state.offlineSettings.currentRound) return state;
+
+    const votingState: VotingState = {
+      votes: [],
+      currentVoterIndex: 0,
+      isComplete: false,
+      playerOrder: state.offlineSettings.currentRound.playerOrder
+    };
+
+    return {
+      offlineSettings: {
+        ...state.offlineSettings,
+        votingState: votingState
+      },
+      currentPhase: 'voting' as GamePhase
+    };
+  }),
+
+  submitVote: (targetName: string) => set((state) => {
+    if (!state.offlineSettings.votingState) return state;
+
+    const currentVoter = state.offlineSettings.votingState.playerOrder[state.offlineSettings.votingState.currentVoterIndex];
+    const newVote: Vote = {
+      voterName: currentVoter,
+      targetName: targetName
+    };
+
+    const updatedVotes = [...state.offlineSettings.votingState.votes, newVote];
+
+    return {
+      offlineSettings: {
+        ...state.offlineSettings,
+        votingState: {
+          ...state.offlineSettings.votingState,
+          votes: updatedVotes
+        }
+      }
+    };
+  }),
+
+  nextVoter: () => set((state) => {
+    if (!state.offlineSettings.votingState) return state;
+
+    const nextIndex = state.offlineSettings.votingState.currentVoterIndex + 1;
+    const isVotingComplete = nextIndex >= state.offlineSettings.votingState.playerOrder.length;
+
+    if (isVotingComplete) {
+      return {
+        offlineSettings: {
+          ...state.offlineSettings,
+          votingState: {
+            ...state.offlineSettings.votingState,
+            isComplete: true
+          }
+        },
+        currentPhase: 'votingAnimation' as GamePhase
+      };
+    }
+
+    return {
+      offlineSettings: {
+        ...state.offlineSettings,
+        votingState: {
+          ...state.offlineSettings.votingState,
+          currentVoterIndex: nextIndex
+        }
+      }
+    };
   }),
 }));
