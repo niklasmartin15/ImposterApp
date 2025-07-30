@@ -195,17 +195,37 @@ export const useGameStore = create<GameState>((set) => ({
       // Prüfe ob es weitere Runden gibt
       const isLastRound = state.offlineSettings.currentRoundNumber >= state.offlineSettings.maxRounds;
       
-      return {
-        offlineSettings: {
-          ...state.offlineSettings,
-          currentRound: {
-            ...state.offlineSettings.currentRound,
-            isComplete: true
-          }
-        },
-        // Bei der letzten Runde zur Abstimmung, sonst direkt zur nächsten Runde
-        currentPhase: isLastRound ? 'voting' as GamePhase : 'gameStarting' as GamePhase
-      };
+      if (isLastRound) {
+        // Letzte Runde beendet - zur Abstimmung
+        return {
+          offlineSettings: {
+            ...state.offlineSettings,
+            currentRound: {
+              ...state.offlineSettings.currentRound,
+              isComplete: true
+            }
+          },
+          currentPhase: 'voting' as GamePhase
+        };
+      } else {
+        // Runde beendet, aber noch weitere Runden - erhöhe Rundennummer und gehe zu gameStarting
+        const currentPlayerOrder = state.offlineSettings.currentRound.playerOrder;
+        
+        return {
+          offlineSettings: {
+            ...state.offlineSettings,
+            currentRoundNumber: state.offlineSettings.currentRoundNumber + 1,
+            currentWordPair: getRandomWordPair(),
+            currentRound: {
+              playerOrder: currentPlayerOrder, // Gleiche Reihenfolge beibehalten
+              currentPlayerIndex: 0,
+              clues: [],
+              isComplete: false
+            }
+          },
+          currentPhase: 'gameStarting' as GamePhase
+        };
+      }
     }
 
     return {
@@ -220,23 +240,7 @@ export const useGameStore = create<GameState>((set) => ({
   }),
 
   startNextRound: () => set((state) => {
-    // Verwende die gleiche Spielerreihenfolge wie in der vorherigen Runde
-    const currentPlayerOrder = state.offlineSettings.currentRound?.playerOrder || 
-      state.offlineSettings.playerNames.filter(name => name.trim() !== '');
-    
-    return {
-      offlineSettings: {
-        ...state.offlineSettings,
-        currentRoundNumber: state.offlineSettings.currentRoundNumber + 1,
-        currentWordPair: getRandomWordPair(),
-        currentRound: {
-          playerOrder: currentPlayerOrder, // Gleiche Reihenfolge beibehalten
-          currentPlayerIndex: 0,
-          clues: [],
-          isComplete: false
-        }
-      },
-      currentPhase: 'gameRounds' as GamePhase
-    };
+    // Diese Funktion wird nicht mehr verwendet, da nextPlayer() alles übernimmt
+    return state;
   }),
 }));

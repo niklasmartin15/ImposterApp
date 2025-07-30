@@ -9,7 +9,7 @@ import {
 import { useGameStore } from '../stores/gameStore';
 
 export const GameStartingScreen: React.FC = () => {
-  const { setCurrentPhase, startNextRound, offlineSettings } = useGameStore();
+  const { setCurrentPhase, offlineSettings } = useGameStore();
   const fadeAnim = useMemo(() => new Animated.Value(0), []);
   const scaleAnim = useMemo(() => new Animated.Value(0.5), []);
 
@@ -31,17 +31,11 @@ export const GameStartingScreen: React.FC = () => {
 
     // Navigate to game rounds after animation
     const timer = setTimeout(() => {
-      if (offlineSettings.currentRound?.isComplete && offlineSettings.currentRoundNumber < offlineSettings.maxRounds) {
-        // Start next round
-        startNextRound();
-      } else {
-        // Start first round or continue current round
-        setCurrentPhase('gameRounds');
-      }
+      setCurrentPhase('gameRounds');
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, [fadeAnim, scaleAnim, setCurrentPhase, startNextRound, offlineSettings]);
+  }, [fadeAnim, scaleAnim, setCurrentPhase, offlineSettings]);
 
   return (
     <SafeAreaView style={styles.container}>
