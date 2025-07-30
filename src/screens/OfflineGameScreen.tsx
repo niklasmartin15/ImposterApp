@@ -50,11 +50,13 @@ export const OfflineGameScreen: React.FC = () => {
                 <View style={styles.imposterContent}>              <Text style={styles.imposterText}>🕵️ IMPOSTER</Text>
               <Text style={styles.imposterSubtext}>{offlineSettings.currentWordPair?.imposterHint}</Text>
                 </View>
-              ) : (
-                <View style={styles.wordContent}>
-                  <Text style={styles.wordLabel}>Dein Wort:</Text>
-                  <Text style={styles.wordText}>{offlineSettings.currentWordPair?.realWord}</Text>
-                </View>
+              ) : (              <View style={styles.wordContent}>
+                <Text style={styles.wordLabel}>Dein Wort:</Text>
+                <Text style={[
+                  styles.wordText,
+                  (offlineSettings.currentWordPair?.realWord?.length || 0) > 8 && styles.wordTextLong
+                ]}>{offlineSettings.currentWordPair?.realWord}</Text>
+              </View>
               )}
               <Text style={styles.cardHintSmall}>👆 Zum Verstecken</Text>
             </View>
@@ -265,6 +267,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#eee',
     textAlign: 'center',
+    flexWrap: 'wrap',
+    paddingHorizontal: 4,
+  },
+  wordTextLong: {
+    fontSize: 24,
+    lineHeight: 28,
   },
   buttonContainer: {
     marginBottom: 20,
