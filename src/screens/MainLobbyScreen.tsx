@@ -20,7 +20,11 @@ export const MainLobbyScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.scrollView} 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.content}>
         <View style={styles.gameInfoContainer}>
           <Text style={styles.gameTitle}>🕵️ Imposter</Text>
@@ -33,28 +37,45 @@ export const MainLobbyScreen: React.FC = () => {
           <TouchableOpacity 
             style={styles.offlineButton}
             onPress={handleOfflineGame}
+            activeOpacity={0.8}
           >
-            <Text style={styles.offlineButtonText}>🎮 Offline spielen</Text>
-            <Text style={styles.buttonSubText}>Pass-and-Play auf diesem Gerät</Text>
+            <View style={styles.buttonIconContainer}>
+              <Text style={styles.buttonIcon}>🎮</Text>
+            </View>
+            <View style={styles.buttonTextContainer}>
+              <Text style={styles.offlineButtonText}>Offline spielen</Text>
+              <Text style={styles.buttonSubText}>Pass-and-Play auf diesem Gerät</Text>
+            </View>
           </TouchableOpacity>
 
-          <View style={styles.onlineButtonContainer}>
-            <TouchableOpacity 
-              style={[styles.onlineButton, styles.onlineButtonDisabled]}
-              disabled={true}
-            >
-              <Text style={[styles.onlineButtonText, styles.onlineButtonTextDisabled]}>🌐 Online spielen</Text>
+          <TouchableOpacity 
+            style={[styles.onlineButton, styles.onlineButtonDisabled]}
+            disabled={true}
+            activeOpacity={0.6}
+          >
+            <View style={styles.buttonIconContainer}>
+              <Text style={[styles.buttonIcon, styles.buttonIconDisabled]}>🌐</Text>
+            </View>
+            <View style={styles.buttonTextContainer}>
+              <Text style={[styles.onlineButtonText, styles.onlineButtonTextDisabled]}>Online spielen</Text>
               <Text style={[styles.buttonSubText, styles.buttonSubTextDisabled]}>Coming soon...</Text>
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
 
           {/* Game Info Dropdown */}
           <View style={styles.gameInfoButtonContainer}>
             <TouchableOpacity 
               style={[styles.gameInfoButton, showGameInfo && styles.gameInfoButtonActive]}
               onPress={() => setShowGameInfo(!showGameInfo)}
+              activeOpacity={0.8}
             >
-              <Text style={styles.gameInfoButtonText}> 📜Spielregeln</Text>
+              <View style={styles.buttonIconContainer}>
+                <Text style={styles.buttonIcon}>📜</Text>
+              </View>
+              <View style={styles.buttonTextContainer}>
+                <Text style={styles.gameInfoButtonText}>Spielregeln</Text>
+                <Text style={styles.buttonSubText}>Wie wird Imposter gespielt?</Text>
+              </View>
               <Text style={styles.dropdownArrow}>
                 {showGameInfo ? '▲' : '▼'}
               </Text>
@@ -139,11 +160,14 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
-  content: {
-    flex: 1,
-    paddingHorizontal: 32,
-    paddingVertical: 20,
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: 'center',
+    minHeight: '100%',
+  },
+  content: {
+    paddingHorizontal: 32,
+    paddingVertical: 40,
   },
   gameInfoContainer: {
     alignItems: 'center',
@@ -151,11 +175,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   gameTitle: {
-    fontSize: 36,
+    fontSize: 42,
     fontWeight: 'bold',
     color: '#e94560',
     textAlign: 'center',
     marginBottom: 16,
+    textShadowColor: 'rgba(233, 69, 96, 0.3)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
   gameDescription: {
     fontSize: 16,
@@ -165,63 +192,90 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginBottom: 40,
+    gap: 16,
   },
+  
+  // Button Styles
   offlineButton: {
     backgroundColor: '#e94560',
-    paddingVertical: 18,
+    paddingVertical: 20,
     paddingHorizontal: 24,
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: 'center',
-    marginBottom: 16,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  offlineButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 4,
-  },
-  buttonSubText: {
-    fontSize: 12,
-    color: '#fff',
-    opacity: 0.8,
-    textAlign: 'center',
-  },
-  buttonSubTextDisabled: {
-    color: '#666',
-    opacity: 1,
-  },
-  onlineButtonContainer: {
-    marginBottom: 16,
+    flexDirection: 'row',
+    elevation: 8,
+    shadowColor: '#e94560',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    borderWidth: 2,
+    borderColor: '#ff6b8a',
   },
   onlineButton: {
-    backgroundColor: '#0f3460',
-    paddingVertical: 18,
+    backgroundColor: '#2a2a3e',
+    paddingVertical: 20,
     paddingHorizontal: 24,
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: 'center',
-    position: 'relative',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
+    flexDirection: 'row',
+    opacity: 0.6,
+    borderWidth: 2,
+    borderColor: '#444',
   },
   onlineButtonDisabled: {
     backgroundColor: '#2a2a3e',
     opacity: 0.6,
   },
-  onlineButtonActive: {
-    backgroundColor: '#16213e',
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
+  gameInfoButton: {
+    backgroundColor: '#0f3460',
+    paddingVertical: 20,
+    paddingHorizontal: 24,
+    borderRadius: 16,
+    alignItems: 'center',
+    flexDirection: 'row',
+    elevation: 6,
+    shadowColor: '#0f3460',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    borderWidth: 2,
+    borderColor: '#1e4a73',
+    position: 'relative',
+  },
+  gameInfoButtonActive: {
+    borderBottomLeftRadius: 4,
+    borderBottomRightRadius: 4,
+    backgroundColor: '#1e4a73',
+  },
+  
+  // Button Content Styles
+  buttonIconContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  buttonIcon: {
+    fontSize: 24,
+  },
+  buttonIconDisabled: {
+    opacity: 0.5,
+  },
+  buttonTextContainer: {
+    flex: 1,
+    alignItems: 'flex-start',
+  },
+  offlineButtonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 4,
   },
   onlineButtonText: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#fff',
     marginBottom: 4,
@@ -229,13 +283,29 @@ const styles = StyleSheet.create({
   onlineButtonTextDisabled: {
     color: '#999',
   },
+  gameInfoButtonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 4,
+  },
+  buttonSubText: {
+    fontSize: 13,
+    color: 'rgba(255, 255, 255, 0.8)',
+    textAlign: 'left',
+  },
+  buttonSubTextDisabled: {
+    color: '#666',
+    opacity: 1,
+  },
+  
+  // Dropdown Arrow
   dropdownArrow: {
     position: 'absolute',
     right: 20,
-    top: '50%',
-    marginTop: -8,
-    fontSize: 16,
+    fontSize: 18,
     color: '#fff',
+    fontWeight: 'bold',
   },
   dropdown: {
     backgroundColor: '#16213e',
@@ -311,29 +381,6 @@ const styles = StyleSheet.create({
   // Game Info Dropdown Styles
   gameInfoButtonContainer: {
     marginBottom: 16,
-  },
-  gameInfoButton: {
-    backgroundColor: '#12305eff',
-    paddingVertical: 18,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    alignItems: 'center',
-    position: 'relative',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
-  },
-  gameInfoButtonActive: {
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-  },
-  gameInfoButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 4,
   },
   gameInfoDropdown: {
     backgroundColor: '#16213e',
