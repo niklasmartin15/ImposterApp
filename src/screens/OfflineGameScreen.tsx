@@ -25,12 +25,20 @@ export const OfflineGameScreen: React.FC = () => {
     setCurrentPhase('offlineSetup');
   };
 
+  // Hilfsfunktion: Karten in 2er-Gruppen aufteilen
+  const chunkArray = (arr: any[], size: number) => {
+    const result = [];
+    for (let i = 0; i < arr.length; i += size) {
+      result.push(arr.slice(i, i + size));
+    }
+    return result;
+  };
+
   const renderPlayerCard = (role: any, index: number) => {
     const isFlipped = role.hasSeenCard;
-    
     return (
       <TouchableOpacity
-        key={index}
+        key={role.playerName}
         style={styles.card}
         onPress={() => togglePlayerCardSeen(role.playerName)}
         activeOpacity={0.8}
@@ -47,16 +55,18 @@ export const OfflineGameScreen: React.FC = () => {
             <View style={styles.cardBack}>
               <Text style={styles.cardPlayerNameSmall}>{role.playerName}</Text>
               {role.isImposter ? (
-                <View style={styles.imposterContent}>        ❌   <br/><br/>   <Text style={styles.imposterText}>IMPOSTER</Text>
-              <Text style={styles.imposterSubtext}>Hinweis:<h3>{offlineSettings.currentWordPair?.imposterHint}</h3></Text><Text><br/>❌</Text>
+                <View style={styles.imposterContent}>
+                  <Text style={styles.imposterText}>IMPOSTER</Text>
+                  <Text style={styles.imposterSubtext}>Hinweis: {offlineSettings.currentWordPair?.imposterHint}</Text>
                 </View>
-              ) : (              <View style={styles.wordContent}>
-                <Text style={styles.wordLabel}>Dein Wort:</Text>
-                <Text style={[
-                  styles.wordText,
-                  (offlineSettings.currentWordPair?.word?.length || 0) > 8 && styles.wordTextLong
-                ]}>{offlineSettings.currentWordPair?.word}</Text>
-              </View>
+              ) : (
+                <View style={styles.wordContent}>
+                  <Text style={styles.wordLabel}>Dein Wort:</Text>
+                  <Text style={[
+                    styles.wordText,
+                    (offlineSettings.currentWordPair?.word?.length || 0) > 8 && styles.wordTextLong
+                  ]}>{offlineSettings.currentWordPair?.word}</Text>
+                </View>
               )}
               <Text style={styles.cardHintSmall}>👆 Zum Verstecken</Text>
             </View>
@@ -81,11 +91,28 @@ export const OfflineGameScreen: React.FC = () => {
             </Text>
           </View>
 
-          <View style={styles.cardsContainer}>
-            {offlineSettings.assignedRoles?.map((role, index) => 
-              renderPlayerCard(role, index)
-            )}
+  {/* Karten in 2er-Reihen, responsive und mit gleichem Abstand */}
+  <View style={styles.cardsContainer}>
+    {chunkArray(offlineSettings.assignedRoles || [], 2).map((row, rowIdx) => (
+      <View key={rowIdx} style={styles.cardRow}>
+        {row.map((role, idx) => (
+          <View
+            key={role.playerName}
+            style={[
+              styles.cardWrapper,
+              idx === 0 ? styles.cardWrapperLeft : styles.cardWrapperRight,
+              row.length === 1 && styles.cardWrapperSingle
+            ]}
+          >
+            {renderPlayerCard(role, rowIdx * 2 + idx)}
           </View>
+        ))}
+        {row.length < 2 && (
+          <View style={[styles.cardWrapper, styles.cardWrapperRight]} />
+        )}
+      </View>
+    ))}
+  </View>
 
           <View style={styles.buttonContainer}>
             <TouchableOpacity 
@@ -175,10 +202,36 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 30,
   },
+  // Responsive Kartenbreite: max 2 pro Zeile, mit Abstand, aber nie breiter als 45% pro Karte
   card: {
-    width: (width - 60) / 2,
+    width: Math.min((width - 60) / 2, width * 0.45),
+    minWidth: 120,
+    maxWidth: width * 0.48,
     aspectRatio: 0.7,
+    alignSelf: 'center',
+  },
+  cardRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 16,
+    width: '100%',
+    maxWidth: width - 40,
+    alignSelf: 'center',
+  },
+  cardWrapper: {
+    flex: 1,
+    minWidth: 0,
+    maxWidth: '50%',
+  },
+  cardWrapperLeft: {
+    marginRight: 8,
+  },
+  cardWrapperRight: {
+    marginLeft: 8,
+  },
+  cardWrapperSingle: {
+    marginLeft: 8,
+    marginRight: 8,
   },
   cardInner: {
     flex: 1,
