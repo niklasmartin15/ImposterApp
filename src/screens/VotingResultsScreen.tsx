@@ -29,7 +29,8 @@ export const VotingResultsScreen: React.FC = () => {
   const { 
     offlineSettings, 
     setCurrentPhase,
-    resetOfflineSettings
+    resetOfflineSettings,
+    resetGameKeepPlayers
   } = useGameStore();
 
   // Funktion um Spielerfarbe zu bekommen
@@ -115,6 +116,10 @@ export const VotingResultsScreen: React.FC = () => {
 
   const handleBackToLobby = () => {
     setCurrentPhase('mainLobby');
+  };
+
+  const handleNewGameWithSamePlayers = () => {
+    resetGameKeepPlayers();
   };
 
   return (
@@ -255,6 +260,15 @@ export const VotingResultsScreen: React.FC = () => {
             >
               <Text style={styles.newGameButtonText}>
                 🎮 Neues Spiel
+              </Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={styles.newGameWithSamePlayersButton}
+              onPress={handleNewGameWithSamePlayers}
+            >
+              <Text style={styles.newGameWithSamePlayersButtonText}>
+                🔄 Neues Spiel mit gleichen Spielern
               </Text>
             </TouchableOpacity>
             
@@ -498,6 +512,24 @@ const styles = StyleSheet.create({
   },
   newGameButtonText: {
     fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  newGameWithSamePlayersButton: {
+    backgroundColor: '#2196F3',
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 16,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  newGameWithSamePlayersButtonText: {
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#fff',
   },
