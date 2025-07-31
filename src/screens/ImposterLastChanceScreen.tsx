@@ -68,18 +68,14 @@ export const ImposterLastChanceScreen: React.FC = () => {
     return null;
   }
 
-  // Wenn der Timer 0 erreicht, überspringe diesen Imposter oder beende die letzte Chance
+  // Wenn der Timer 0 erreicht, Behandle als falsche Antwort und zeige Ergebnis
   useEffect(() => {
     if (timer === 0) {
-      if (currentImposterIndex < impostersWhoCanGuess.length - 1) {
-        setCurrentImposterIndex(ci => ci + 1);
-        setGuessedWord('');
-        setTimer(60);
-      } else {
-        setCurrentPhase('votingResults');
-      }
+      // Falscher Versuch durch Timeout
+      guessWordInLastChance(currentImposter.playerName, '');
+      setCurrentPhase('wordGuessResults');
     }
-  }, [timer, currentImposterIndex, impostersWhoCanGuess.length, setCurrentPhase]);
+  }, [timer, currentImposter, guessWordInLastChance, setCurrentPhase]);
 
   const getPlayerColor = (playerName: string): string => {
     if (!offlineSettings.currentRound) return PLAYER_COLORS[0];
@@ -115,13 +111,9 @@ export const ImposterLastChanceScreen: React.FC = () => {
   };
 
   const handleSkip = () => {
-    // Imposter verzichtet auf das Raten
-    if (currentImposterIndex < impostersWhoCanGuess.length - 1) {
-      setCurrentImposterIndex(currentImposterIndex + 1);
-      setGuessedWord('');
-    } else {
-      setCurrentPhase('votingResults');
-    }
+    // Imposter verzichtet -> Behandle als falsche Antwort
+    guessWordInLastChance(currentImposter.playerName, '');
+    setCurrentPhase('wordGuessResults');
   };
 
   return (
