@@ -38,6 +38,7 @@ export interface OfflineGameSettings {
   playerNames: string[];
   assignedRoles?: OfflinePlayerRole[];
   currentWordPair?: WordPair;
+  gameWordPair?: WordPair; // Das Wort-Paar für das aktuelle Spiel (wird nicht geändert während des Spiels)
   currentRound?: GameRound;
   currentRoundNumber: number;
   maxRounds: number;
@@ -83,6 +84,8 @@ export interface WordGuessResult {
   isWin: boolean;
   guessedWord: string;
   isLastChance?: boolean; // Ob das Wort in der "Last Chance" Phase erraten wurde
+  targetWord: string;      // Das Wort, das erraten werden sollte
+  targetHint: string;      // Der Hinweis für den Imposter
 }
 
 export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'offlineGame' | 'gameStarting' | 'gameRounds' | 'votingStart' | 'voting' | 'votingAnimation' | 'votingResults' | 'imposterLastChance' | 'wordGuessResults' | 'gameRoom' | 'playing' | 'results';

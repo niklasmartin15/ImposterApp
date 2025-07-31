@@ -79,7 +79,7 @@ export const GameRoundsScreen: React.FC = () => {
     }
 
     const trimmedGuess = guessedWord.trim();
-    const correctWord = offlineSettings.currentWordPair?.word.trim().toLowerCase();
+    const correctWord = offlineSettings.gameWordPair?.word.trim().toLowerCase();
     const isWin = trimmedGuess.toLowerCase() === correctWord;
     // Speichere Ergebnis
     guessWord(currentPlayer, trimmedGuess);

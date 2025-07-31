@@ -47,7 +47,7 @@ export const WordGuessResultsScreen: React.FC = () => {
     return PLAYER_COLORS[playerIndex % PLAYER_COLORS.length];
   };
 
-  if (!offlineSettings.wordGuessResult || !offlineSettings.currentWordPair) {
+  if (!offlineSettings.wordGuessResult) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={[styles.content, { justifyContent: 'center', alignItems: 'center' }]}>
@@ -67,8 +67,7 @@ export const WordGuessResultsScreen: React.FC = () => {
     );
   }
 
-  const { isWin, guessedWord, isLastChance } = offlineSettings.wordGuessResult;
-  const { word, imposterHint } = offlineSettings.currentWordPair;
+  const { isWin, guessedWord, isLastChance, targetWord: word, targetHint: imposterHint } = offlineSettings.wordGuessResult;
 
   const imposters = offlineSettings.assignedRoles
     ?.filter(role => role.isImposter)

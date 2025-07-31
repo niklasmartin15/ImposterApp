@@ -48,6 +48,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     playerNames: ['', '', '', ''],
     assignedRoles: [],
     currentWordPair: getRandomWordPair(),
+    gameWordPair: undefined,
     currentRoundNumber: 1,
     maxRounds: 2,
     allClues: [],
@@ -102,19 +103,25 @@ export const useGameStore = create<GameState>((set, get) => ({
     };
   }),
   
-  resetOfflineSettings: () => set({
-    offlineSettings: {
-      playerCount: 4,
-      imposterCount: 1,
-      playerNames: ['', '', '', ''],
-      assignedRoles: [],
-      currentWordPair: getRandomWordPair(),
-      currentRoundNumber: 1,
-      maxRounds: 2,
-      allClues: [],
-      wordGuessAttempted: false,
-      wordGuessingDisabled: false,
-    }
+  resetOfflineSettings: () => set(() => {
+    const initialWordPair = getRandomWordPair();
+    return {
+      offlineSettings: {
+        playerCount: 4,
+        imposterCount: 1,
+        playerNames: ['', '', '', ''],
+        assignedRoles: [],
+        currentWordPair: initialWordPair,
+        gameWordPair: initialWordPair, // Setze gameWordPair auch
+        currentRoundNumber: 1,
+        maxRounds: 2,
+        allClues: [],
+        wordGuessAttempted: false,
+        wordGuessingDisabled: false,
+        wordGuessResult: undefined, // Clear any previous word guess results
+        votingState: undefined,     // Clear voting state
+      }
+    };
   }),
 
   startOfflineGame: () => set((state) => {
@@ -137,7 +144,11 @@ export const useGameStore = create<GameState>((set, get) => ({
     return {
       offlineSettings: {
         ...state.offlineSettings,
-        assignedRoles
+        assignedRoles,
+        wordGuessAttempted: false,
+        wordGuessingDisabled: false,
+        wordGuessResult: undefined, // Clear previous word guess results
+        votingState: undefined,     // Clear voting state
       },
       currentPhase: 'offlineGame' as GamePhase
     };
@@ -177,9 +188,11 @@ export const useGameStore = create<GameState>((set, get) => ({
       offlineSettings: {
         ...state.offlineSettings,
         currentWordPair: newWordPair,
+        gameWordPair: newWordPair, // Setze gameWordPair auch auf das neue Wort
         assignedRoles,
         wordGuessAttempted: false,
-        wordGuessingDisabled: false
+        wordGuessingDisabled: false,
+        wordGuessResult: undefined, // Clear previous word guess results
       }
     };
   }),
@@ -199,7 +212,11 @@ export const useGameStore = create<GameState>((set, get) => ({
     return {
       offlineSettings: {
         ...state.offlineSettings,
-        currentRound: newRound
+        currentRound: newRound,
+        gameWordPair: state.offlineSettings.currentWordPair, // Speichere das aktuelle Wort für das Spiel
+        wordGuessAttempted: false,
+        wordGuessingDisabled: false,
+        wordGuessResult: undefined, // Clear previous word guess results
       },
       currentPhase: 'gameStarting' as GamePhase
     };
@@ -391,14 +408,23 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   guessWord: (playerName: string, guessedWord: string) => set((state) => {
     // Evaluate guess and store result, do not change phase here
-    const correctWord = state.offlineSettings.currentWordPair?.word?.toLowerCase().trim();
+    const gameWordPair = state.offlineSettings.gameWordPair;
+    const correctWord = gameWordPair?.word?.toLowerCase().trim();
     const guess = guessedWord.toLowerCase().trim();
     const isWin = correctWord === guess;
+    
+    console.log('guessWord - Game word:', gameWordPair?.word, 'Guess:', guessedWord, 'IsWin:', isWin);
     
     return {
       offlineSettings: {
         ...state.offlineSettings,
-        wordGuessResult: { isWin, guessedWord, isLastChance: false },
+        wordGuessResult: {
+          isWin,
+          guessedWord,
+          isLastChance: false,
+          targetWord: gameWordPair?.word || '',
+          targetHint: gameWordPair?.imposterHint || ''
+        },
         wordGuessAttempted: true,
         wordGuessingDisabled: !isWin, // Deaktiviere Raten wenn falsch geraten
       }
@@ -407,14 +433,23 @@ export const useGameStore = create<GameState>((set, get) => ({
 
   guessWordInLastChance: (playerName: string, guessedWord: string) => set((state) => {
     // Evaluate guess and store result for last chance attempt
-    const correctWord = state.offlineSettings.currentWordPair?.word?.toLowerCase().trim();
+    const gameWordPair = state.offlineSettings.gameWordPair;
+    const correctWord = gameWordPair?.word?.toLowerCase().trim();
     const guess = guessedWord.toLowerCase().trim();
     const isWin = correctWord === guess;
+    
+    console.log('guessWordInLastChance - Game word:', gameWordPair?.word, 'Guess:', guessedWord, 'IsWin:', isWin);
     
     return {
       offlineSettings: {
         ...state.offlineSettings,
-        wordGuessResult: { isWin, guessedWord, isLastChance: true },
+        wordGuessResult: {
+          isWin,
+          guessedWord,
+          isLastChance: true,
+          targetWord: gameWordPair?.word || '',
+          targetHint: gameWordPair?.imposterHint || ''
+        },
         wordGuessAttempted: true,
         wordGuessingDisabled: !isWin, // Deaktiviere Raten wenn falsch geraten
       }

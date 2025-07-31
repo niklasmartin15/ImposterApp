@@ -191,7 +191,12 @@ export const VotingResultsScreen: React.FC = () => {
                   {imposter}
                 </Text>
                 <Text style={styles.imposterHint}>
-                  Hinweis: &quot;{offlineSettings.currentWordPair?.imposterHint}&quot;
+                  Hinweis: &quot;{
+                    // Verwende das Wort aus wordGuessResult falls vorhanden, ansonsten gameWordPair
+                    offlineSettings.wordGuessResult?.targetHint || 
+                    offlineSettings.gameWordPair?.imposterHint || 
+                    ''
+                  }&quot;
                 </Text>
               </View>
             ))}
@@ -202,7 +207,12 @@ export const VotingResultsScreen: React.FC = () => {
             <View style={styles.wordContainer}>
               <Text style={styles.wordTitle}>💡 Das Wort war:</Text>
               <Text style={styles.wordText}>
-                {offlineSettings.currentWordPair?.word}
+                {
+                  // Verwende das Wort aus wordGuessResult falls vorhanden, ansonsten gameWordPair
+                  offlineSettings.wordGuessResult?.targetWord || 
+                  offlineSettings.gameWordPair?.word || 
+                  ''
+                }
               </Text>
             </View>
           )}

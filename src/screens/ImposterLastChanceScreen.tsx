@@ -89,7 +89,7 @@ export const ImposterLastChanceScreen: React.FC = () => {
     }
 
     const trimmedGuess = guessedWord.trim();
-    const correctWord = offlineSettings.currentWordPair?.word.trim().toLowerCase();
+    const correctWord = offlineSettings.gameWordPair?.word.trim().toLowerCase();
     const isWin = trimmedGuess.toLowerCase() === correctWord;
     
     // Speichere Ergebnis
@@ -162,7 +162,7 @@ export const ImposterLastChanceScreen: React.FC = () => {
           <View style={styles.hintContainer}>
             <Text style={styles.hintLabel}>💭 Dein Hinweis war:</Text>
             <Text style={styles.hintText}>
-              &quot;{offlineSettings.currentWordPair?.imposterHint}&quot;
+              &quot;{offlineSettings.gameWordPair?.imposterHint}&quot;
             </Text>
           </View>
 
