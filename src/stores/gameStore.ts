@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { GamePhase, OfflineGameSettings, OfflinePlayerRole, GameRound, PlayerClue, Vote, VotingState, WordGuessResult } from '../types/game';
+import { GamePhase, OfflineGameSettings, GameRound, PlayerClue, Vote, VotingState } from '../types/game';
 import { getRandomWordPair } from '../data/wordPairs';
 
 interface GameState {
@@ -158,12 +158,28 @@ export const useGameStore = create<GameState>((set, get) => ({
     };
   }),
 
-  generateNewWordPair: () => set((state) => ({
-    offlineSettings: {
-      ...state.offlineSettings,
-      currentWordPair: getRandomWordPair()
-    }
-  })),
+  generateNewWordPair: () => set((state) => {
+    // Neue Wortpaar und zufälligen Imposter neu zuweisen
+    const playerNames = state.offlineSettings.playerNames.filter(name => name.trim() !== '');
+    const impCount = state.offlineSettings.imposterCount;
+    // Imposter-Positionen zufällig wählen
+    const playerCount = playerNames.length;
+    const indices = Array.from({ length: playerCount }, (_, i) => i);
+    const shuffledIndices = indices.sort(() => Math.random() - 0.5);
+    const imposterIndices = shuffledIndices.slice(0, impCount);
+    const assignedRoles = playerNames.map((playerName, idx) => ({
+      playerName,
+      isImposter: imposterIndices.includes(idx),
+      hasSeenCard: false
+    }));
+    return {
+      offlineSettings: {
+        ...state.offlineSettings,
+        currentWordPair: getRandomWordPair(),
+        assignedRoles
+      }
+    };
+  }),
 
   startGameRounds: () => set((state) => {
     // Zufällige Spielerreihenfolge generieren
@@ -234,16 +250,29 @@ export const useGameStore = create<GameState>((set, get) => ({
           currentPhase: 'votingStart' as GamePhase
         };
       } else {
-        // Runde beendet, aber noch weitere Runden - erhöhe Rundennummer und gehe zu gameStarting
-        const currentPlayerOrder = state.offlineSettings.currentRound.playerOrder;
-        
+        // Runde beendet, aber noch weitere Runden - erhöhe Rundennummer, neues Wort & neue Imposter
+        const nextRoundNumber = state.offlineSettings.currentRoundNumber + 1;
+        const playerNames = state.offlineSettings.playerNames.filter(name => name.trim() !== '');
+        const impCount = state.offlineSettings.imposterCount;
+        // Neue Imposter zufällig auswählen
+        const indices = playerNames.map((_, i) => i);
+        const shuffled = indices.sort(() => Math.random() - 0.5);
+        const imposterIndices = shuffled.slice(0, impCount);
+        const newAssignedRoles = playerNames.map((playerName, idx) => ({
+          playerName,
+          isImposter: imposterIndices.includes(idx),
+          hasSeenCard: false
+        }));
         return {
           offlineSettings: {
             ...state.offlineSettings,
-            currentRoundNumber: state.offlineSettings.currentRoundNumber + 1,
+            currentRoundNumber: nextRoundNumber,
             currentWordPair: getRandomWordPair(),
+            assignedRoles: newAssignedRoles,
+            wordGuessAttempted: false,
+            wordGuessingDisabled: false,
             currentRound: {
-              playerOrder: currentPlayerOrder, // Gleiche Reihenfolge beibehalten
+              playerOrder: state.offlineSettings.currentRound.playerOrder,
               currentPlayerIndex: 0,
               clues: [],
               isComplete: false
