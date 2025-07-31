@@ -25,6 +25,16 @@ export const ImposterLastChanceScreen: React.FC = () => {
 
   const [guessedWord, setGuessedWord] = useState('');
   const [currentImposterIndex, setCurrentImposterIndex] = useState(0);
+  // Countdown timer for last chance (60 seconds)
+  const [timer, setTimer] = useState(60);
+
+  // Decrease timer every second
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer(prev => Math.max(prev - 1, 0));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -57,6 +67,19 @@ export const ImposterLastChanceScreen: React.FC = () => {
     setCurrentPhase('votingResults');
     return null;
   }
+
+  // Wenn der Timer 0 erreicht, überspringe diesen Imposter oder beende die letzte Chance
+  useEffect(() => {
+    if (timer === 0) {
+      if (currentImposterIndex < impostersWhoCanGuess.length - 1) {
+        setCurrentImposterIndex(ci => ci + 1);
+        setGuessedWord('');
+        setTimer(60);
+      } else {
+        setCurrentPhase('votingResults');
+      }
+    }
+  }, [timer, currentImposterIndex, impostersWhoCanGuess.length, setCurrentPhase]);
 
   const getPlayerColor = (playerName: string): string => {
     if (!offlineSettings.currentRound) return PLAYER_COLORS[0];
@@ -119,7 +142,12 @@ export const ImposterLastChanceScreen: React.FC = () => {
             <Text style={styles.subtitle}>
               {currentImposter.playerName}, du wurdest als Imposter entlarvt!
             </Text>
+            {/* Countdown Timer */}
+            <Text style={{ color: '#fff', fontSize: 16, textAlign: 'center', marginBottom: 20 }}>
+              ⏱ Verbleibende Zeit: {timer}s
+            </Text>
           </View>
+
 
           {/* Current Imposter Info */}
           <View style={[
@@ -183,6 +211,20 @@ export const ImposterLastChanceScreen: React.FC = () => {
                 ❌ Verzichten
               </Text>
             </TouchableOpacity>
+          </View>
+          {/* Übersicht der Antworten (Alle Hinweise) */}
+          <View style={{ marginBottom: 20 }}>
+            <Text style={{ color: '#fff', fontSize: 18, fontWeight: '600', marginBottom: 10 }}>
+              💭 Alle Hinweise:
+            </Text>
+            {offlineSettings.allClues?.map((clue, idx) => (
+              <View key={idx} style={{ marginBottom: 8 }}>
+                <Text style={{ color: getPlayerColor(clue.playerName), fontWeight: 'bold' }}>
+                  {clue.playerName} (R{clue.roundNumber}):
+                </Text>
+                <Text style={{ color: '#ccc' }}>{clue.clue}</Text>
+              </View>
+            ))}
           </View>
 
           {/* Progress indicator */}
