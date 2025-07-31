@@ -53,7 +53,7 @@ export const WORD_PAIRS: WordPair[] = [
   { word: 'Brille', imposterHint: 'Sehstärke' },
   { word: 'Park', imposterHint: 'Enten' },
   { word: 'Zeitung', imposterHint: 'Frühstück' },
-    { word: 'Kamera', imposterHint: 'Linse' },
+  { word: 'Kamera', imposterHint: 'Linse' },
   { word: 'Fahrrad', imposterHint: 'Pedale' },
   { word: 'Schule', imposterHint: 'Stundenplan' },
   { word: 'Schokolade', imposterHint: 'Kakao' },

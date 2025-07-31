@@ -215,11 +215,13 @@ const styles = StyleSheet.create({
     opacity: 0.9,
   },
   earlyEndContainer: {
+        backgroundColor: '#282843ff',
+
     marginTop: 25,
     width: '100%',
   },
   earlyEndToggle: {
-    backgroundColor: '#333',
+    backgroundColor: '#11111',
     borderWidth: 1,
     borderColor: '#555',
     paddingVertical: 12,
@@ -240,7 +242,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   earlyEndDropdown: {
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#282843ff',
     borderWidth: 1,
     borderColor: '#555',
     borderTopWidth: 0,
@@ -251,21 +253,23 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   newGameButton: {
-    backgroundColor: '#e94560',
+    backgroundColor: '#1a1a2e',
     paddingVertical: 14,
     paddingHorizontal: 20,
     borderRadius: 10,
     alignItems: 'center',
+    borderColor: '#111111',
   },
   newGameButtonText: {
-    color: '#ffffff',
+    color: '#ffffffff',
     fontSize: 15,
     fontWeight: 'bold',
   },
   backToSetupButton: {
-    backgroundColor: 'transparent',
+    backgroundColor: '#202038ff',
     borderWidth: 1,
-    borderColor: '#666',
+    
+    
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
