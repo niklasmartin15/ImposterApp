@@ -254,16 +254,8 @@ export const VotingResultsScreen: React.FC = () => {
 
           {/* Buttons */}
           <View style={styles.buttonContainer}>
-            <TouchableOpacity 
-              style={styles.newGameButton}
-              onPress={handleNewGame}
-            >
-              <Text style={styles.newGameButtonText}>
-                🎮 Neues Spiel
-              </Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity 
+
+                        <TouchableOpacity 
               style={styles.newGameWithSamePlayersButton}
               onPress={handleNewGameWithSamePlayers}
             >
@@ -271,6 +263,17 @@ export const VotingResultsScreen: React.FC = () => {
                 🔄 Neues Spiel mit gleichen Spielern
               </Text>
             </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.newGameButton}
+              onPress={handleNewGame}
+            >
+              <Text style={styles.newGameButtonText}>
+                🎮 Neues Spiel 
+              </Text>
+            </TouchableOpacity>
+            
+
             
             <TouchableOpacity 
               style={styles.backButton}

@@ -201,20 +201,19 @@ export const WordGuessResultsScreen: React.FC = () => {
           {/* Action Buttons */}
           <View style={styles.buttonContainer}>
             <TouchableOpacity 
-              style={styles.newGameButton}
-              onPress={handleNewGame}
-            >
-              <Text style={styles.newGameButtonText}>
-                🎮 Neues Spiel
-              </Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity 
               style={styles.newGameWithSamePlayersButton}
               onPress={handleNewGameWithSamePlayers}
             >
               <Text style={styles.newGameWithSamePlayersButtonText}>
                 🔄 Neues Spiel mit gleichen Spielern
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.newGameButton}
+              onPress={handleNewGame}
+            >
+              <Text style={styles.newGameButtonText}>
+                🎮 Neues Spiel
               </Text>
             </TouchableOpacity>
             
