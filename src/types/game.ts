@@ -82,6 +82,7 @@ export interface VotingState {
 export interface WordGuessResult {
   isWin: boolean;
   guessedWord: string;
+  isLastChance?: boolean; // Ob das Wort in der "Last Chance" Phase erraten wurde
 }
 
 export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'offlineGame' | 'gameStarting' | 'gameRounds' | 'votingStart' | 'voting' | 'votingAnimation' | 'votingResults' | 'imposterLastChance' | 'wordGuessResults' | 'gameRoom' | 'playing' | 'results';

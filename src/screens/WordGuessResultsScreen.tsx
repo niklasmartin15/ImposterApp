@@ -67,7 +67,7 @@ export const WordGuessResultsScreen: React.FC = () => {
     );
   }
 
-  const { isWin, guessedWord } = offlineSettings.wordGuessResult;
+  const { isWin, guessedWord, isLastChance } = offlineSettings.wordGuessResult;
   const { word, imposterHint } = offlineSettings.currentWordPair;
 
   const imposters = offlineSettings.assignedRoles
@@ -96,7 +96,9 @@ export const WordGuessResultsScreen: React.FC = () => {
         >
           {/* Header */}
           <View style={styles.headerContainer}>
-            <Text style={styles.title}>🎯 Wort-Raten Ergebnis</Text>
+            <Text style={styles.title}>
+              {isLastChance ? '🎯 Letzte Chance Ergebnis' : '🎯 Wort-Raten Ergebnis'}
+            </Text>
           </View>
 
           {/* Hauptergebnis */}
@@ -112,8 +114,12 @@ export const WordGuessResultsScreen: React.FC = () => {
             </Text>
             <Text style={styles.resultSubtitle}>
               {isWin 
-                ? 'Das Wort wurde richtig erraten!' 
-                : 'Das Wort wurde falsch erraten!'
+                ? (isLastChance 
+                    ? 'Der Imposter hat das Wort erraten!' 
+                    : 'Das Wort wurde richtig erraten!')
+                : (isLastChance 
+                    ? 'Der Imposter konnte das Wort nicht erraten!'
+                    : 'Das Wort wurde falsch erraten!')
               }
             </Text>
           </View>

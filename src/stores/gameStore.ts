@@ -30,6 +30,7 @@ interface GameState {
   startNextRound: () => void;
   isPlayerImposter: (playerName: string) => boolean;
   guessWord: (playerName: string, guessedWord: string) => void;
+  guessWordInLastChance: (playerName: string, guessedWord: string) => void;
   canImposterGuessWord: (playerName: string) => boolean;
   startVoting: () => void;
   submitVote: (targetName: string) => void;
@@ -365,7 +366,23 @@ export const useGameStore = create<GameState>((set, get) => ({
     return {
       offlineSettings: {
         ...state.offlineSettings,
-        wordGuessResult: { isWin, guessedWord },
+        wordGuessResult: { isWin, guessedWord, isLastChance: false },
+        wordGuessAttempted: true,
+        wordGuessingDisabled: !isWin, // Deaktiviere Raten wenn falsch geraten
+      }
+    };
+  }),
+
+  guessWordInLastChance: (playerName: string, guessedWord: string) => set((state) => {
+    // Evaluate guess and store result for last chance attempt
+    const correctWord = state.offlineSettings.currentWordPair?.word?.toLowerCase().trim();
+    const guess = guessedWord.toLowerCase().trim();
+    const isWin = correctWord === guess;
+    
+    return {
+      offlineSettings: {
+        ...state.offlineSettings,
+        wordGuessResult: { isWin, guessedWord, isLastChance: true },
         wordGuessAttempted: true,
         wordGuessingDisabled: !isWin, // Deaktiviere Raten wenn falsch geraten
       }

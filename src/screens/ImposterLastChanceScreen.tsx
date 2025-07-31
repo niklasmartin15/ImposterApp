@@ -20,7 +20,7 @@ export const ImposterLastChanceScreen: React.FC = () => {
   const { 
     offlineSettings,
     setCurrentPhase,
-    guessWord
+    guessWordInLastChance
   } = useGameStore();
 
   const [guessedWord, setGuessedWord] = useState('');
@@ -74,7 +74,7 @@ export const ImposterLastChanceScreen: React.FC = () => {
     const isWin = trimmedGuess.toLowerCase() === correctWord;
     
     // Speichere Ergebnis
-    guessWord(currentImposter.playerName, trimmedGuess);
+    guessWordInLastChance(currentImposter.playerName, trimmedGuess);
     
     if (isWin) {
       // Imposter gewinnt - direkt zum Endscreen
@@ -142,7 +142,7 @@ export const ImposterLastChanceScreen: React.FC = () => {
           <View style={styles.hintContainer}>
             <Text style={styles.hintLabel}>💭 Dein Hinweis war:</Text>
             <Text style={styles.hintText}>
-              "{offlineSettings.currentWordPair?.imposterHint}"
+              &quot;{offlineSettings.currentWordPair?.imposterHint}&quot;
             </Text>
           </View>
 
