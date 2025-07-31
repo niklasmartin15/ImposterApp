@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -149,21 +149,40 @@ export const OfflineSetupScreen: React.FC = () => {
           <View style={styles.playersContainer}>
             <Text style={styles.playersTitle}>Spielernamen</Text>
             
-            {offlineSettings.playerNames.map((name, index) => (
-              <View key={index} style={styles.playerInputContainer}>
-                <Text style={styles.playerNumber}>#{index + 1}</Text>
-                <TextInput
-                  style={styles.playerInput}
-                  placeholder={`Spieler ${index + 1}`}
-                  placeholderTextColor="#666"
-                  value={name}
-                  onChangeText={(text) => setOfflinePlayerName(index, text)}
-                  maxLength={12}
-                  autoCapitalize="words"
-                  autoCorrect={false}
-                />
-              </View>
-            ))}
+            {offlineSettings.playerNames.map((name, index) => {
+              // Fehler-Logik: leer oder doppelt
+              const trimmed = name.trim();
+              const isEmpty = trimmed === '';
+              const lowerNames = offlineSettings.playerNames.map(n => n.trim().toLowerCase());
+              const isDuplicate = lowerNames.filter(n => n === trimmed.toLowerCase()).length > 1 && !isEmpty;
+              let errorMsg = '';
+              if (isEmpty) errorMsg = 'Gebe einen Namen ein';
+              else if (isDuplicate) errorMsg = 'Name bereits vorhanden';
+
+              return (
+                <View key={index} style={styles.playerInputContainer}>
+                  <Text style={styles.playerNumber}>#{index + 1}</Text>
+                  <View style={{ flex: 1 }}>
+                    {errorMsg !== '' && (
+                      <Text style={styles.inputErrorText}>{errorMsg}</Text>
+                    )}
+                    <TextInput
+                      style={[
+                        styles.playerInput,
+                        (isEmpty || isDuplicate) && styles.playerInputError
+                      ]}
+                      placeholder={`Spieler ${index + 1}`}
+                      placeholderTextColor="#666"
+                      value={name}
+                      onChangeText={(text) => setOfflinePlayerName(index, text)}
+                      maxLength={12}
+                      autoCapitalize="words"
+                      autoCorrect={false}
+                    />
+                  </View>
+                </View>
+              );
+            })}
           </View>
 
           {/* Action Buttons */}
@@ -189,6 +208,17 @@ export const OfflineSetupScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  inputErrorText: {
+    color: '#e94560',
+    fontSize: 13,
+    marginBottom: 2,
+    marginLeft: 2,
+    fontWeight: 'bold',
+  },
+  playerInputError: {
+    borderColor: '#e94560',
+    borderWidth: 2,
+  },
   container: {
     flex: 1,
     backgroundColor: '#1a1a2e',
