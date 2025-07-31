@@ -20,7 +20,9 @@ export const ImposterLastChanceScreen: React.FC = () => {
   const { 
     offlineSettings,
     setCurrentPhase,
-    guessWordInLastChance
+    guessWordInLastChance,
+    resetGameKeepPlayers,
+    resetOfflineSettings
   } = useGameStore();
 
   const [guessedWord, setGuessedWord] = useState('');
@@ -62,20 +64,20 @@ export const ImposterLastChanceScreen: React.FC = () => {
 
   const currentImposter = impostersWhoCanGuess[currentImposterIndex];
 
-  // Wenn keine Imposter mehr raten können, gehe direkt zu den Ergebnissen
-  if (!currentImposter || impostersWhoCanGuess.length === 0) {
-    setCurrentPhase('votingResults');
-    return null;
-  }
-
   // Wenn der Timer 0 erreicht, Behandle als falsche Antwort und zeige Ergebnis
   useEffect(() => {
-    if (timer === 0) {
+    if (timer === 0 && currentImposter) {
       // Falscher Versuch durch Timeout
       guessWordInLastChance(currentImposter.playerName, '');
       setCurrentPhase('wordGuessResults');
     }
   }, [timer, currentImposter, guessWordInLastChance, setCurrentPhase]);
+
+  // Wenn keine Imposter mehr raten können, gehe direkt zu den Ergebnissen
+  if (!currentImposter || impostersWhoCanGuess.length === 0) {
+    setCurrentPhase('votingResults');
+    return null;
+  }
 
   const getPlayerColor = (playerName: string): string => {
     if (!offlineSettings.currentRound) return PLAYER_COLORS[0];
@@ -114,6 +116,18 @@ export const ImposterLastChanceScreen: React.FC = () => {
     // Imposter verzichtet -> Behandle als falsche Antwort
     guessWordInLastChance(currentImposter.playerName, '');
     setCurrentPhase('wordGuessResults');
+  };
+
+  const handleNewGame = () => {
+    // Vollständiges Zurücksetzen der Spiel-Einstellungen und Neustart in Setup
+    resetOfflineSettings();
+    setCurrentPhase('offlineSetup');
+  };
+
+  const handleNewGameWithSamePlayers = () => {
+    // Behalte die Spielernamen, aber setze alles andere zurück
+    resetGameKeepPlayers();
+    setCurrentPhase('offlineGame');
   };
 
   return (
@@ -236,6 +250,27 @@ export const ImposterLastChanceScreen: React.FC = () => {
             <Text style={styles.infoText}>
               ❌ Falsch geraten = Die anderen Spieler gewinnen!
             </Text>
+          </View>
+
+          {/* New Game Buttons */}
+          <View style={styles.newGameButtonContainer}>
+            <TouchableOpacity 
+              style={styles.newGameButton}
+              onPress={handleNewGameWithSamePlayers}
+            >
+              <Text style={styles.newGameButtonText}>
+                🔄 Neues Spiel mit gleichen Spielern
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.backToSetupButton}
+              onPress={handleNewGame}
+            >
+              <Text style={styles.backToSetupButtonText}>
+                🏠 Zurück zum Setup
+              </Text>
+            </TouchableOpacity>
           </View>
         </Animated.View>
       </ScrollView>
@@ -378,5 +413,36 @@ const styles = StyleSheet.create({
     color: '#ccc',
     textAlign: 'center',
     marginBottom: 5,
+  },
+  newGameButtonContainer: {
+    marginTop: 30,
+    gap: 15,
+  },
+  newGameButton: {
+    backgroundColor: '#0f3460',
+    borderWidth: 2,
+    borderColor: '#e94560',
+    borderRadius: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+  },
+  newGameButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  backToSetupButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: '#666',
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+  },
+  backToSetupButtonText: {
+    fontSize: 14,
+    color: '#999',
   },
 });

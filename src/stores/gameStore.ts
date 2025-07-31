@@ -36,6 +36,8 @@ interface GameState {
   submitVote: (targetName: string) => void;
   nextVoter: () => void;
   resetGameKeepPlayers: () => void;
+  continueToNextRound: () => void;
+  endGameAndVote: () => void;
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -51,7 +53,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     currentWordPair: getRandomWordPair(),
     gameWordPair: undefined,
     currentRoundNumber: 1,
-    maxRounds: 2,
+    maxRounds: 5,
     allClues: [],
     wordGuessAttempted: false,
     wordGuessingDisabled: false,
@@ -115,7 +117,7 @@ export const useGameStore = create<GameState>((set, get) => ({
         currentWordPair: initialWordPair,
         gameWordPair: initialWordPair, // Setze gameWordPair auch
         currentRoundNumber: 1,
-        maxRounds: 2,
+        maxRounds: 5, // Maximal 5 Runden möglich
         allClues: [],
         wordGuessAttempted: false,
         wordGuessingDisabled: false,
@@ -255,11 +257,35 @@ export const useGameStore = create<GameState>((set, get) => ({
     const isRoundComplete = nextIndex >= state.offlineSettings.currentRound.playerOrder.length;
 
     if (isRoundComplete) {
-      // Prüfe ob es weitere Runden gibt
-      const isLastRound = state.offlineSettings.currentRoundNumber >= state.offlineSettings.maxRounds;
+      const currentRound = state.offlineSettings.currentRoundNumber;
+      const maxRounds = state.offlineSettings.maxRounds;
       
-      if (isLastRound) {
-        // Letzte Runde beendet - zur Voting-Start Animation
+      // Nach Runde 1: Automatisch zur nächsten Runde gehen
+      if (currentRound === 1) {
+        // Starte Runde 2 automatisch
+        const nextRoundNumber = currentRound + 1;
+        const playerNames = state.offlineSettings.assignedRoles?.map(role => role.playerName) || [];
+        const shuffledPlayerOrder = [...playerNames].sort(() => Math.random() - 0.5);
+        
+        const newRound: GameRound = {
+          playerOrder: shuffledPlayerOrder,
+          currentPlayerIndex: 0,
+          clues: [],
+          isComplete: false
+        };
+
+        return {
+          offlineSettings: {
+            ...state.offlineSettings,
+            currentRoundNumber: nextRoundNumber,
+            currentRound: newRound
+          },
+          currentPhase: 'gameStarting' as GamePhase
+        };
+      }
+      
+      // Nach Runde 2, 3, 4: Fortsetzungsentscheidung zeigen
+      if (currentRound >= 2 && currentRound < maxRounds) {
         return {
           offlineSettings: {
             ...state.offlineSettings,
@@ -268,40 +294,21 @@ export const useGameStore = create<GameState>((set, get) => ({
               isComplete: true
             }
           },
-          currentPhase: 'votingStart' as GamePhase
-        };
-      } else {
-        // Runde beendet, aber noch weitere Runden - erhöhe Rundennummer, neues Wort & neue Imposter
-        const nextRoundNumber = state.offlineSettings.currentRoundNumber + 1;
-        const playerNames = state.offlineSettings.playerNames.filter(name => name.trim() !== '');
-        const impCount = state.offlineSettings.imposterCount;
-        // Neue Imposter zufällig auswählen
-        const indices = playerNames.map((_, i) => i);
-        const shuffled = indices.sort(() => Math.random() - 0.5);
-        const imposterIndices = shuffled.slice(0, impCount);
-        const newAssignedRoles = playerNames.map((playerName, idx) => ({
-          playerName,
-          isImposter: imposterIndices.includes(idx),
-          hasSeenCard: false
-        }));
-        return {
-          offlineSettings: {
-            ...state.offlineSettings,
-            currentRoundNumber: nextRoundNumber,
-            currentWordPair: getRandomWordPair(),
-            assignedRoles: newAssignedRoles,
-            wordGuessAttempted: false,
-            wordGuessingDisabled: false,
-            currentRound: {
-              playerOrder: state.offlineSettings.currentRound.playerOrder,
-              currentPlayerIndex: 0,
-              clues: [],
-              isComplete: false
-            }
-          },
-          currentPhase: 'gameStarting' as GamePhase
+          currentPhase: 'roundContinuation' as GamePhase
         };
       }
+      
+      // Nach maxRounds erreicht - direkt zum Voting
+      return {
+        offlineSettings: {
+          ...state.offlineSettings,
+          currentRound: {
+            ...state.offlineSettings.currentRound,
+            isComplete: true
+          }
+        },
+        currentPhase: 'votingStart' as GamePhase
+      };
     }
 
     return {
@@ -490,6 +497,55 @@ export const useGameStore = create<GameState>((set, get) => ({
         currentRound: undefined,
       },
       currentPhase: 'offlineGame' as GamePhase // Gehe direkt zur Rollenselektion, überspringe Setup
+    };
+  }),
+
+  // Neue Aktionen für Rundenkontinuation
+  continueToNextRound: () => set((state) => {
+    // Starte die nächste Runde
+    const nextRoundNumber = state.offlineSettings.currentRoundNumber + 1;
+    const playerNames = state.offlineSettings.playerNames.filter(name => name.trim() !== '');
+    const impCount = state.offlineSettings.imposterCount;
+    
+    // Neue Imposter zufällig auswählen
+    const indices = playerNames.map((_, i) => i);
+    const shuffled = indices.sort(() => Math.random() - 0.5);
+    const imposterIndices = shuffled.slice(0, impCount);
+    const newAssignedRoles = playerNames.map((playerName, idx) => ({
+      playerName,
+      isImposter: imposterIndices.includes(idx),
+      hasSeenCard: false
+    }));
+    
+    // Neues Wortpaar für die neue Runde
+    const newWordPair = getRandomWordPair();
+    
+    return {
+      offlineSettings: {
+        ...state.offlineSettings,
+        currentRoundNumber: nextRoundNumber,
+        currentWordPair: newWordPair,
+        gameWordPair: newWordPair, // Beide auf das gleiche neue Wort setzen
+        assignedRoles: newAssignedRoles,
+        wordGuessAttempted: false,
+        wordGuessingDisabled: false,
+        wordGuessResult: undefined,
+        currentRound: {
+          playerOrder: state.offlineSettings.currentRound?.playerOrder || playerNames,
+          currentPlayerIndex: 0,
+          clues: [],
+          isComplete: false
+        }
+      },
+      currentPhase: 'gameStarting' as GamePhase
+    };
+  }),
+
+  endGameAndVote: () => set((state) => {
+    // Spiel beenden und zum Voting gehen
+    return {
+      ...state,
+      currentPhase: 'votingStart' as GamePhase
     };
   }),
 }));

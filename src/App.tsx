@@ -13,6 +13,7 @@ import { VotingAnimationScreen } from './screens/VotingAnimationScreen';
 import { VotingResultsScreen } from './screens/VotingResultsScreen';
 import { ImposterLastChanceScreen } from './screens/ImposterLastChanceScreen';
 import { WordGuessResultsScreen } from './screens/WordGuessResultsScreen';
+import RoundContinuationScreen from './screens/RoundContinuationScreen';
 
 export const App: React.FC = () => {
   const { currentPhase } = useGameStore();
@@ -43,6 +44,8 @@ export const App: React.FC = () => {
         return <ImposterLastChanceScreen />;
       case 'wordGuessResults':
         return <WordGuessResultsScreen />;
+      case 'roundContinuation':
+        return <RoundContinuationScreen />;
       default:
         return <NameInputScreen />;
     }

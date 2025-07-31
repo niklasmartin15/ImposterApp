@@ -88,4 +88,4 @@ export interface WordGuessResult {
   targetHint: string;      // Der Hinweis für den Imposter
 }
 
-export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'offlineGame' | 'gameStarting' | 'gameRounds' | 'votingStart' | 'voting' | 'votingAnimation' | 'votingResults' | 'imposterLastChance' | 'wordGuessResults' | 'gameRoom' | 'playing' | 'results';
+export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'offlineGame' | 'gameStarting' | 'gameRounds' | 'votingStart' | 'voting' | 'votingAnimation' | 'votingResults' | 'imposterLastChance' | 'wordGuessResults' | 'roundContinuation' | 'gameRoom' | 'playing' | 'results';
