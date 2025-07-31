@@ -104,8 +104,27 @@ export const VotingResultsScreen: React.FC = () => {
     .filter(role => role.isImposter)
     .map(role => role.playerName);
 
-  // Finde den Spieler mit den meisten Stimmen
-  const eliminatedPlayer = sortedPlayers[0]?.[0];
+  // Finde den Spieler mit den meisten Stimmen (mit Unentschieden-Logik)
+  let eliminatedPlayer = sortedPlayers[0]?.[0];
+  
+  // Überprüfe auf Unentschieden bei den meisten Stimmen
+  if (sortedPlayers.length > 1) {
+    const highestVoteCount = sortedPlayers[0][1];
+    const playersWithHighestVotes = sortedPlayers.filter(([, votes]) => votes === highestVoteCount);
+    
+    // Wenn es ein Unentschieden gibt und der Imposter dabei ist, wähle einen Nicht-Imposter aus
+    if (playersWithHighestVotes.length > 1) {
+      const imposterInTie = playersWithHighestVotes.find(([playerName]) => imposters.includes(playerName));
+      const nonImpostersInTie = playersWithHighestVotes.filter(([playerName]) => !imposters.includes(playerName));
+      
+      // Wenn Imposter im Unentschieden ist und es Nicht-Imposter gibt, wähle einen Nicht-Imposter
+      if (imposterInTie && nonImpostersInTie.length > 0) {
+        eliminatedPlayer = nonImpostersInTie[0][0]; // Nimm den ersten Nicht-Imposter
+      }
+      // Ansonsten bleibt die ursprüngliche Wahl (erster Spieler mit meisten Stimmen)
+    }
+  }
+  
   const isImposterEliminated = imposters.includes(eliminatedPlayer);
 
   const handleNewGame = () => {
