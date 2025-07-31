@@ -197,13 +197,25 @@ export const VotingResultsScreen: React.FC = () => {
             ))}
           </View>
 
-          {/* Das echte Wort */}
-          <View style={styles.wordContainer}>
-            <Text style={styles.wordTitle}>💡 Das Wort war:</Text>
-            <Text style={styles.wordText}>
-              {offlineSettings.currentWordPair?.word}
-            </Text>
-          </View>
+          {/* Das echte Wort - nur anzeigen wenn kein Imposter Last Chance bekommt */}
+          {!(isImposterEliminated && !offlineSettings.wordGuessAttempted) && (
+            <View style={styles.wordContainer}>
+              <Text style={styles.wordTitle}>💡 Das Wort war:</Text>
+              <Text style={styles.wordText}>
+                {offlineSettings.currentWordPair?.word}
+              </Text>
+            </View>
+          )}
+
+          {/* Hinweis für Last Chance */}
+          {isImposterEliminated && !offlineSettings.wordGuessAttempted && (
+            <View style={styles.lastChanceHintContainer}>
+              <Text style={styles.lastChanceHintTitle}>⏳ Noch nicht vorbei!</Text>
+              <Text style={styles.lastChanceHintText}>
+                Der Imposter bekommt eine letzte Chance, das Wort zu erraten...
+              </Text>
+            </View>
+          )}
 
           {/* Alle Hinweise */}
           <View style={styles.allCluesContainer}>
@@ -490,5 +502,27 @@ const styles = StyleSheet.create({
   backButtonText: {
     fontSize: 16,
     color: '#bbb',
+  },
+  lastChanceHintContainer: {
+    backgroundColor: '#2f2f1b',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 24,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#FFC107',
+  },
+  lastChanceHintTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#FFC107',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  lastChanceHintText: {
+    fontSize: 14,
+    color: '#eee',
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
 });
