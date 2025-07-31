@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
   inputErrorText: {
     fontSize: 13,
     marginBottom: 2,
-    marginLeft: 2,
+    marginLeft: 18,
     fontWeight: 'bold',
   },
   inputErrorTextYellow: {
