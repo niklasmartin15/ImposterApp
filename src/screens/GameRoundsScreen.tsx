@@ -50,11 +50,18 @@ export const GameRoundsScreen: React.FC = () => {
   };
 
   const currentRound = offlineSettings.currentRound;
-  if (!currentRound) {
+  const currentPlayer = currentRound?.playerOrder[currentRound.currentPlayerIndex];
+  
+  // Schließe das Wort-Raten Dropdown wenn sich der aktuelle Spieler ändert
+  React.useEffect(() => {
+    setShowWordGuessDropdown(false);
+    setGuessedWord('');
+  }, [currentPlayer]);
+
+  if (!currentRound || !currentPlayer) {
     return null;
   }
 
-  const currentPlayer = currentRound.playerOrder[currentRound.currentPlayerIndex];
   const isLastPlayer = currentRound.currentPlayerIndex === currentRound.playerOrder.length - 1;
 
   // Bestimme welche Hinweise angezeigt werden sollen (alle aus allen Runden)
@@ -70,6 +77,8 @@ export const GameRoundsScreen: React.FC = () => {
 
     submitPlayerClue(currentClue.trim());
     setCurrentClue('');
+    // Schließe das Wort-Raten Dropdown beim Weitergehen
+    setShowWordGuessDropdown(false);
     nextPlayer();
   };
 

@@ -260,32 +260,8 @@ export const useGameStore = create<GameState>((set, get) => ({
       const currentRound = state.offlineSettings.currentRoundNumber;
       const maxRounds = state.offlineSettings.maxRounds;
       
-      // Nach Runde 1: Automatisch zur nächsten Runde gehen
-      if (currentRound === 1) {
-        // Starte Runde 2 automatisch
-        const nextRoundNumber = currentRound + 1;
-        const playerNames = state.offlineSettings.assignedRoles?.map(role => role.playerName) || [];
-        const shuffledPlayerOrder = [...playerNames].sort(() => Math.random() - 0.5);
-        
-        const newRound: GameRound = {
-          playerOrder: shuffledPlayerOrder,
-          currentPlayerIndex: 0,
-          clues: [],
-          isComplete: false
-        };
-
-        return {
-          offlineSettings: {
-            ...state.offlineSettings,
-            currentRoundNumber: nextRoundNumber,
-            currentRound: newRound
-          },
-          currentPhase: 'gameStarting' as GamePhase
-        };
-      }
-      
-      // Nach Runde 2, 3, 4: Fortsetzungsentscheidung zeigen
-      if (currentRound >= 2 && currentRound < maxRounds) {
+      // Prüfe ob wir eine Fortsetzungsentscheidung brauchen (nach Runde 1, 2, 3, oder 4)
+      if (currentRound >= 1 && currentRound < maxRounds) {
         return {
           offlineSettings: {
             ...state.offlineSettings,
