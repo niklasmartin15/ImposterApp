@@ -1,37 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
-  Animated,
 } from 'react-native';
 import { useGameStore } from '../stores/gameStore';
 
 export const MainLobbyScreen: React.FC = () => {
-  const [showOnlineDropdown, setShowOnlineDropdown] = useState(false);
-
   const handleOfflineGame = () => {
     // Navigate to offline setup screen
     const { setCurrentPhase } = useGameStore.getState();
     setCurrentPhase('offlineSetup');
-  };
-
-  const handleOnlineGame = () => {
-    setShowOnlineDropdown(!showOnlineDropdown);
-  };
-
-  const handleCreateRoom = () => {
-    // TODO: Implement create room logic
-    console.log('Raum erstellen geklickt!');
-    setShowOnlineDropdown(false);
-  };
-
-  const handleJoinRoom = () => {
-    // TODO: Implement join room logic
-    console.log('Raum beitreten geklickt!');
-    setShowOnlineDropdown(false);
   };
 
   return (
@@ -55,35 +36,12 @@ export const MainLobbyScreen: React.FC = () => {
 
           <View style={styles.onlineButtonContainer}>
             <TouchableOpacity 
-              style={[styles.onlineButton, showOnlineDropdown && styles.onlineButtonActive]}
-              onPress={handleOnlineGame}
+              style={[styles.onlineButton, styles.onlineButtonDisabled]}
+              disabled={true}
             >
-              <Text style={styles.onlineButtonText}>🌐 Online spielen</Text>
-              <Text style={styles.buttonSubText}>Mit Freunden über das Internet</Text>
-              <Text style={styles.dropdownArrow}>{showOnlineDropdown ? '▲' : '▼'}</Text>
+              <Text style={[styles.onlineButtonText, styles.onlineButtonTextDisabled]}>🌐 Online spielen</Text>
+              <Text style={[styles.buttonSubText, styles.buttonSubTextDisabled]}>Coming soon...</Text>
             </TouchableOpacity>
-
-            {showOnlineDropdown && (
-              <View style={styles.dropdown}>
-                <TouchableOpacity 
-                  style={styles.dropdownButton}
-                  onPress={handleCreateRoom}
-                >
-                  <Text style={styles.dropdownButtonText}>� Raum erstellen</Text>
-                  <Text style={styles.dropdownSubText}>Neuen Spielraum erstellen</Text>
-                </TouchableOpacity>
-                
-                <View style={styles.dropdownSeparator} />
-                
-                <TouchableOpacity 
-                  style={styles.dropdownButton}
-                  onPress={handleJoinRoom}
-                >
-                  <Text style={styles.dropdownButtonText}>🚪 Raum beitreten</Text>
-                  <Text style={styles.dropdownSubText}>Vorhandenen Raum beitreten</Text>
-                </TouchableOpacity>
-              </View>
-            )}
           </View>
         </View>
 
@@ -157,6 +115,10 @@ const styles = StyleSheet.create({
     opacity: 0.8,
     textAlign: 'center',
   },
+  buttonSubTextDisabled: {
+    color: '#666',
+    opacity: 1,
+  },
   onlineButtonContainer: {
     marginBottom: 16,
   },
@@ -173,6 +135,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
   },
+  onlineButtonDisabled: {
+    backgroundColor: '#2a2a3e',
+    opacity: 0.6,
+  },
   onlineButtonActive: {
     backgroundColor: '#16213e',
     borderBottomLeftRadius: 0,
@@ -183,6 +149,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
     marginBottom: 4,
+  },
+  onlineButtonTextDisabled: {
+    color: '#999',
   },
   dropdownArrow: {
     position: 'absolute',

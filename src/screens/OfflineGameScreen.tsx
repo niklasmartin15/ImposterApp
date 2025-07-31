@@ -55,9 +55,10 @@ export const OfflineGameScreen: React.FC = () => {
             <View style={styles.cardBack}>
               <Text style={styles.cardPlayerNameSmall}>{role.playerName}</Text>
               {role.isImposter ? (
-                <View style={styles.imposterContent}>❌<br/><br/>
+                <View style={styles.imposterContent}>
+                  <Text style={styles.imposterEmoji}>🕵️</Text>
                   <Text style={styles.imposterText}>IMPOSTER</Text>
-                  <Text style={styles.imposterSubtext}>Hinweis: {offlineSettings.currentWordPair?.imposterHint}</Text><Text><br/>❌</Text>
+                  <Text style={styles.imposterSubtext}>Hinweis: {offlineSettings.currentWordPair?.imposterHint}</Text>
                 </View>
               ) : (
                 <View style={styles.wordContent}>
@@ -290,6 +291,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
+  },
+  imposterEmoji: {
+    fontSize: 28,
+    marginBottom: 8,
   },
   imposterText: {
     fontSize: 32,
