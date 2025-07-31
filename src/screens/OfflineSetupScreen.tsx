@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -52,14 +52,14 @@ export const OfflineSetupScreen: React.FC = () => {
     setOfflineImposterCount(newCount);
   };
 
+  // Zeige Fehler erst nach erstem Klick auf Start
+  const [showNameErrors, setShowNameErrors] = useState(false);
+
   const handleStartGame = () => {
+    setShowNameErrors(true);
     // Check if all player names are filled
     const emptyNames = offlineSettings.playerNames.filter(name => name.trim() === '');
     if (emptyNames.length > 0) {
-      Alert.alert(
-        'Namen fehlen', 
-        'Bitte gib für alle Spieler einen Namen ein.'
-      );
       return;
     }
 
@@ -67,10 +67,6 @@ export const OfflineSetupScreen: React.FC = () => {
     const names = offlineSettings.playerNames.map(name => name.trim().toLowerCase());
     const uniqueNames = new Set(names);
     if (names.length !== uniqueNames.size) {
-      Alert.alert(
-        'Doppelte Namen', 
-        'Jeder Spieler muss einen einzigartigen Namen haben.'
-      );
       return;
     }
 
@@ -163,13 +159,13 @@ export const OfflineSetupScreen: React.FC = () => {
                 <View key={index} style={styles.playerInputContainer}>
                   <Text style={styles.playerNumber}>#{index + 1}</Text>
                   <View style={{ flex: 1 }}>
-                    {errorMsg !== '' && (
+                    {showNameErrors && errorMsg !== '' && (
                       <Text style={styles.inputErrorText}>{errorMsg}</Text>
                     )}
                     <TextInput
                       style={[
                         styles.playerInput,
-                        (isEmpty || isDuplicate) && styles.playerInputError
+                        showNameErrors && (isEmpty || isDuplicate) && styles.playerInputError
                       ]}
                       placeholder={`Spieler ${index + 1}`}
                       placeholderTextColor="#666"
