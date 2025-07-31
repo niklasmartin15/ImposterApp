@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -19,6 +19,8 @@ export default function RoundContinuationScreen() {
     resetOfflineSettings,
     setCurrentPhase
   } = useGameStore();
+
+  const [showEarlyEndDropdown, setShowEarlyEndDropdown] = useState(false);
 
   const currentRound = offlineSettings.currentRoundNumber;
   const nextRound = currentRound + 1;
@@ -77,25 +79,41 @@ export default function RoundContinuationScreen() {
           </Text>
         </View>
 
-        {/* New Game Buttons */}
-        <View style={styles.newGameButtonContainer}>
+        {/* Early End Dropdown */}
+        <View style={styles.earlyEndContainer}>
           <TouchableOpacity 
-            style={styles.newGameButton}
-            onPress={handleNewGameWithSamePlayers}
+            style={styles.earlyEndToggle}
+            onPress={() => setShowEarlyEndDropdown(!showEarlyEndDropdown)}
           >
-            <Text style={styles.newGameButtonText}>
-              🔄 Neues Spiel mit gleichen Spielern
+            <Text style={styles.earlyEndToggleText}>
+              ⚠️ Spiel vorzeitig beenden?
+            </Text>
+            <Text style={styles.earlyEndArrow}>
+              {showEarlyEndDropdown ? '▲' : '▼'}
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={styles.backToSetupButton}
-            onPress={handleNewGame}
-          >
-            <Text style={styles.backToSetupButtonText}>
-              🏠 Zurück zum Setup
-            </Text>
-          </TouchableOpacity>
+          {showEarlyEndDropdown && (
+            <View style={styles.earlyEndDropdown}>
+              <TouchableOpacity 
+                style={styles.newGameButton}
+                onPress={handleNewGameWithSamePlayers}
+              >
+                <Text style={styles.newGameButtonText}>
+                  🔄 Neues Spiel mit gleichen Spielern
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.backToSetupButton}
+                onPress={handleNewGame}
+              >
+                <Text style={styles.backToSetupButtonText}>
+                  🏠 Zurück zum Setup
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </View>
     </View>
@@ -196,38 +214,61 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     opacity: 0.9,
   },
-  newGameButtonContainer: {
+  earlyEndContainer: {
     marginTop: 25,
     width: '100%',
-    gap: 15,
+  },
+  earlyEndToggle: {
+    backgroundColor: '#333',
+    borderWidth: 1,
+    borderColor: '#555',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  earlyEndToggleText: {
+    color: '#ccc',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  earlyEndArrow: {
+    color: '#ccc',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  earlyEndDropdown: {
+    backgroundColor: '#2a2a2a',
+    borderWidth: 1,
+    borderColor: '#555',
+    borderTopWidth: 0,
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+    gap: 12,
   },
   newGameButton: {
     backgroundColor: '#e94560',
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 15,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 10,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-    elevation: 4,
   },
   newGameButtonText: {
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
   },
   backToSetupButton: {
     backgroundColor: 'transparent',
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: '#666',
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 15,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
     alignItems: 'center',
   },
   backToSetupButtonText: {
