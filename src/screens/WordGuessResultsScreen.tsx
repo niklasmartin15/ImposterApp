@@ -19,7 +19,8 @@ export const WordGuessResultsScreen: React.FC = () => {
   const { 
     offlineSettings,
     setCurrentPhase,
-    resetOfflineSettings
+    resetOfflineSettings,
+    resetGameKeepPlayers
   } = useGameStore();
 
   // Animation value für Entrance-Effekt
@@ -77,6 +78,10 @@ export const WordGuessResultsScreen: React.FC = () => {
   const handleNewGame = () => {
     resetOfflineSettings();
     setCurrentPhase('offlineSetup');
+  };
+
+  const handleNewGameWithSamePlayers = () => {
+    resetGameKeepPlayers();
   };
 
   const handleBackToLobby = () => {
@@ -201,6 +206,15 @@ export const WordGuessResultsScreen: React.FC = () => {
             >
               <Text style={styles.newGameButtonText}>
                 🎮 Neues Spiel
+              </Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={styles.newGameWithSamePlayersButton}
+              onPress={handleNewGameWithSamePlayers}
+            >
+              <Text style={styles.newGameWithSamePlayersButtonText}>
+                🔄 Neues Spiel mit gleichen Spielern
               </Text>
             </TouchableOpacity>
             
@@ -407,6 +421,24 @@ const styles = StyleSheet.create({
   },
   newGameButtonText: {
     fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  newGameWithSamePlayersButton: {
+    backgroundColor: '#2196F3',
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 12,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  newGameWithSamePlayersButtonText: {
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#fff',
   },

@@ -35,6 +35,7 @@ interface GameState {
   startVoting: () => void;
   submitVote: (targetName: string) => void;
   nextVoter: () => void;
+  resetGameKeepPlayers: () => void;
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -453,6 +454,42 @@ export const useGameStore = create<GameState>((set, get) => ({
         wordGuessAttempted: true,
         wordGuessingDisabled: !isWin, // Deaktiviere Raten wenn falsch geraten
       }
+    };
+  }),
+
+  resetGameKeepPlayers: () => set((state) => {
+    // Behalte die Spielernamen, aber setze alles andere zurück und gehe direkt zum Rollenselektions-Screen
+    const initialWordPair = getRandomWordPair();
+    const playerNames = state.offlineSettings.playerNames.filter(name => name.trim() !== '');
+    const impCount = state.offlineSettings.imposterCount;
+    
+    // Imposter-Positionen zufällig wählen
+    const playerCount = playerNames.length;
+    const indices = Array.from({ length: playerCount }, (_, i) => i);
+    const shuffled = [...indices].sort(() => Math.random() - 0.5);
+    const imposterIndices = shuffled.slice(0, impCount);
+    
+    const assignedRoles = playerNames.map((playerName, idx) => ({
+      playerName,
+      isImposter: imposterIndices.includes(idx),
+      hasSeenCard: false
+    }));
+
+    return {
+      offlineSettings: {
+        ...state.offlineSettings,
+        currentWordPair: initialWordPair,
+        gameWordPair: initialWordPair,
+        assignedRoles,
+        currentRoundNumber: 1,
+        allClues: [],
+        wordGuessAttempted: false,
+        wordGuessingDisabled: false,
+        wordGuessResult: undefined,
+        votingState: undefined,
+        currentRound: undefined,
+      },
+      currentPhase: 'offlineGame' as GamePhase // Gehe direkt zur Rollenselektion, überspringe Setup
     };
   }),
 }));
