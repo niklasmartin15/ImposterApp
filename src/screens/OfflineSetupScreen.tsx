@@ -152,20 +152,31 @@ export const OfflineSetupScreen: React.FC = () => {
               const lowerNames = offlineSettings.playerNames.map(n => n.trim().toLowerCase());
               const isDuplicate = lowerNames.filter(n => n === trimmed.toLowerCase()).length > 1 && !isEmpty;
               let errorMsg = '';
-              if (isEmpty) errorMsg = 'Gebe einen Namen ein';
-              else if (isDuplicate) errorMsg = 'Name bereits vorhanden';
+              let errorType: 'none' | 'empty' | 'duplicate' = 'none';
+              if (isEmpty) {
+                errorMsg = 'Gebe einen Namen ein';
+                errorType = 'empty';
+              } else if (isDuplicate) {
+                errorMsg = 'Name bereits vorhanden';
+                errorType = 'duplicate';
+              }
 
               return (
                 <View key={index} style={styles.playerInputContainer}>
                   <Text style={styles.playerNumber}>#{index + 1}</Text>
                   <View style={{ flex: 1 }}>
                     {showNameErrors && errorMsg !== '' && (
-                      <Text style={styles.inputErrorText}>{errorMsg}</Text>
+                      <Text style={[
+                        styles.inputErrorText,
+                        errorType === 'empty' && styles.inputErrorTextYellow,
+                        errorType === 'duplicate' && styles.inputErrorTextRed,
+                      ]}>{errorMsg}</Text>
                     )}
                     <TextInput
                       style={[
                         styles.playerInput,
-                        showNameErrors && (isEmpty || isDuplicate) && styles.playerInputError
+                        showNameErrors && errorType === 'empty' && styles.playerInputErrorYellow,
+                        showNameErrors && errorType === 'duplicate' && styles.playerInputErrorRed,
                       ]}
                       placeholder={`Spieler ${index + 1}`}
                       placeholderTextColor="#666"
@@ -205,13 +216,22 @@ export const OfflineSetupScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   inputErrorText: {
-    color: '#e94560',
     fontSize: 13,
     marginBottom: 2,
     marginLeft: 2,
     fontWeight: 'bold',
   },
-  playerInputError: {
+  inputErrorTextYellow: {
+    color: '#ffd600',
+  },
+  inputErrorTextRed: {
+    color: '#e94560',
+  },
+  playerInputErrorYellow: {
+    borderColor: '#ffd600',
+    borderWidth: 2,
+  },
+  playerInputErrorRed: {
     borderColor: '#e94560',
     borderWidth: 2,
   },
