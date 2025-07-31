@@ -108,8 +108,9 @@ export const VotingResultsScreen: React.FC = () => {
   const isImposterEliminated = imposters.includes(eliminatedPlayer);
 
   const handleNewGame = () => {
+    // Vollständiges Zurücksetzen der Spiel-Einstellungen und Neustart in Setup
     resetOfflineSettings();
-    setCurrentPhase('mainLobby');
+    setCurrentPhase('offlineSetup');
   };
 
   const handleBackToLobby = () => {

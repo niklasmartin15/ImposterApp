@@ -18,7 +18,8 @@ const PLAYER_COLORS = [
 export const WordGuessResultsScreen: React.FC = () => {
   const { 
     offlineSettings,
-    setCurrentPhase
+    setCurrentPhase,
+    resetOfflineSettings
   } = useGameStore();
 
   // Animation value für Entrance-Effekt
@@ -74,6 +75,7 @@ export const WordGuessResultsScreen: React.FC = () => {
     .map(role => role.playerName) || [];
 
   const handleNewGame = () => {
+    resetOfflineSettings();
     setCurrentPhase('offlineSetup');
   };
 
