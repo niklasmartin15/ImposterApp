@@ -159,14 +159,15 @@ export const useGameStore = create<GameState>((set, get) => ({
   }),
 
   generateNewWordPair: () => set((state) => {
-    // Neue Wortpaar und zufälligen Imposter neu zuweisen
+    // Erzeuge neues Wortpaar und reset Rating-Flags
+    const newWordPair = getRandomWordPair();
     const playerNames = state.offlineSettings.playerNames.filter(name => name.trim() !== '');
     const impCount = state.offlineSettings.imposterCount;
     // Imposter-Positionen zufällig wählen
     const playerCount = playerNames.length;
     const indices = Array.from({ length: playerCount }, (_, i) => i);
-    const shuffledIndices = indices.sort(() => Math.random() - 0.5);
-    const imposterIndices = shuffledIndices.slice(0, impCount);
+    const shuffled = [...indices].sort(() => Math.random() - 0.5);
+    const imposterIndices = shuffled.slice(0, impCount);
     const assignedRoles = playerNames.map((playerName, idx) => ({
       playerName,
       isImposter: imposterIndices.includes(idx),
@@ -175,8 +176,10 @@ export const useGameStore = create<GameState>((set, get) => ({
     return {
       offlineSettings: {
         ...state.offlineSettings,
-        currentWordPair: getRandomWordPair(),
-        assignedRoles
+        currentWordPair: newWordPair,
+        assignedRoles,
+        wordGuessAttempted: false,
+        wordGuessingDisabled: false
       }
     };
   }),
