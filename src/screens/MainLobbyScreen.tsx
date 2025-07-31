@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  ScrollView,
 } from 'react-native';
 import { useGameStore } from '../stores/gameStore';
 
 export const MainLobbyScreen: React.FC = () => {
+  const [showGameInfo, setShowGameInfo] = useState(false);
+
   const handleOfflineGame = () => {
     // Navigate to offline setup screen
     const { setCurrentPhase } = useGameStore.getState();
@@ -17,7 +20,8 @@ export const MainLobbyScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        <View style={styles.content}>
         <View style={styles.gameInfoContainer}>
           <Text style={styles.gameTitle}>🕵️ Imposter</Text>
           <Text style={styles.gameDescription}>
@@ -43,6 +47,73 @@ export const MainLobbyScreen: React.FC = () => {
               <Text style={[styles.buttonSubText, styles.buttonSubTextDisabled]}>Coming soon...</Text>
             </TouchableOpacity>
           </View>
+
+          {/* Game Info Dropdown */}
+          <View style={styles.gameInfoButtonContainer}>
+            <TouchableOpacity 
+              style={[styles.gameInfoButton, showGameInfo && styles.gameInfoButtonActive]}
+              onPress={() => setShowGameInfo(!showGameInfo)}
+            >
+              <Text style={styles.gameInfoButtonText}> 📜Spielregeln</Text>
+              <Text style={styles.dropdownArrow}>
+                {showGameInfo ? '▲' : '▼'}
+              </Text>
+            </TouchableOpacity>
+
+            {showGameInfo && (
+              <View style={styles.gameInfoDropdown}>
+                <View style={styles.gameInfoSection}>
+                  <Text style={styles.gameInfoTitle}>🎯 Spielziel</Text>
+                  <Text style={styles.gameInfoText}>
+                    Die Imposter müssen unentdeckt bleiben, während die anderen Spieler versuchen, sie zu identifizieren!
+                  </Text>
+                </View>
+
+                <View style={styles.gameInfoDivider} />
+
+                <View style={styles.gameInfoSection}>
+                  <Text style={styles.gameInfoTitle}>🎮 Spielablauf</Text>
+                  <Text style={styles.gameInfoText}>
+                    1. Jeder Spieler erhält heimlich eine Rolle{'\n'}
+                    2. Alle außer den Impostern bekommen dasselbe Wort{'\n'}
+                    3. Imposter erhalten nur einen Hinweis{'\n'}
+                    4. Reihum gibt jeder einen Hinweis zu seinem &quot;Wort&quot;{'\n'}
+                    5. Nach den Hinweisen wird abgestimmt{'\n'}
+                    6. Imposter können versuchen, das Wort zu erraten
+                  </Text>
+                </View>
+
+                <View style={styles.gameInfoDivider} />
+
+                <View style={styles.gameInfoSection}>
+                  <Text style={styles.gameInfoTitle}>🏆 Sieg-Bedingungen</Text>
+                  <Text style={styles.gameInfoText}>
+                    <Text style={styles.gameInfoHighlight}>Imposter gewinnen wenn:</Text>{'\n'}
+                    • Sie nicht identifiziert werden{'\n'}
+                    • Sie das Lösungswort erraten{'\n\n'}
+                    <Text style={styles.gameInfoHighlight}>Andere Spieler gewinnen wenn:</Text>{'\n'}
+                    • Sie alle Imposter identifizieren{'\n'}
+                    • Imposter das Wort falsch raten
+                  </Text>
+                </View>
+
+                <View style={styles.gameInfoDivider} />
+
+                <View style={styles.gameInfoSection}>
+                  <Text style={styles.gameInfoTitle}>⚡ App-Features</Text>
+                  <Text style={styles.gameInfoText}>
+                    • 3-12 Spieler auf einem Gerät{'\n'}
+                    • Bis zu 5 Runden pro Spiel{'\n'}
+                    • Automatische Rollenvergabe{'\n'}
+                    • Integrierte Abstimmung{'\n'}
+                    • Letzte-Chance Wortraten{'\n'}
+                    • Über 100 Wortpaare{'\n'}
+                    • Schneller Neustart
+                  </Text>
+                </View>
+              </View>
+            )}
+          </View>
         </View>
 
         <View style={styles.comingSoonContainer}>
@@ -54,7 +125,8 @@ export const MainLobbyScreen: React.FC = () => {
           <Text style={styles.featureText}>• Offline Pass-and-Play</Text>
           <Text style={styles.featureText}>• Verschiedene Wortlisten</Text>
         </View>
-      </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -64,9 +136,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#1a1a2e',
   },
+  scrollView: {
+    flex: 1,
+  },
   content: {
     flex: 1,
     paddingHorizontal: 32,
+    paddingVertical: 20,
     justifyContent: 'center',
   },
   gameInfoContainer: {
@@ -231,5 +307,67 @@ const styles = StyleSheet.create({
     color: '#bbb',
     marginBottom: 4,
     textAlign: 'center',
+  },
+  // Game Info Dropdown Styles
+  gameInfoButtonContainer: {
+    marginBottom: 16,
+  },
+  gameInfoButton: {
+    backgroundColor: '#12305eff',
+    paddingVertical: 18,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    position: 'relative',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+  },
+  gameInfoButtonActive: {
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+  },
+  gameInfoButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 4,
+  },
+  gameInfoDropdown: {
+    backgroundColor: '#16213e',
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  gameInfoSection: {
+    paddingVertical: 12,
+  },
+  gameInfoTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#e94560',
+    marginBottom: 8,
+  },
+  gameInfoText: {
+    fontSize: 14,
+    color: '#ccc',
+    lineHeight: 20,
+  },
+  gameInfoHighlight: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  gameInfoDivider: {
+    height: 1,
+    backgroundColor: '#0f3460',
+    marginVertical: 8,
   },
 });
