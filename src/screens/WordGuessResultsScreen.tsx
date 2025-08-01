@@ -243,6 +243,7 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: 20,
     paddingVertical: 20,
+    paddingTop: 50,
   },
   headerContainer: {
     alignItems: 'center',
