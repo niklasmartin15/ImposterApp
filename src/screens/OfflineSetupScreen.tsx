@@ -279,20 +279,20 @@ const styles = StyleSheet.create({
     minHeight: '100%',
   },
   content: {
-    paddingHorizontal: 32,
-    paddingVertical: 40,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
   },
   headerContainer: {
     alignItems: 'center',
-    marginBottom: 40,
-    paddingHorizontal: 20,
+    marginBottom: 20,
+    paddingHorizontal: 16,
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#e94560',
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom: 8,
     textShadowColor: 'rgba(233, 69, 96, 0.3)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 4,
@@ -306,15 +306,15 @@ const styles = StyleSheet.create({
 
   // Game Settings Container
   gameSettingsContainer: {
-    marginBottom: 30,
-    gap: 16,
+    marginBottom: 16,
+    gap: 12,
   },
 
   // Setting Card Styles
   settingCard: {
     backgroundColor: '#16213e',
     borderRadius: 16,
-    padding: 20,
+    padding: 16,
     elevation: 6,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
@@ -326,32 +326,32 @@ const styles = StyleSheet.create({
   settingHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   settingIconContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: 'rgba(233, 69, 96, 0.15)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
+    marginRight: 12,
   },
   settingIcon: {
-    fontSize: 24,
+    fontSize: 20,
   },
   settingTextContainer: {
     flex: 1,
     alignItems: 'flex-start',
   },
   settingTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 4,
+    marginBottom: 2,
   },
   settingDescription: {
-    fontSize: 13,
+    fontSize: 12,
     color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'left',
   },
@@ -364,9 +364,9 @@ const styles = StyleSheet.create({
   },
   counterButton: {
     backgroundColor: '#e94560',
-    width: 45,
-    height: 45,
-    borderRadius: 22.5,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 4,
@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
   },
   counterButtonText: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#fff',
   },
@@ -393,17 +393,17 @@ const styles = StyleSheet.create({
   },
   counterValue: {
     backgroundColor: '#0f3460',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    marginHorizontal: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginHorizontal: 16,
     borderRadius: 12,
-    minWidth: 60,
+    minWidth: 50,
     alignItems: 'center',
     borderWidth: 2,
     borderColor: '#1e4a73',
   },
   counterValueText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#fff',
   },
@@ -412,8 +412,8 @@ const styles = StyleSheet.create({
   playersContainer: {
     backgroundColor: '#16213e',
     borderRadius: 16,
-    padding: 20,
-    marginBottom: 30,
+    padding: 16,
+    marginBottom: 16,
     elevation: 6,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
@@ -425,22 +425,22 @@ const styles = StyleSheet.create({
   playersHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 12,
   },
   playersInputSection: {
-    gap: 12,
+    gap: 8,
   },
 
   // Player Input Styles
   playerInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 10,
   },
   playerNumberBadge: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: '#e94560',
     justifyContent: 'center',
     alignItems: 'center',
@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   playerNumber: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#fff',
     fontWeight: 'bold',
   },
@@ -463,9 +463,9 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#1e4a73',
     borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    fontSize: 14,
     color: '#fff',
     fontWeight: '500',
   },
@@ -494,14 +494,14 @@ const styles = StyleSheet.create({
 
   // Button Container
   buttonContainer: {
-    gap: 16,
+    gap: 12,
   },
 
   // Button Styles
   startButton: {
     backgroundColor: '#e94560',
-    paddingVertical: 20,
-    paddingHorizontal: 24,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
     borderRadius: 16,
     alignItems: 'center',
     flexDirection: 'row',
@@ -515,8 +515,8 @@ const styles = StyleSheet.create({
   },
   backButton: {
     backgroundColor: '#0f3460',
-    paddingVertical: 20,
-    paddingHorizontal: 24,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
     borderRadius: 16,
     alignItems: 'center',
     flexDirection: 'row',
@@ -531,35 +531,35 @@ const styles = StyleSheet.create({
 
   // Button Content Styles
   buttonIconContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
+    marginRight: 12,
   },
   buttonIcon: {
-    fontSize: 24,
+    fontSize: 20,
   },
   buttonTextContainer: {
     flex: 1,
     alignItems: 'flex-start',
   },
   startButtonText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 4,
+    marginBottom: 2,
   },
   backButtonText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 4,
+    marginBottom: 2,
   },
   buttonSubText: {
-    fontSize: 13,
+    fontSize: 12,
     color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'left',
   },
