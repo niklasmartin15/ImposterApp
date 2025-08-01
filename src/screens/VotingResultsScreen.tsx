@@ -270,37 +270,49 @@ export const VotingResultsScreen: React.FC = () => {
               </View>
             ))}
           </View>
-
+          <br />
           {/* Buttons */}
           <View style={styles.buttonContainer}>
-
-                        <TouchableOpacity 
+            <TouchableOpacity 
               style={styles.newGameWithSamePlayersButton}
               onPress={handleNewGameWithSamePlayers}
+              activeOpacity={0.8}
             >
-              <Text style={styles.newGameWithSamePlayersButtonText}>
-                🔄 Neues Spiel mit gleichen Spielern
-              </Text>
+              <View style={styles.buttonIconContainer}>
+                <Text style={styles.buttonIcon}>🔄</Text>
+              </View>
+              <View style={styles.buttonTextContainer}>
+                <Text style={styles.newGameWithSamePlayersButtonText}>Neues Spiel mit gleichen Spielern</Text>
+                <Text style={styles.buttonSubText}>Behalte alle Spielernamen bei</Text>
+              </View>
             </TouchableOpacity>
 
             <TouchableOpacity 
               style={styles.newGameButton}
               onPress={handleNewGame}
+              activeOpacity={0.8}
             >
-              <Text style={styles.newGameButtonText}>
-                🎮 Neues Spiel 
-              </Text>
+              <View style={styles.buttonIconContainer}>
+                <Text style={styles.buttonIcon}>🎮</Text>
+              </View>
+              <View style={styles.buttonTextContainer}>
+                <Text style={styles.newGameButtonText}>Neues Spiel</Text>
+                <Text style={styles.buttonSubText}>Vollständiger Neustart</Text>
+              </View>
             </TouchableOpacity>
-            
-
             
             <TouchableOpacity 
               style={styles.backButton}
               onPress={handleBackToLobby}
+              activeOpacity={0.8}
             >
-              <Text style={styles.backButtonText}>
-                🏠 Zurück zur Lobby
-              </Text>
+              <View style={styles.buttonIconContainer}>
+                <Text style={styles.buttonIcon}>🏠</Text>
+              </View>
+              <View style={styles.buttonTextContainer}>
+                <Text style={styles.backButtonText}>Zurück zur Lobby</Text>
+                <Text style={styles.buttonSubText}>Hauptmenü öffnen</Text>
+              </View>
             </TouchableOpacity>
           </View>
         </View>
@@ -318,97 +330,112 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   headerContainer: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 12,
+    paddingHorizontal: 8,
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#eee',
+    color: '#e94560',
     textAlign: 'center',
+    marginBottom: 4,
+    textShadowColor: 'rgba(233, 69, 96, 0.3)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
   resultContainer: {
-    borderRadius: 16,
-    padding: 24,
-    marginBottom: 24,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
     alignItems: 'center',
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
     borderWidth: 2,
   },
   successResult: {
-    backgroundColor: '#1b2f1b',
+    backgroundColor: '#16213e',
     borderColor: '#4CAF50',
   },
   failureResult: {
-    backgroundColor: '#2f1b1b',
+    backgroundColor: '#16213e',
     borderColor: '#e94560',
   },
   resultEmoji: {
-    fontSize: 64,
-    marginBottom: 16,
+    fontSize: 48,
+    marginBottom: 12,
   },
   resultTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#eee',
+    color: '#fff',
+    textAlign: 'center',
+    marginBottom: 6,
+  },
+  resultSubtitle: {
+    fontSize: 14,
+    color: '#bbb',
     textAlign: 'center',
     marginBottom: 8,
   },
-  resultSubtitle: {
-    fontSize: 16,
-    color: '#bbb',
-    textAlign: 'center',
-    marginBottom: 12,
-  },
   resultPlayerName: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
   },
   votingDetailsContainer: {
     backgroundColor: '#16213e',
     borderRadius: 12,
-    padding: 16,
-    marginBottom: 24,
-    borderWidth: 1,
+    padding: 12,
+    marginBottom: 12,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    borderWidth: 2,
     borderColor: '#0f3460',
   },
   votingDetailsTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#eee',
-    marginBottom: 16,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 12,
     textAlign: 'center',
   },
   voteResultItem: {
-    marginBottom: 16,
+    marginBottom: 12,
   },
   playerInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   playerName: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 14,
+    fontWeight: 'bold',
     flex: 1,
   },
   imposterBadge: {
     backgroundColor: '#e94560',
     color: '#fff',
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: 'bold',
-    paddingHorizontal: 8,
+    paddingHorizontal: 6,
     paddingVertical: 2,
-    borderRadius: 8,
+    borderRadius: 6,
   },
   voteBar: {
     backgroundColor: '#0f3460',
-    borderRadius: 8,
-    height: 24,
+    borderRadius: 6,
+    height: 20,
     position: 'relative',
     justifyContent: 'center',
   },
@@ -417,175 +444,231 @@ const styles = StyleSheet.create({
     left: 0,
     top: 0,
     height: '100%',
-    borderRadius: 8,
+    borderRadius: 6,
   },
   voteCount: {
     color: '#fff',
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 'bold',
     textAlign: 'center',
     zIndex: 1,
   },
   impostersContainer: {
-    backgroundColor: '#2f1b1b',
+    backgroundColor: '#16213e',
     borderRadius: 12,
-    padding: 16,
-    marginBottom: 24,
-    borderWidth: 1,
+    padding: 12,
+    marginBottom: 12,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    borderWidth: 2,
     borderColor: '#e94560',
   },
   impostersTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 16,
+    fontWeight: 'bold',
     color: '#e94560',
-    marginBottom: 12,
+    marginBottom: 8,
     textAlign: 'center',
   },
   imposterItem: {
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   imposterName: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 4,
+    marginBottom: 3,
   },
   imposterHint: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#e94560',
     fontStyle: 'italic',
   },
   wordContainer: {
-    backgroundColor: '#1b2f1b',
+    backgroundColor: '#16213e',
     borderRadius: 12,
-    padding: 16,
-    marginBottom: 24,
+    padding: 12,
+    marginBottom: 12,
     alignItems: 'center',
-    borderWidth: 1,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    borderWidth: 2,
     borderColor: '#4CAF50',
   },
   wordTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 16,
+    fontWeight: 'bold',
     color: '#4CAF50',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   wordText: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#eee',
+    color: '#fff',
   },
   allCluesContainer: {
     backgroundColor: '#16213e',
     borderRadius: 12,
-    padding: 16,
-    marginBottom: 24,
-    borderWidth: 1,
+    padding: 12,
+    marginBottom: 12,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    borderWidth: 2,
     borderColor: '#0f3460',
   },
   allCluesTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#eee',
-    marginBottom: 12,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 8,
     textAlign: 'center',
   },
   clueItem: {
     flexDirection: 'row',
-    marginBottom: 12,
+    marginBottom: 8,
     flexWrap: 'wrap',
     alignItems: 'center',
   },
   cluePlayerName: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginRight: 8,
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginRight: 6,
   },
   clueText: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#eee',
     flex: 1,
-    marginRight: 8,
+    marginRight: 6,
   },
   imposterClueLabel: {
     backgroundColor: '#e94560',
     color: '#fff',
     fontSize: 8,
     fontWeight: 'bold',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 6,
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+    borderRadius: 4,
   },
   buttonContainer: {
-    marginBottom: 24,
+    gap: 8,
+    marginBottom: 12,
   },
   newGameButton: {
     backgroundColor: '#e94560',
-    paddingVertical: 16,
-    paddingHorizontal: 32,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     borderRadius: 12,
     alignItems: 'center',
-    marginBottom: 16,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    flexDirection: 'row',
+    elevation: 8,
+    shadowColor: '#e94560',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    borderWidth: 2,
+    borderColor: '#ff6b8a',
   },
   newGameButtonText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#fff',
+    marginBottom: 1,
   },
   newGameWithSamePlayersButton: {
     backgroundColor: '#2196F3',
-    paddingVertical: 16,
-    paddingHorizontal: 32,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     borderRadius: 12,
     alignItems: 'center',
-    marginBottom: 16,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    flexDirection: 'row',
+    elevation: 8,
+    shadowColor: '#2196F3',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    borderWidth: 2,
+    borderColor: '#64B5F6',
   },
   newGameWithSamePlayersButtonText: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#fff',
+    marginBottom: 1,
   },
   backButton: {
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: '#0f3460',
+    backgroundColor: '#0f3460',
     paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
+    paddingHorizontal: 16,
+    borderRadius: 12,
     alignItems: 'center',
+    flexDirection: 'row',
+    elevation: 6,
+    shadowColor: '#0f3460',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    borderWidth: 2,
+    borderColor: '#1e4a73',
   },
   backButtonText: {
     fontSize: 16,
-    color: '#bbb',
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 1,
+  },
+  buttonIconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  buttonIcon: {
+    fontSize: 18,
+  },
+  buttonTextContainer: {
+    flex: 1,
+    alignItems: 'flex-start',
+  },
+  buttonSubText: {
+    fontSize: 11,
+    color: 'rgba(255, 255, 255, 0.8)',
+    textAlign: 'left',
   },
   lastChanceHintContainer: {
-    backgroundColor: '#2f2f1b',
+    backgroundColor: '#16213e',
     borderRadius: 12,
-    padding: 16,
-    marginBottom: 24,
+    padding: 12,
+    marginBottom: 12,
     alignItems: 'center',
-    borderWidth: 1,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    borderWidth: 2,
     borderColor: '#FFC107',
   },
   lastChanceHintTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 16,
+    fontWeight: 'bold',
     color: '#FFC107',
-    marginBottom: 8,
+    marginBottom: 6,
     textAlign: 'center',
   },
   lastChanceHintText: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#eee',
     textAlign: 'center',
     fontStyle: 'italic',
