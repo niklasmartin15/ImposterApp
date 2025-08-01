@@ -83,7 +83,7 @@ export const OfflineSetupScreen: React.FC = () => {
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.content}>
           <View style={styles.headerContainer}>
-            <Text style={styles.title}>🎮 Offline Spiel</Text>
+            <Text style={styles.title}><br/>🎮 Offline Spiel</Text>
             <Text style={styles.subtitle}>Einstellungen für das lokale Pass-and-Play</Text>
           </View>
 
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     alignItems: 'center',
-    marginBottom: 40,
+    marginBottom: 35,
   },
   title: {
     fontSize: 32,
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 6,
+    marginBottom: 2,
   },
   counterButton: {
     backgroundColor: '#e94560',
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
   playersContainer: {
     backgroundColor: '#16213e',
     borderRadius: 12,
-    padding: 18,
+    padding: 7,
     marginBottom: 25,
     borderWidth: 1,
     borderColor: '#0f3460',
