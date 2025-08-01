@@ -79,17 +79,27 @@ export const OfflineGameScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.scrollView} 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.content}>
           <View style={styles.headerContainer}>
             <Text style={styles.title}>🃏 Rollenkarten</Text>
             <Text style={styles.subtitle}>Jeder Spieler schaut sich heimlich seine Karte an</Text>
           </View>
 
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoText}>
-              🎯 {offlineSettings.imposterCount} von {offlineSettings.playerCount} Spielern sind Imposter
-            </Text>
+          <View style={styles.infoCard}>
+            <View style={styles.infoIconContainer}>
+              <Text style={styles.infoIcon}>🎯</Text>
+            </View>
+            <View style={styles.infoTextContainer}>
+              <Text style={styles.infoTitle}>Imposter Verteilung</Text>
+              <Text style={styles.infoText}>
+                {offlineSettings.imposterCount} von {offlineSettings.playerCount} Spielern sind Imposter
+              </Text>
+            </View>
           </View>
 
   {/* Karten in 2er-Reihen, responsive und mit gleichem Abstand */}
@@ -122,8 +132,15 @@ export const OfflineGameScreen: React.FC = () => {
                 generateNewWordPair();
                 console.log('Neues Wort generiert');
               }}
+              activeOpacity={0.8}
             >
-              <Text style={styles.newWordButtonText}>🎲 Neues Wort</Text>
+              <View style={styles.buttonIconContainer}>
+                <Text style={styles.buttonIcon}>🎲</Text>
+              </View>
+              <View style={styles.buttonTextContainer}>
+                <Text style={styles.newWordButtonText}>Neues Wort</Text>
+                <Text style={styles.buttonSubText}>Andere Begriffe generieren</Text>
+              </View>
             </TouchableOpacity>
 
             <TouchableOpacity 
@@ -131,15 +148,29 @@ export const OfflineGameScreen: React.FC = () => {
               onPress={() => {
                 startGameRounds();
               }}
+              activeOpacity={0.8}
             >
-              <Text style={styles.continueButtonText}>🎮 Spiel beginnen</Text>
+              <View style={styles.buttonIconContainer}>
+                <Text style={styles.buttonIcon}>🎮</Text>
+              </View>
+              <View style={styles.buttonTextContainer}>
+                <Text style={styles.continueButtonText}>Spiel beginnen</Text>
+                <Text style={styles.buttonSubText}>Alle haben ihre Rollen gesehen</Text>
+              </View>
             </TouchableOpacity>
 
             <TouchableOpacity 
               style={styles.backButton}
               onPress={handleBack}
+              activeOpacity={0.8}
             >
-              <Text style={styles.backButtonText}>← Zurück zur Einrichtung</Text>
+              <View style={styles.buttonIconContainer}>
+                <Text style={styles.buttonIcon}>←</Text>
+              </View>
+              <View style={styles.buttonTextContainer}>
+                <Text style={styles.backButtonText}>Zurück zur Einrichtung</Text>
+                <Text style={styles.buttonSubText}>Spieleinstellungen ändern</Text>
+              </View>
             </TouchableOpacity>
           </View>
         </View>
@@ -156,67 +187,86 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 20,
+  },
   content: {
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   headerContainer: {
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 12,
+    paddingHorizontal: 8,
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#eee',
+    color: '#e94560',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
+    textShadowColor: 'rgba(233, 69, 96, 0.3)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
   subtitle: {
     fontSize: 14,
     color: '#bbb',
     textAlign: 'center',
+    lineHeight: 20,
   },
-  infoContainer: {
+  infoCard: {
     backgroundColor: '#16213e',
     borderRadius: 12,
-    padding: 16,
-    marginBottom: 24,
-    borderWidth: 1,
+    padding: 12,
+    marginBottom: 12,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    borderWidth: 2,
     borderColor: '#0f3460',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  infoIconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(233, 69, 96, 0.15)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  infoIcon: {
+    fontSize: 18,
+  },
+  infoTextContainer: {
+    flex: 1,
+    alignItems: 'flex-start',
+  },
+  infoTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 1,
   },
   infoText: {
-    fontSize: 16,
-    color: '#eee',
-    textAlign: 'center',
-    fontWeight: '500',
-  },
-  currentWordText: {
-    fontSize: 14,
-    color: '#e94560',
-    textAlign: 'center',
-    fontWeight: '600',
-    marginTop: 8,
+    fontSize: 11,
+    color: 'rgba(255, 255, 255, 0.8)',
+    textAlign: 'left',
   },
   cardsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginBottom: 30,
-  },
-  // Responsive Kartenbreite: max 2 pro Zeile, mit Abstand, aber nie breiter als 45% pro Karte
-  card: {
-    width: Math.min((width - 60) / 2, width * 0.45),
-    minWidth: 120,
-    maxWidth: width * 0.48,
-    aspectRatio: 0.7,
-    alignSelf: 'center',
+    marginBottom: 12,
   },
   cardRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    marginBottom: 8,
     width: '100%',
-    maxWidth: width - 40,
+    maxWidth: width - 32,
     alignSelf: 'center',
   },
   cardWrapper: {
@@ -225,19 +275,24 @@ const styles = StyleSheet.create({
     maxWidth: '50%',
   },
   cardWrapperLeft: {
-    marginRight: 8,
+    marginRight: 4,
   },
   cardWrapperRight: {
-    marginLeft: 8,
+    marginLeft: 4,
   },
   cardWrapperSingle: {
-    marginLeft: 8,
-    marginRight: 8,
+    marginLeft: 4,
+    marginRight: 4,
+  },
+  card: {
+    width: '100%',
+    aspectRatio: 0.75,
+    alignSelf: 'center',
   },
   cardInner: {
     flex: 1,
     backgroundColor: '#16213e',
-    borderRadius: 16,
+    borderRadius: 12,
     borderWidth: 2,
     borderColor: '#0f3460',
     elevation: 4,
@@ -248,44 +303,44 @@ const styles = StyleSheet.create({
   },
   cardFlipped: {
     backgroundColor: '#0f3460',
-    borderColor: '#16213e',
+    borderColor: '#1e4a73',
   },
   cardFront: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 16,
+    padding: 12,
   },
   cardBack: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 16,
+    padding: 12,
   },
   cardPlayerName: {
-    fontSize: 28,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#eee',
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom: 8,
   },
   cardPlayerNameSmall: {
-    fontSize: 20,
+    fontSize: 14,
     fontWeight: '600',
     color: '#bbb',
     textAlign: 'center',
-    marginBottom: 12,
+    marginBottom: 6,
   },
   cardHint: {
-    fontSize: 14,
+    fontSize: 11,
     color: '#888',
     textAlign: 'center',
   },
   cardHintSmall: {
-    fontSize: 12,
+    fontSize: 10,
     color: '#666',
     textAlign: 'center',
-    marginTop: 12,
+    marginTop: 6,
   },
   imposterContent: {
     alignItems: 'center',
@@ -293,21 +348,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   imposterEmoji: {
-    fontSize: 28,
-    marginBottom: 8,
+    fontSize: 20,
+    marginBottom: 4,
   },
   imposterText: {
-    fontSize: 27,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#e94560',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   imposterSubtext: {
-    fontSize: 18,
+    fontSize: 11,
     color: '#e94560',
     textAlign: 'center',
     fontStyle: 'italic',
+    paddingHorizontal: 4,
   },
   wordContent: {
     alignItems: 'center',
@@ -315,13 +371,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   wordLabel: {
-    fontSize: 20,
+    fontSize: 12,
     color: '#bbb',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   wordText: {
-    fontSize: 36,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#eee',
     textAlign: 'center',
@@ -329,59 +385,94 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   wordTextLong: {
-    fontSize: 24,
-    lineHeight: 28,
+    fontSize: 16,
+    lineHeight: 20,
   },
   buttonContainer: {
-    marginBottom: 20,
+    gap: 8,
   },
   newWordButton: {
     backgroundColor: '#0f3460',
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
     alignItems: 'center',
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
-  },
-  newWordButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#fff',
+    flexDirection: 'row',
+    elevation: 6,
+    shadowColor: '#0f3460',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    borderWidth: 2,
+    borderColor: '#1e4a73',
   },
   continueButton: {
     backgroundColor: '#e94560',
-    paddingVertical: 16,
-    paddingHorizontal: 32,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     borderRadius: 12,
     alignItems: 'center',
-    marginBottom: 16,
-    elevation: 3,
+    flexDirection: 'row',
+    elevation: 8,
+    shadowColor: '#e94560',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    borderWidth: 2,
+    borderColor: '#ff6b8a',
+  },
+  backButton: {
+    backgroundColor: '#16213e',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    flexDirection: 'row',
+    elevation: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  continueButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  backButton: {
-    backgroundColor: 'transparent',
+    shadowRadius: 4,
     borderWidth: 2,
     borderColor: '#0f3460',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
+  },
+  buttonIconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 10,
+  },
+  buttonIcon: {
+    fontSize: 18,
+  },
+  buttonTextContainer: {
+    flex: 1,
+    alignItems: 'flex-start',
+  },
+  newWordButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 1,
+  },
+  continueButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 1,
   },
   backButtonText: {
     fontSize: 16,
-    color: '#bbb',
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 1,
+  },
+  buttonSubText: {
+    fontSize: 11,
+    color: 'rgba(255, 255, 255, 0.8)',
+    textAlign: 'left',
   },
 });
