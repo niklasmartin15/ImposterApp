@@ -199,6 +199,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
     paddingHorizontal: 8,
+    paddingTop: 20,
   },
   title: {
     fontSize: 24,
