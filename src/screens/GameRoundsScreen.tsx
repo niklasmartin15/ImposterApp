@@ -215,7 +215,7 @@ export const GameRoundsScreen: React.FC = () => {
                   <View style={styles.imposterGuessContainer}>
                     <Text style={styles.imposterGuessTitle}>🕵️ Du bist der Imposter!</Text>
                     <Text style={styles.imposterGuessHint}>
-                      Rate das Lösung Wort! Du hast einen Versuch: <br/>✅Richtige Antwort = Spiel gewonnen <br/> ❌Falsche Antwort = Spiel geht weiter, aber du kannst nicht mehr raten.
+                      Rate das Lösung Wort! Du hast einen Versuch:{'\n'}✅Richtige Antwort = Spiel gewonnen{'\n'}❌Falsche Antwort = Spiel geht weiter, aber du kannst nicht mehr raten.
                     </Text>
                     {canImposterGuessWord(currentPlayer) ? (
                       <>
