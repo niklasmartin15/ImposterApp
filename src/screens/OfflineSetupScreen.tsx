@@ -279,42 +279,42 @@ const styles = StyleSheet.create({
     minHeight: '100%',
   },
   content: {
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   headerContainer: {
     alignItems: 'center',
-    marginBottom: 20,
-    paddingHorizontal: 16,
+    marginBottom: 12,
+    paddingHorizontal: 8,
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#e94560',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
     textShadowColor: 'rgba(233, 69, 96, 0.3)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 4,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#bbb',
     textAlign: 'center',
-    lineHeight: 24,
+    lineHeight: 20,
   },
 
   // Game Settings Container
   gameSettingsContainer: {
-    marginBottom: 16,
-    gap: 12,
+    marginBottom: 12,
+    gap: 8,
   },
 
   // Setting Card Styles
   settingCard: {
     backgroundColor: '#16213e',
-    borderRadius: 16,
-    padding: 16,
+    borderRadius: 12,
+    padding: 12,
     elevation: 6,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
@@ -326,32 +326,32 @@ const styles = StyleSheet.create({
   settingHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   settingIconContainer: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: 'rgba(233, 69, 96, 0.15)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: 10,
   },
   settingIcon: {
-    fontSize: 20,
+    fontSize: 18,
   },
   settingTextContainer: {
     flex: 1,
     alignItems: 'flex-start',
   },
   settingTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 2,
+    marginBottom: 1,
   },
   settingDescription: {
-    fontSize: 12,
+    fontSize: 11,
     color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'left',
   },
@@ -364,9 +364,9 @@ const styles = StyleSheet.create({
   },
   counterButton: {
     backgroundColor: '#e94560',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 4,
@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
   },
   counterButtonText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#fff',
   },
@@ -393,17 +393,17 @@ const styles = StyleSheet.create({
   },
   counterValue: {
     backgroundColor: '#0f3460',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    marginHorizontal: 16,
-    borderRadius: 12,
-    minWidth: 50,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    marginHorizontal: 12,
+    borderRadius: 10,
+    minWidth: 44,
     alignItems: 'center',
     borderWidth: 2,
     borderColor: '#1e4a73',
   },
   counterValueText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#fff',
   },
@@ -411,9 +411,9 @@ const styles = StyleSheet.create({
   // Players Container
   playersContainer: {
     backgroundColor: '#16213e',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 16,
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
     elevation: 6,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
@@ -425,22 +425,22 @@ const styles = StyleSheet.create({
   playersHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   playersInputSection: {
-    gap: 8,
+    gap: 6,
   },
 
   // Player Input Styles
   playerInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 8,
   },
   playerNumberBadge: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: '#e94560',
     justifyContent: 'center',
     alignItems: 'center',
@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   playerNumber: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#fff',
     fontWeight: 'bold',
   },
@@ -462,19 +462,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#0f3460',
     borderWidth: 2,
     borderColor: '#1e4a73',
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 14,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 13,
     color: '#fff',
     fontWeight: '500',
   },
 
   // Error Styles
   inputErrorText: {
-    fontSize: 12,
-    marginBottom: 4,
-    marginLeft: 4,
+    fontSize: 10,
+    marginBottom: 3,
+    marginLeft: 3,
     fontWeight: 'bold',
   },
   inputErrorTextYellow: {
@@ -494,15 +494,15 @@ const styles = StyleSheet.create({
 
   // Button Container
   buttonContainer: {
-    gap: 12,
+    gap: 8,
   },
 
   // Button Styles
   startButton: {
     backgroundColor: '#e94560',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
     alignItems: 'center',
     flexDirection: 'row',
     elevation: 8,
@@ -515,9 +515,9 @@ const styles = StyleSheet.create({
   },
   backButton: {
     backgroundColor: '#0f3460',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
     alignItems: 'center',
     flexDirection: 'row',
     elevation: 6,
@@ -531,35 +531,35 @@ const styles = StyleSheet.create({
 
   // Button Content Styles
   buttonIconContainer: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: 10,
   },
   buttonIcon: {
-    fontSize: 20,
+    fontSize: 18,
   },
   buttonTextContainer: {
     flex: 1,
     alignItems: 'flex-start',
   },
   startButtonText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 2,
+    marginBottom: 1,
   },
   backButtonText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 2,
+    marginBottom: 1,
   },
   buttonSubText: {
-    fontSize: 12,
+    fontSize: 11,
     color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'left',
   },
