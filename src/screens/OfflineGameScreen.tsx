@@ -352,14 +352,14 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   imposterText: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#e94560',
     textAlign: 'center',
     marginBottom: 4,
   },
   imposterSubtext: {
-    fontSize: 11,
+    fontSize: 14,
     color: '#e94560',
     textAlign: 'center',
     fontStyle: 'italic',
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   wordText: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#eee',
     textAlign: 'center',
@@ -385,8 +385,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   wordTextLong: {
-    fontSize: 16,
-    lineHeight: 20,
+    fontSize: 20,
+    lineHeight: 24,
   },
   buttonContainer: {
     gap: 8,
