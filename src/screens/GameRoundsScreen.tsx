@@ -309,6 +309,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
     paddingHorizontal: 8,
+    paddingTop: 14,
   },
   title: {
     fontSize: 22,

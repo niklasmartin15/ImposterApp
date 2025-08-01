@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Imposter Game",
-    "slug": "imposter-game",
+    "slug": "App",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

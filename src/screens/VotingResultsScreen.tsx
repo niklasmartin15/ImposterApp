@@ -270,7 +270,7 @@ export const VotingResultsScreen: React.FC = () => {
               </View>
             ))}
           </View>
-          <br />
+          
           {/* Buttons */}
           <View style={styles.buttonContainer}>
             <TouchableOpacity 
@@ -337,6 +337,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
     paddingHorizontal: 8,
+    paddingTop: 14,
   },
   title: {
     fontSize: 24,
