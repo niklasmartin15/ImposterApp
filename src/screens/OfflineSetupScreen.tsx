@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import {
+  Modal,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
-  Modal
+  View
 } from 'react-native';
 import { useGameStore } from '../stores/gameStore';
+import { GameMode } from '../types/game';
 
 export const OfflineSetupScreen: React.FC = () => {
   const { 
@@ -17,20 +18,11 @@ export const OfflineSetupScreen: React.FC = () => {
     setOfflinePlayerCount, 
     setOfflineImposterCount, 
     setOfflinePlayerName,
-    setOfflineModeType,
     setCurrentPhase,
-    startOfflineGame
+    startOfflineGame,
+    getGameModeDisplayName,
+    setGameMode
   } = useGameStore();
-  // Local state for settings modal
-  const [showModeModal, setShowModeModal] = useState(false);
-  // Display names for modes
-  const modeDisplayMap = {
-    wordsAndClick: 'Wörter eingeben, Spieler weiterklicken',
-    clickOnly: 'Nur Spieler weiterklicken',
-    open: 'Offener Modus'
-  } as const;
-  type ModeKey = keyof typeof modeDisplayMap;
-  const currentMode = (offlineSettings.offlineModeType ?? 'wordsAndClick') as ModeKey;
 
   // Berechne die maximale Anzahl der Imposter
   const getMaxImposters = () => {
@@ -65,6 +57,7 @@ export const OfflineSetupScreen: React.FC = () => {
 
   // Zeige Fehler erst nach erstem Klick auf Start
   const [showNameErrors, setShowNameErrors] = useState(false);
+  const [showGameModeSettings, setShowGameModeSettings] = useState(false);
 
   const handleStartGame = () => {
     setShowNameErrors(true);
@@ -97,7 +90,6 @@ export const OfflineSetupScreen: React.FC = () => {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.content}>
-
           <View style={styles.headerContainer}>
             <Text style={styles.title}>🎮 Offline Spiel</Text>
             <Text style={styles.subtitle}>Einstellungen für das lokale Pass-and-Play</Text>
@@ -256,20 +248,22 @@ export const OfflineSetupScreen: React.FC = () => {
                 <Text style={styles.buttonSubText}>Karten verteilen und beginnen</Text>
               </View>
             </TouchableOpacity>
-          {/* Mode Settings Button */}
-          <TouchableOpacity
-            style={styles.modeButton}
-            onPress={() => setShowModeModal(true)}
-            activeOpacity={0.8}
-          >
-            <View style={styles.buttonIconContainer}>
-              <Text style={styles.buttonIcon}>⚙️</Text>
-            </View>
-            <View style={styles.buttonTextContainer}>
-              <Text style={styles.startButtonText}>Spieleinstellungen</Text>
-              <Text style={styles.buttonSubText}>aktuell: {modeDisplayMap[currentMode]}</Text>
-            </View>
-          </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.settingsButton}
+              onPress={() => setShowGameModeSettings(true)}
+              activeOpacity={0.8}
+            >
+              <View style={styles.buttonIconContainer}>
+                <Text style={styles.buttonIcon}>⚙️</Text>
+              </View>
+              <View style={styles.buttonTextContainer}>
+                <Text style={styles.settingsButtonText}>
+                  Spieleinstellungen (aktuell: {getGameModeDisplayName(offlineSettings.gameMode)})
+                </Text>
+                <Text style={styles.buttonSubText}>Spielmodus ändern</Text>
+              </View>
+            </TouchableOpacity>
 
             <TouchableOpacity 
               style={styles.backButton}
@@ -285,29 +279,111 @@ export const OfflineSetupScreen: React.FC = () => {
               </View>
             </TouchableOpacity>
           </View>
-          {/* Mode Selection Modal */}
-          <Modal visible={showModeModal} transparent animationType="fade">
-            <View style={styles.modalOverlay}>
-              <View style={styles.modalContainer}>
-                <Text style={styles.modalTitle}>Offline Modus wählen</Text>
-                {(['wordsAndClick', 'clickOnly', 'open'] as const).map(mode => (
-                  <TouchableOpacity
-                    key={mode}
-                    style={styles.modalOption}
-                    onPress={() => { setOfflineModeType(mode); setShowModeModal(false); }}
-                    activeOpacity={0.7}
-                  >
-                    <Text style={styles.modalOptionText}>{modeDisplayMap[mode]}</Text>
-                  </TouchableOpacity>
-                ))}
-                <TouchableOpacity style={styles.modalClose} onPress={() => setShowModeModal(false)} activeOpacity={0.7}>
-                  <Text style={styles.modalCloseText}>Abbrechen</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal>
         </View>
       </ScrollView>
+
+      {/* Game Mode Settings Modal */}
+      <Modal
+        visible={showGameModeSettings}
+        transparent={true}
+        animationType="none"
+        statusBarTranslucent={true}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <SafeAreaView style={styles.modalSafeArea}>
+              <ScrollView 
+                style={styles.modalScrollView} 
+                contentContainerStyle={styles.modalScrollContent}
+                showsVerticalScrollIndicator={false}
+              >
+                <View style={styles.modalContent}>
+                  <View style={styles.modalHeaderContainer}>
+                    <Text style={styles.modalTitle}>⚙️ Spieleinstellungen</Text>
+                    <Text style={styles.modalSubtitle}>Wähle deinen bevorzugten Spielmodus</Text>
+                  </View>
+
+                  {/* Spielmodi */}
+                  <View style={styles.modalModesContainer}>
+                    {[
+                      {
+                        mode: 'wordInput_playerAdvance' as GameMode,
+                        title: 'Wörter eingeben, Spieler weiterklicken',
+                        description: 'Standard Modus: Spieler geben Hinweise ein und klicken weiter'
+                      },
+                      {
+                        mode: 'playerAdvance_only' as GameMode,
+                        title: 'Nur Spieler weiterklicken',
+                        description: 'Spieler klicken nur weiter, ohne Hinweise einzugeben'
+                      },
+                      {
+                        mode: 'open_mode' as GameMode,
+                        title: 'Offener Modus',
+                        description: 'Freier Spielmodus ohne Einschränkungen'
+                      }
+                    ].map((gameMode) => (
+                      <TouchableOpacity
+                        key={gameMode.mode}
+                        style={[
+                          styles.modalModeCard,
+                          offlineSettings.gameMode === gameMode.mode && styles.modalSelectedModeCard
+                        ]}
+                        onPress={() => {
+                          setGameMode(gameMode.mode);
+                          setShowGameModeSettings(false);
+                        }}
+                        activeOpacity={0.8}
+                      >
+                        <View style={styles.modalModeHeader}>
+                          <View style={[
+                            styles.modalRadioButton,
+                            offlineSettings.gameMode === gameMode.mode && styles.modalRadioButtonSelected
+                          ]}>
+                            {offlineSettings.gameMode === gameMode.mode && (
+                              <View style={styles.modalRadioButtonInner} />
+                            )}
+                          </View>
+                          <View style={styles.modalModeTextContainer}>
+                            <Text style={[
+                              styles.modalModeTitle,
+                              offlineSettings.gameMode === gameMode.mode && styles.modalSelectedModeTitle
+                            ]}>
+                              {gameMode.title}
+                            </Text>
+                            <Text style={[
+                              styles.modalModeDescription,
+                              offlineSettings.gameMode === gameMode.mode && styles.modalSelectedModeDescription
+                            ]}>
+                              {gameMode.description}
+                            </Text>
+                          </View>
+                        </View>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+
+                  {/* Buttons */}
+                  <View style={styles.modalButtonContainer}>
+                    <TouchableOpacity 
+                      style={styles.modalBackButton}
+                      onPress={() => setShowGameModeSettings(false)}
+                      activeOpacity={0.8}
+                    >
+                      <View style={styles.modalButtonIconContainer}>
+                        <Text style={styles.modalButtonIcon}>←</Text>
+                      </View>
+                      <View style={styles.modalButtonTextContainer}>
+                        <Text style={styles.modalBackButtonText}>Zurück</Text>
+                        <Text style={styles.modalButtonSubText}>Zu den Spieleinstellungen</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </ScrollView>
+            </SafeAreaView>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -576,6 +652,21 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#1e4a73',
   },
+  settingsButton: {
+    backgroundColor: '#16213e',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    flexDirection: 'row',
+    elevation: 6,
+    shadowColor: '#16213e',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    borderWidth: 2,
+    borderColor: '#0f3460',
+  },
 
   // Button Content Styles
   buttonIconContainer: {
@@ -606,13 +697,147 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginBottom: 1,
   },
+  settingsButtonText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 1,
+    flexWrap: 'wrap',
+  },
   buttonSubText: {
     fontSize: 11,
     color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'left',
   },
-  // Mode Settings Button style
-  modeButton: {
+
+  // Modal Styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    backgroundColor: '#1a1a2e',
+    borderRadius: 20,
+    width: '90%',
+    maxWidth: 400,
+    maxHeight: '80%',
+    elevation: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.5,
+    shadowRadius: 20,
+    borderWidth: 2,
+    borderColor: '#0f3460',
+  },
+  modalSafeArea: {
+    flex: 1,
+  },
+  modalScrollView: {
+    flex: 1,
+  },
+  modalScrollContent: {
+    flexGrow: 1,
+  },
+  modalContent: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  modalHeaderContainer: {
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingHorizontal: 8,
+    paddingTop: 12,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#e94560',
+    textAlign: 'center',
+    marginBottom: 4,
+    textShadowColor: 'rgba(233, 69, 96, 0.3)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
+  },
+  modalSubtitle: {
+    fontSize: 13,
+    color: '#bbb',
+    textAlign: 'center',
+    lineHeight: 18,
+  },
+  modalModesContainer: {
+    marginBottom: 16,
+    gap: 8,
+  },
+  modalModeCard: {
+    backgroundColor: '#16213e',
+    borderRadius: 12,
+    padding: 14,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    borderWidth: 2,
+    borderColor: '#0f3460',
+  },
+  modalSelectedModeCard: {
+    backgroundColor: '#1e4a73',
+    borderColor: '#e94560',
+    elevation: 8,
+    shadowColor: '#e94560',
+    shadowOpacity: 0.3,
+  },
+  modalModeHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  modalRadioButton: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#666',
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  modalRadioButtonSelected: {
+    borderColor: '#e94560',
+    backgroundColor: 'rgba(233, 69, 96, 0.1)',
+  },
+  modalRadioButtonInner: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#e94560',
+  },
+  modalModeTextContainer: {
+    flex: 1,
+  },
+  modalModeTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 2,
+  },
+  modalSelectedModeTitle: {
+    color: '#e94560',
+  },
+  modalModeDescription: {
+    fontSize: 11,
+    color: 'rgba(255, 255, 255, 0.7)',
+    lineHeight: 16,
+  },
+  modalSelectedModeDescription: {
+    color: 'rgba(255, 255, 255, 0.9)',
+  },
+  modalButtonContainer: {
+    marginTop: 8,
+  },
+  modalBackButton: {
     backgroundColor: '#0f3460',
     paddingVertical: 12,
     paddingHorizontal: 16,
@@ -626,46 +851,33 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     borderWidth: 2,
     borderColor: '#1e4a73',
-    marginBottom: 8,
   },
-  // Modal styles
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+  modalButtonIconContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 10,
   },
-  modalContainer: {
-    backgroundColor: '#16213e',
-    borderRadius: 12,
-    padding: 20,
-    width: '80%',
-    maxWidth: 300,
+  modalButtonIcon: {
+    fontSize: 16,
+    color: '#fff',
   },
-  modalTitle: {
-    fontSize: 18,
+  modalButtonTextContainer: {
+    flex: 1,
+    alignItems: 'flex-start',
+  },
+  modalBackButtonText: {
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 12,
-    textAlign: 'center',
+    marginBottom: 1,
   },
-  modalOption: {
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#0f3460',
-  },
-  modalOptionText: {
-    fontSize: 16,
-    color: '#fff',
-    textAlign: 'center',
-  },
-  modalClose: {
-    marginTop: 12,
-    paddingVertical: 10,
-  },
-  modalCloseText: {
-    fontSize: 16,
-    color: '#e94560',
-    textAlign: 'center',
+  modalButtonSubText: {
+    fontSize: 10,
+    color: 'rgba(255, 255, 255, 0.8)',
+    textAlign: 'left',
   },
 });

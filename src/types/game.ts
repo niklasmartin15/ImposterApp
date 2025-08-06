@@ -47,8 +47,7 @@ export interface OfflineGameSettings {
   wordGuessResult?: WordGuessResult;
   wordGuessAttempted: boolean; // Ob bereits ein Wort-Raten-Versuch gemacht wurde
   wordGuessingDisabled: boolean; // Ob Wort-Raten deaktiviert ist (nach falschem Versuch)
-  // Modus für Offline-Spiel:
-  offlineModeType?: 'wordsAndClick' | 'clickOnly' | 'open';
+  gameMode: GameMode; // Spielmodus
 }
 
 export interface OfflinePlayerRole {
@@ -90,4 +89,12 @@ export interface WordGuessResult {
   targetHint: string;      // Der Hinweis für den Imposter
 }
 
-export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'offlineGame' | 'gameStarting' | 'gameRounds' | 'votingStart' | 'voting' | 'votingAnimation' | 'votingResults' | 'imposterLastChance' | 'wordGuessResults' | 'roundContinuation' | 'gameRoom' | 'playing' | 'results';
+export type GameMode = 'wordInput_playerAdvance' | 'playerAdvance_only' | 'open_mode';
+
+export interface GameModeConfig {
+  mode: GameMode;
+  displayName: string;
+  description: string;
+}
+
+export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'offlineGame' | 'gameStarting' | 'gameRounds' | 'votingStart' | 'voting' | 'votingAnimation' | 'votingResults' | 'imposterLastChance' | 'wordGuessResults' | 'roundContinuation' | 'gameRoom' | 'playing' | 'results' | 'gameModeSettings';

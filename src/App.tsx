@@ -1,19 +1,20 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useGameStore } from './stores/gameStore';
-import { NameInputScreen } from './screens/NameInputScreen';
-import { MainLobbyScreen } from './screens/MainLobbyScreen';
-import { OfflineSetupScreen } from './screens/OfflineSetupScreen';
-import { OfflineGameScreen } from './screens/OfflineGameScreen';
-import { GameStartingScreen } from './screens/GameStartingScreen';
+import { StyleSheet, View } from 'react-native';
+import { GameModeSettingsScreen } from './screens/GameModeSettingsScreen';
 import { GameRoundsScreen } from './screens/GameRoundsScreen';
-import { VotingScreen } from './screens/VotingScreen';
-import { VotingStartScreen } from './screens/VotingStartScreen';
+import { GameStartingScreen } from './screens/GameStartingScreen';
+import { ImposterLastChanceScreen } from './screens/ImposterLastChanceScreen';
+import { MainLobbyScreen } from './screens/MainLobbyScreen';
+import { NameInputScreen } from './screens/NameInputScreen';
+import { OfflineGameScreen } from './screens/OfflineGameScreen';
+import { OfflineSetupScreen } from './screens/OfflineSetupScreen';
+import RoundContinuationScreen from './screens/RoundContinuationScreen';
 import { VotingAnimationScreen } from './screens/VotingAnimationScreen';
 import { VotingResultsScreen } from './screens/VotingResultsScreen';
-import { ImposterLastChanceScreen } from './screens/ImposterLastChanceScreen';
+import { VotingScreen } from './screens/VotingScreen';
+import { VotingStartScreen } from './screens/VotingStartScreen';
 import { WordGuessResultsScreen } from './screens/WordGuessResultsScreen';
-import RoundContinuationScreen from './screens/RoundContinuationScreen';
+import { useGameStore } from './stores/gameStore';
 
 export const App: React.FC = () => {
   const { currentPhase } = useGameStore();
@@ -26,6 +27,8 @@ export const App: React.FC = () => {
         return <MainLobbyScreen />;
       case 'offlineSetup':
         return <OfflineSetupScreen />;
+      case 'gameModeSettings':
+        return <GameModeSettingsScreen />;
       case 'offlineGame':
         return <OfflineGameScreen />;
       case 'gameStarting':

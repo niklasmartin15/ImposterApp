@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { getRandomWordPair } from '../data/wordPairs';
-import { GamePhase, GameRound, OfflineGameSettings, PlayerClue, Vote, VotingState } from '../types/game';
+import { GameMode, GamePhase, GameRound, OfflineGameSettings, PlayerClue, Vote, VotingState } from '../types/game';
 
 interface GameState {
   // Player info
@@ -22,8 +22,6 @@ interface GameState {
   setOfflinePlayerName: (index: number, name: string) => void;
   resetOfflineSettings: () => void;
   startOfflineGame: () => void;
-  // Set offline mode type (wordsAndClick, clickOnly, open)
-  setOfflineModeType: (mode: OfflineGameSettings['offlineModeType']) => void;
   togglePlayerCardSeen: (playerName: string) => void;
   generateNewWordPair: () => void;
   startGameRounds: () => void;
@@ -40,6 +38,8 @@ interface GameState {
   resetGameKeepPlayers: () => void;
   continueToNextRound: () => void;
   endGameAndVote: () => void;
+  setGameMode: (mode: GameMode) => void;
+  getGameModeDisplayName: (mode: GameMode) => string;
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -59,7 +59,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     allClues: [],
     wordGuessAttempted: false,
     wordGuessingDisabled: false,
-    offlineModeType: 'wordsAndClick',
+    gameMode: 'wordInput_playerAdvance' as GameMode,
   },
   
   // Actions
@@ -126,6 +126,7 @@ export const useGameStore = create<GameState>((set, get) => ({
         wordGuessingDisabled: false,
         wordGuessResult: undefined, // Clear any previous word guess results
         votingState: undefined,     // Clear voting state
+        gameMode: 'wordInput_playerAdvance' as GameMode, // Standard Spielmodus
       }
     };
   }),
@@ -193,14 +194,12 @@ export const useGameStore = create<GameState>((set, get) => ({
     return {
       offlineSettings: {
         ...state.offlineSettings,
-        votingState: undefined,
-        offlineModeType: 'wordsAndClick',
         currentWordPair: newWordPair,
-        gameWordPair: newWordPair,
+        gameWordPair: newWordPair, // Setze gameWordPair auch auf das neue Wort
         assignedRoles,
         wordGuessAttempted: false,
         wordGuessingDisabled: false,
-        wordGuessResult: undefined,
+        wordGuessResult: undefined, // Clear previous word guess results
       }
     };
   }),
@@ -529,11 +528,24 @@ export const useGameStore = create<GameState>((set, get) => ({
       currentPhase: 'votingStart' as GamePhase
     };
   }),
-  // Set offline mode type for offline game settings
-  setOfflineModeType: (mode) => set((state) => ({
+
+  setGameMode: (mode: GameMode) => set((state) => ({
     offlineSettings: {
       ...state.offlineSettings,
-      offlineModeType: mode,
+      gameMode: mode
     }
   })),
+
+  getGameModeDisplayName: (mode: GameMode) => {
+    switch (mode) {
+      case 'wordInput_playerAdvance':
+        return 'Wörter eingeben, Spieler weiterklicken';
+      case 'playerAdvance_only':
+        return 'Nur Spieler weiterklicken';
+      case 'open_mode':
+        return 'Offener Modus';
+      default:
+        return 'Unbekannt';
+    }
+  },
 }));
