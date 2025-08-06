@@ -1,12 +1,12 @@
 import React from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-  Animated,
+    Animated,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { useGameStore } from '../stores/gameStore';
 

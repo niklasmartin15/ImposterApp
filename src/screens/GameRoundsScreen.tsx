@@ -30,17 +30,11 @@ export const GameRoundsScreen: React.FC = () => {
   const { 
     offlineSettings, 
     submitPlayerClue, 
-    nextPlayer, 
-    setCurrentPhase,
-    isPlayerImposter,
-    guessWord,
-    canImposterGuessWord
+    nextPlayer
   } = useGameStore();
   
   const [currentClue, setCurrentClue] = useState('');
   const [showAllClues, setShowAllClues] = useState(false);
-  const [showWordGuessDropdown, setShowWordGuessDropdown] = useState(false);
-  const [guessedWord, setGuessedWord] = useState('');
 
   // Funktion um Spielerfarbe zu bekommen
   const getPlayerColor = (playerName: string): string => {
@@ -51,12 +45,6 @@ export const GameRoundsScreen: React.FC = () => {
 
   const currentRound = offlineSettings.currentRound;
   const currentPlayer = currentRound?.playerOrder[currentRound.currentPlayerIndex];
-  
-  // Schließe das Wort-Raten Dropdown wenn sich der aktuelle Spieler ändert
-  React.useEffect(() => {
-    setShowWordGuessDropdown(false);
-    setGuessedWord('');
-  }, [currentPlayer]);
 
   if (!currentRound || !currentPlayer) {
     return null;
@@ -82,36 +70,12 @@ export const GameRoundsScreen: React.FC = () => {
 
     submitPlayerClue(currentClue.trim());
     setCurrentClue('');
-    // Schließe das Wort-Raten Dropdown beim Weitergehen
-    setShowWordGuessDropdown(false);
     nextPlayer();
   };
 
   // Neue Funktion für "Nur Spieler weiterklicken" Modus
   const handlePlayerAdvanceOnly = () => {
-    // Schließe das Wort-Raten Dropdown beim Weitergehen
-    setShowWordGuessDropdown(false);
     nextPlayer();
-  };
-
-  const handleWordGuess = () => {
-    if (guessedWord.trim() === '') {
-      return;
-    }
-
-    const trimmedGuess = guessedWord.trim();
-    const correctWord = offlineSettings.gameWordPair?.word.trim().toLowerCase();
-    const isWin = trimmedGuess.toLowerCase() === correctWord;
-    // Speichere Ergebnis
-    guessWord(currentPlayer, trimmedGuess);
-    if (isWin) {
-      // Direkt zum Endscreen
-      setCurrentPhase('wordGuessResults');
-    } else {
-      // Falscher Versuch: Runde wird fortgesetzt
-      setShowWordGuessDropdown(false);
-      setGuessedWord('');
-    }
   };
 
   return (
@@ -124,158 +88,126 @@ export const GameRoundsScreen: React.FC = () => {
             <Text style={styles.progressText}>
               Spieler {currentRound.currentPlayerIndex + 1} von {currentRound.playerOrder.length}
             </Text>
+            <View style={{ height: 25 }} />
           </View>
 
-          {/* Aktueller Spieler */}
-          <View style={[
-            styles.currentPlayerContainer,
-            { borderColor: getPlayerColor(currentPlayer) }
-          ]}>
-            <Text style={styles.currentPlayerTitle}>🎮 Du bist dran:</Text>
-            <Text style={[
-              styles.currentPlayerName, 
-              { color: getPlayerColor(currentPlayer) }
-            ]}>
-              {currentPlayer}
-            </Text>
-            {showInputFields ? (
-              <Text style={styles.instructionText}>
-                Gib einen Hinweis zu deinem Wort ab:
-              </Text>
-            ) : (
-              <Text style={styles.instructionText}>
-                Schaue dir dein Wort an und klicke dann weiter:
-              </Text>
-            )}
-          </View>
-
-          {/* Input für Hinweis - nur bei entsprechenden Spielmodi */}
+          {/* Für Input-Modi: normale Reihenfolge */}
           {showInputFields && (
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={styles.textInput}
-                value={currentClue}
-                onChangeText={setCurrentClue}
-                placeholder="Dein Hinweis..."
-                placeholderTextColor="#888"
-                multiline={true}
-                numberOfLines={3}
-                textAlignVertical="top"
-                returnKeyType="done"
-                onSubmitEditing={handleSubmitClue}
-                blurOnSubmit={true}
-              />
-            </View>
+            <>
+              {/* Aktueller Spieler */}
+              <View style={[
+                styles.currentPlayerContainer,
+                { borderColor: getPlayerColor(currentPlayer) }
+              ]}>
+                <Text style={styles.currentPlayerTitle}>🎮 Du bist dran:</Text>
+                <Text style={[
+                  styles.currentPlayerName, 
+                  { color: getPlayerColor(currentPlayer) }
+                ]}>
+                  {currentPlayer}
+                </Text>
+                <Text style={styles.instructionText}>
+                  Gib einen Hinweis zu deinem Wort ab:
+                </Text>
+              </View>
+
+              {/* Input für Hinweis */}
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.textInput}
+                  value={currentClue}
+                  onChangeText={setCurrentClue}
+                  placeholder="Dein Hinweis..."
+                  placeholderTextColor="#888"
+                  multiline={true}
+                  numberOfLines={3}
+                  textAlignVertical="top"
+                  returnKeyType="done"
+                  onSubmitEditing={handleSubmitClue}
+                  blurOnSubmit={true}
+                />
+              </View>
+
+              {/* Button für Input-Modi */}
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity 
+                  style={[
+                    styles.submitButton,
+                    currentClue.trim() === '' && styles.submitButtonDisabled
+                  ]}
+                  onPress={handleSubmitClue}
+                  disabled={currentClue.trim() === ''}
+                >
+                  <Text style={styles.submitButtonText}>
+                    {isLastPlayer && offlineSettings.currentRoundNumber < offlineSettings.maxRounds 
+                      ? `➡️ Weiter (Runde ${offlineSettings.currentRoundNumber + 1})` 
+                      : isLastPlayer 
+                      ? '🗳️ Zur Abstimmung' 
+                      : '➡️ Weiter'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </>
           )}
 
-          {/* Buttons */}
-          <View style={styles.buttonContainer}>
-            {showInputFields ? (
-              <TouchableOpacity 
-                style={[
-                  styles.submitButton,
-                  currentClue.trim() === '' && styles.submitButtonDisabled
-                ]}
-                onPress={handleSubmitClue}
-                disabled={currentClue.trim() === ''}
-              >
-                <Text style={styles.submitButtonText}>
-                  {isLastPlayer && offlineSettings.currentRoundNumber < offlineSettings.maxRounds 
-                    ? `➡️ Weiter (Runde ${offlineSettings.currentRoundNumber + 1})` 
-                    : isLastPlayer 
-                    ? '🗳️ Zur Abstimmung' 
-                    : '➡️ Weiter'}
-                </Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity 
-                style={styles.submitButton}
-                onPress={handlePlayerAdvanceOnly}
-              >
-                <Text style={styles.submitButtonText}>
-                  {isLastPlayer && offlineSettings.currentRoundNumber < offlineSettings.maxRounds 
-                    ? `➡️ Weiter (Runde ${offlineSettings.currentRoundNumber + 1})` 
-                    : isLastPlayer 
-                    ? '🗳️ Zur Abstimmung' 
-                    : '➡️ Weiter'}
-                </Text>
-              </TouchableOpacity>
-            )}
+          {/* Für "Nur Weiterklicken" Modus: Spielregeln zuerst, dann "Du bist dran" */}
+          {!showInputFields && (
+            <>
+              {/* Spacer für mehr Abstand */}
+              <View style={{ height: 80 }} />
 
-            {/* Wort Raten Dropdown - für alle Spieler sichtbar */}
-            <TouchableOpacity 
-              style={styles.wordGuessButton}
-              onPress={() => setShowWordGuessDropdown(!showWordGuessDropdown)}
-            >
-              <Text style={styles.wordGuessButtonText}>
-                🎯 Wort Raten {showWordGuessDropdown ? '▼' : '▶'}
-              </Text>
-            </TouchableOpacity>
 
-            {showWordGuessDropdown && (
-              <View style={styles.wordGuessContainer}>
-                {isPlayerImposter(currentPlayer) ? (
-                  <View style={styles.imposterGuessContainer}>
-                    <Text style={styles.imposterGuessTitle}>🕵️ Du bist der Imposter!</Text>
-                    <Text style={styles.imposterGuessHint}>
-                      Rate das Lösung Wort! Du hast einen Versuch:{'\n'}✅Richtige Antwort = Spiel gewonnen{'\n'}❌Falsche Antwort = Spiel geht weiter, aber du kannst nicht mehr raten.
-                    </Text>
-                    {canImposterGuessWord(currentPlayer) ? (
-                      <>
-                        <TextInput
-                          style={styles.wordGuessInput}
-                          value={guessedWord}
-                          onChangeText={setGuessedWord}
-                          placeholder="Dein Wort-Tipp..."
-                          placeholderTextColor="#888"
-                          autoCapitalize="words"
-                        />
-                        <TouchableOpacity 
-                          style={[
-                            styles.wordGuessSubmitButton,
-                            guessedWord.trim() === '' && styles.wordGuessSubmitButtonDisabled
-                          ]}
-                          onPress={handleWordGuess}
-                          disabled={guessedWord.trim() === ''}
-                        >
-                          <Text style={styles.wordGuessSubmitButtonText}>
-                            🎯 Wort raten
-                          </Text>
-                        </TouchableOpacity>
-                      </>
-                    ) : (
-                      <View style={styles.disabledGuessContainer}>
-                        <TextInput
-                          style={[styles.wordGuessInput, styles.wordGuessInputDisabled]}
-                          value=""
-                          placeholder="Lösung falsch geraten!"
-                          placeholderTextColor="#666"
-                          editable={false}
-                        />
-                        <TouchableOpacity 
-                          style={[styles.wordGuessSubmitButton, styles.wordGuessSubmitButtonDisabled]}
-                          disabled={true}
-                        >
-                          <Text style={styles.wordGuessSubmitButtonText}>
-                            ❌ Deaktiviert
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                    )}
-                  </View>
-                ) : (
-                  <View style={styles.nonImposterContainer}>
-                    <Text style={styles.nonImposterText}>
-                      🛡️ Du bist kein Imposter!
-                    </Text>
-                    <Text style={styles.nonImposterSubtext}>
-                      Nur Imposters können das Wort raten.
-                    </Text>
-                  </View>
-                )}
+
+              {/* Zusätzlicher Spacer zwischen Regeln und Du bist dran */}
+              <View style={{ height: 40 }} />
+
+              {/* Aktueller Spieler */}
+              <View style={[
+                styles.currentPlayerContainer,
+                { borderColor: getPlayerColor(currentPlayer) }
+              ]}>
+                <Text style={styles.currentPlayerTitle}>🎮 Du bist dran:</Text>
+                <Text style={[
+                  styles.currentPlayerName, 
+                  { color: getPlayerColor(currentPlayer) }
+                ]}>
+                  {currentPlayer}
+                </Text>
+                <Text style={styles.instructionText}>
+                  Sage einen Hinweis zu deinem Wort an und klicke dann weiter:
+                </Text>
               </View>
-            )}
-          </View>
+
+              {/* Button für "Nur Weiterklicken" Modus */}
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity 
+                  style={styles.submitButton}
+                  onPress={handlePlayerAdvanceOnly}
+                >
+                  <Text style={styles.submitButtonText}>
+                    {isLastPlayer && offlineSettings.currentRoundNumber < offlineSettings.maxRounds 
+                      ? `➡️ Weiter (Runde ${offlineSettings.currentRoundNumber + 1})` 
+                      : isLastPlayer 
+                      ? '🗳️ Zur Abstimmung' 
+                      : '➡️ Weiter'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+                            {/* Spielregeln */}
+              <View style={styles.rulesContainer}>
+                <Text style={styles.rulesTitle}>📋 Regeln:</Text>
+                <Text style={styles.rulesText}>
+                  • Schau dir dein Wort/deine Rolle genau an
+                </Text>
+                <Text style={styles.rulesText}>
+                  • Merke dir die Information für die Abstimmung
+                </Text>
+                <Text style={styles.rulesText}>
+                  • Als Imposter: Du kannst das Wort raten!
+                </Text>
+              </View>
+            </>
+          )}
 
           {/* Bisherige Hinweise - nur bei entsprechenden Spielmodi */}
           {showClues && allCluesFromAllRounds.length > 0 && (
@@ -312,35 +244,21 @@ export const GameRoundsScreen: React.FC = () => {
             </View>
           )}
 
-          {/* Spielregeln */}
-          <View style={styles.rulesContainer}>
-            <Text style={styles.rulesTitle}>📋 Regeln:</Text>
-            {showInputFields ? (
-              <>
-                <Text style={styles.rulesText}>
-                  • Gib einen Hinweis, der zeigt, dass du das Wort kennst
-                </Text>
-                <Text style={styles.rulesText}>
-                  • Vermeide es, das Wort direkt zu nennen
-                </Text>
-                <Text style={styles.rulesText}>
-                  • Als Imposter: Versuche zu erraten und mitzuspielen
-                </Text>
-              </>
-            ) : (
-              <>
-                <Text style={styles.rulesText}>
-                  • Schau dir dein Wort/deine Rolle genau an
-                </Text>
-                <Text style={styles.rulesText}>
-                  • Merke dir die Information für die Abstimmung
-                </Text>
-                <Text style={styles.rulesText}>
-                  • Als Imposter: Du kannst das Wort raten!
-                </Text>
-              </>
-            )}
-          </View>
+          {/* Spielregeln für Input-Modi */}
+          {showInputFields && (
+            <View style={styles.rulesContainer}>
+              <Text style={styles.rulesTitle}>📋 Regeln:</Text>
+              <Text style={styles.rulesText}>
+                • Gib einen Hinweis, der zeigt, dass du das Wort kennst
+              </Text>
+              <Text style={styles.rulesText}>
+                • Vermeide es, das Wort direkt zu nennen
+              </Text>
+              <Text style={styles.rulesText}>
+                • Als Imposter: Versuche zu erraten und mitzuspielen
+              </Text>
+            </View>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -588,130 +506,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#bbb',
     textAlign: 'center',
-  },
-  wordGuessButton: {
-    backgroundColor: '#0f3460',
-    borderWidth: 2,
-    borderColor: '#1e4a73',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginBottom: 10,
-    elevation: 4,
-    shadowColor: '#0f3460',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-  },
-  wordGuessButtonText: {
-    fontSize: 14,
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  wordGuessContainer: {
-    backgroundColor: '#16213e',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 10,
-    elevation: 6,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    borderWidth: 2,
-    borderColor: '#0f3460',
-  },
-  imposterGuessContainer: {
-    alignItems: 'center',
-  },
-  imposterGuessTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#e94560',
-    textAlign: 'center',
-    marginBottom: 6,
-    textShadowColor: 'rgba(233, 69, 96, 0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
-  },
-  imposterGuessHint: {
-    fontSize: 12,
-    color: '#bbb',
-    textAlign: 'center',
-    marginBottom: 12,
-    lineHeight: 16,
-  },
-  wordGuessInput: {
-    backgroundColor: '#0f3460',
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#1e4a73',
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    fontSize: 14,
-    color: '#fff',
-    width: '100%',
-    marginBottom: 12,
-    textAlign: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-  },
-  wordGuessInputDisabled: {
-    backgroundColor: '#333',
-    borderColor: '#555',
-    color: '#666',
-  },
-  wordGuessSubmitButton: {
-    backgroundColor: '#e94560',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    elevation: 4,
-    shadowColor: '#e94560',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    borderWidth: 1,
-    borderColor: '#ff6b8a',
-  },
-  wordGuessSubmitButtonDisabled: {
-    backgroundColor: '#555',
-    borderColor: '#666',
-    elevation: 1,
-    shadowOpacity: 0.1,
-  },
-  wordGuessSubmitButtonText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  disabledGuessContainer: {
-    alignItems: 'center',
-    opacity: 0.6,
-  },
-  nonImposterContainer: {
-    alignItems: 'center',
-    paddingVertical: 16,
-  },
-  nonImposterText: {
-    fontSize: 16,
-    color: '#2196F3',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    marginBottom: 6,
-    textShadowColor: 'rgba(33, 150, 243, 0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
-  },
-  nonImposterSubtext: {
-    fontSize: 12,
-    color: '#888',
-    textAlign: 'center',
-    fontStyle: 'italic',
   },
 });
