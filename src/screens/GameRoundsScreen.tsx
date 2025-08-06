@@ -30,11 +30,14 @@ export const GameRoundsScreen: React.FC = () => {
   const { 
     offlineSettings, 
     submitPlayerClue, 
-    nextPlayer
+    nextPlayer,
+    simulateVotingForOpenMode
   } = useGameStore();
   
   const [currentClue, setCurrentClue] = useState('');
   const [showAllClues, setShowAllClues] = useState(false);
+  const [selectedImposter, setSelectedImposter] = useState<string>('');
+  const [showImposterSelection, setShowImposterSelection] = useState(false);
 
   // Funktion um Spielerfarbe zu bekommen
   const getPlayerColor = (playerName: string): string => {
@@ -56,6 +59,7 @@ export const GameRoundsScreen: React.FC = () => {
   const gameMode = offlineSettings.gameMode;
   const showInputFields = gameMode === 'wordInput_playerAdvance' || gameMode === 'open_mode';
   const showClues = gameMode === 'wordInput_playerAdvance' || gameMode === 'open_mode';
+  const isOpenMode = gameMode === 'open_mode';
 
   // Bestimme welche Hinweise angezeigt werden sollen (alle aus allen Runden)
   const allCluesFromAllRounds = offlineSettings.allClues || [];
@@ -78,6 +82,23 @@ export const GameRoundsScreen: React.FC = () => {
     nextPlayer();
   };
 
+  // Funktionen für offenen Modus
+  const handleImposterSelect = () => {
+    setShowImposterSelection(true);
+  };
+
+  const handleImposterConfirm = () => {
+    if (selectedImposter) {
+      // Im offenen Modus direkt zu den VotingResults mit simulierter Abstimmung
+      simulateVotingForOpenMode(selectedImposter);
+    }
+  };
+
+  const handleImposterCancel = () => {
+    setShowImposterSelection(false);
+    setSelectedImposter('');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -92,7 +113,7 @@ export const GameRoundsScreen: React.FC = () => {
           </View>
 
           {/* Für Input-Modi: normale Reihenfolge */}
-          {showInputFields && (
+          {showInputFields && !isOpenMode && (
             <>
               {/* Aktueller Spieler */}
               <View style={[
@@ -150,11 +171,127 @@ export const GameRoundsScreen: React.FC = () => {
             </>
           )}
 
-          {/* Für "Nur Weiterklicken" Modus: Spielregeln zuerst, dann "Du bist dran" */}
-          {!showInputFields && (
+          {/* Für offenen Modus */}
+          {isOpenMode && (
             <>
               {/* Spacer für mehr Abstand */}
-              <View style={{ height: 80 }} />
+              <View style={{ height: 60 }} />
+
+              {/* Zufällige Spielerreihenfolge */}
+              <View style={styles.openModeContainer}>
+                <Text style={styles.openModeTitle}>🎲 Zufällige Reihenfolge-Empfehlung:</Text>
+                <Text style={styles.openModeSubtitle}>
+                  Die Spieler können in dieser Reihenfolge ihre Hinweise geben:
+                </Text>
+                
+                {/* Alle Spieler anzeigen */}
+                <View style={styles.playersListContainer}>
+                  {currentRound.playerOrder.map((playerName, index) => (
+                    <View key={playerName} style={[
+                      styles.playerListItem,
+                      { borderColor: getPlayerColor(playerName) }
+                    ]}>
+                      <Text style={styles.playerNumber}>{index + 1}.</Text>
+                      <Text style={[
+                        styles.playerListName,
+                        { color: getPlayerColor(playerName) }
+                      ]}>
+                        {playerName}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+
+                {!showImposterSelection && (
+                  <View style={styles.buttonContainer}>
+                    <TouchableOpacity 
+                      style={styles.imposterSelectButton}
+                      onPress={handleImposterSelect}
+                      activeOpacity={0.8}
+                    >
+                      <Text style={styles.imposterSelectButtonText}>
+                        🎯 Imposter wählen
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+
+                {/* Imposter Auswahl */}
+                {showImposterSelection && (
+                  <View style={styles.imposterSelectionContainer}>
+                    <Text style={styles.imposterSelectionTitle}>
+                      🔍 Wer ist der Imposter?
+                    </Text>
+                    <Text style={styles.imposterSelectionSubtitle}>
+                      Wähle den Spieler aus, der deiner Meinung nach der Imposter ist:
+                    </Text>
+
+                    <View style={styles.imposterPlayersContainer}>
+                      {currentRound.playerOrder.map((playerName) => (
+                        <TouchableOpacity
+                          key={playerName}
+                          style={[
+                            styles.imposterPlayerButton,
+                            { borderColor: getPlayerColor(playerName) },
+                            selectedImposter === playerName && {
+                              backgroundColor: `${getPlayerColor(playerName)}30`,
+                              borderWidth: 3,
+                              transform: [{ scale: 1.02 }],
+                            }
+                          ]}
+                          onPress={() => setSelectedImposter(playerName)}
+                          activeOpacity={0.7}
+                        >
+                          <Text style={[
+                            styles.imposterPlayerText,
+                            { color: getPlayerColor(playerName) },
+                            selectedImposter === playerName && styles.imposterPlayerTextSelected
+                          ]}>
+                            {playerName}
+                          </Text>
+                          {selectedImposter === playerName && (
+                            <View style={styles.selectedBadge}>
+                              <Text style={styles.selectedBadgeText}>✓</Text>
+                            </View>
+                          )}
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+
+                    <View style={styles.imposterButtonContainer}>
+                      <TouchableOpacity 
+                        style={styles.cancelButton}
+                        onPress={handleImposterCancel}
+                        activeOpacity={0.8}
+                      >
+                        <Text style={styles.cancelButtonText}>❌ Abbrechen</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity 
+                        style={[
+                          styles.confirmButton,
+                          !selectedImposter && styles.confirmButtonDisabled
+                        ]}
+                        onPress={handleImposterConfirm}
+                        disabled={!selectedImposter}
+                        activeOpacity={0.8}
+                      >
+                        <Text style={styles.confirmButtonText}>
+                          ✅ Bestätigen
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )}
+              </View>
+            </>
+          )}
+
+          {/* Für "Nur Weiterklicken" Modus: Spielregeln zuerst, dann "Du bist dran" */}
+          {!showInputFields && !isOpenMode && (
+            <>
+              {/* Spacer für mehr Abstand */}
+              <View style={{ height: 55 }} />
 
 
 
@@ -203,7 +340,11 @@ export const GameRoundsScreen: React.FC = () => {
                   • Merke dir die Information für die Abstimmung
                 </Text>
                 <Text style={styles.rulesText}>
+                  • Versuche Hinweise zu geben, die nicht zu offensichtlich sind
+                </Text>
+                <Text style={styles.rulesText}>
                   • Als Imposter: Du kannst das Wort raten!
+                  
                 </Text>
               </View>
             </>
@@ -255,7 +396,7 @@ export const GameRoundsScreen: React.FC = () => {
                 • Vermeide es, das Wort direkt zu nennen
               </Text>
               <Text style={styles.rulesText}>
-                • Als Imposter: Versuche zu erraten und mitzuspielen
+                • Als Imposter: Versuche zu raten und mitzuspielen
               </Text>
             </View>
           )}
@@ -506,5 +647,186 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#bbb',
     textAlign: 'center',
+  },
+  // Styles für offenen Modus
+  openModeContainer: {
+    backgroundColor: '#16213e',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    elevation: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    borderWidth: 2,
+    borderColor: '#0f3460',
+  },
+  openModeTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#e94560',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  openModeSubtitle: {
+    fontSize: 14,
+    color: '#bbb',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  playersListContainer: {
+    marginBottom: 16,
+  },
+  playerListItem: {
+    backgroundColor: '#0f3460',
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 8,
+    borderWidth: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  playerNumber: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginRight: 12,
+    minWidth: 20,
+  },
+  playerListName: {
+    fontSize: 16,
+    fontWeight: '600',
+    flex: 1,
+  },
+  imposterSelectButton: {
+    backgroundColor: '#e94560',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    elevation: 8,
+    shadowColor: '#e94560',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    borderWidth: 2,
+    borderColor: '#ff6b8a',
+  },
+  imposterSelectButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  imposterSelectionContainer: {
+    backgroundColor: '#0f1f3d',
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 16,
+    borderWidth: 2,
+    borderColor: '#e94560',
+  },
+  imposterSelectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#e94560',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  imposterSelectionSubtitle: {
+    fontSize: 14,
+    color: '#bbb',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  imposterPlayersContainer: {
+    marginBottom: 16,
+  },
+  imposterPlayerButton: {
+    backgroundColor: '#0f3460',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginBottom: 8,
+    borderWidth: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
+  imposterPlayerText: {
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  imposterPlayerTextSelected: {
+    fontWeight: 'bold',
+  },
+  selectedBadge: {
+    backgroundColor: '#4CAF50',
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  selectedBadgeText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  imposterButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  cancelButton: {
+    backgroundColor: '#666',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+    flex: 1,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#888',
+  },
+  cancelButtonText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  confirmButton: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+    flex: 1,
+    alignItems: 'center',
+    elevation: 6,
+    shadowColor: '#4CAF50',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    borderWidth: 2,
+    borderColor: '#66BB6A',
+  },
+  confirmButtonDisabled: {
+    backgroundColor: '#555',
+    borderColor: '#666',
+    elevation: 2,
+    shadowOpacity: 0.1,
+  },
+  confirmButtonText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#fff',
   },
 });

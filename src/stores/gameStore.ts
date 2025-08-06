@@ -38,6 +38,7 @@ interface GameState {
   resetGameKeepPlayers: () => void;
   continueToNextRound: () => void;
   endGameAndVote: () => void;
+  simulateVotingForOpenMode: (selectedImposter: string) => void;
   setGameMode: (mode: GameMode) => void;
   getGameModeDisplayName: (mode: GameMode) => string;
 }
@@ -526,6 +527,35 @@ export const useGameStore = create<GameState>((set, get) => ({
     return {
       ...state,
       currentPhase: 'votingStart' as GamePhase
+    };
+  }),
+
+  // Neue Funktion für offenen Modus: Direkt zu VotingResults mit simuliertem Voting
+  simulateVotingForOpenMode: (selectedImposter: string) => set((state) => {
+    if (!state.offlineSettings.currentRound) return state;
+
+    const playerOrder = state.offlineSettings.currentRound.playerOrder;
+    
+    // Simuliere eine Abstimmung: Alle Spieler stimmen für den ausgewählten Imposter
+    const simulatedVotes: Vote[] = playerOrder.map((voter) => ({
+      voterName: voter,
+      targetName: selectedImposter
+    }));
+
+    // Erstelle einen VotingState mit allen Stimmen bereits abgegeben
+    const votingState: VotingState = {
+      votes: simulatedVotes,
+      currentVoterIndex: playerOrder.length, // Alle haben abgestimmt
+      isComplete: true,
+      playerOrder: playerOrder
+    };
+
+    return {
+      offlineSettings: {
+        ...state.offlineSettings,
+        votingState: votingState
+      },
+      currentPhase: 'votingResults' as GamePhase
     };
   }),
 
