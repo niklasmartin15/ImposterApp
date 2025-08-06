@@ -47,6 +47,8 @@ export interface OfflineGameSettings {
   wordGuessResult?: WordGuessResult;
   wordGuessAttempted: boolean; // Ob bereits ein Wort-Raten-Versuch gemacht wurde
   wordGuessingDisabled: boolean; // Ob Wort-Raten deaktiviert ist (nach falschem Versuch)
+  // Modus für Offline-Spiel:
+  offlineModeType?: 'wordsAndClick' | 'clickOnly' | 'open';
 }
 
 export interface OfflinePlayerRole {

@@ -6,7 +6,8 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
+  Modal
 } from 'react-native';
 import { useGameStore } from '../stores/gameStore';
 
@@ -16,9 +17,20 @@ export const OfflineSetupScreen: React.FC = () => {
     setOfflinePlayerCount, 
     setOfflineImposterCount, 
     setOfflinePlayerName,
+    setOfflineModeType,
     setCurrentPhase,
     startOfflineGame
   } = useGameStore();
+  // Local state for settings modal
+  const [showModeModal, setShowModeModal] = useState(false);
+  // Display names for modes
+  const modeDisplayMap = {
+    wordsAndClick: 'Wörter eingeben, Spieler weiterklicken',
+    clickOnly: 'Nur Spieler weiterklicken',
+    open: 'Offener Modus'
+  } as const;
+  type ModeKey = keyof typeof modeDisplayMap;
+  const currentMode = (offlineSettings.offlineModeType ?? 'wordsAndClick') as ModeKey;
 
   // Berechne die maximale Anzahl der Imposter
   const getMaxImposters = () => {
@@ -85,6 +97,7 @@ export const OfflineSetupScreen: React.FC = () => {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.content}>
+
           <View style={styles.headerContainer}>
             <Text style={styles.title}>🎮 Offline Spiel</Text>
             <Text style={styles.subtitle}>Einstellungen für das lokale Pass-and-Play</Text>
@@ -243,6 +256,20 @@ export const OfflineSetupScreen: React.FC = () => {
                 <Text style={styles.buttonSubText}>Karten verteilen und beginnen</Text>
               </View>
             </TouchableOpacity>
+          {/* Mode Settings Button */}
+          <TouchableOpacity
+            style={styles.modeButton}
+            onPress={() => setShowModeModal(true)}
+            activeOpacity={0.8}
+          >
+            <View style={styles.buttonIconContainer}>
+              <Text style={styles.buttonIcon}>⚙️</Text>
+            </View>
+            <View style={styles.buttonTextContainer}>
+              <Text style={styles.startButtonText}>Spieleinstellungen</Text>
+              <Text style={styles.buttonSubText}>aktuell: {modeDisplayMap[currentMode]}</Text>
+            </View>
+          </TouchableOpacity>
 
             <TouchableOpacity 
               style={styles.backButton}
@@ -258,6 +285,27 @@ export const OfflineSetupScreen: React.FC = () => {
               </View>
             </TouchableOpacity>
           </View>
+          {/* Mode Selection Modal */}
+          <Modal visible={showModeModal} transparent animationType="fade">
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContainer}>
+                <Text style={styles.modalTitle}>Offline Modus wählen</Text>
+                {(['wordsAndClick', 'clickOnly', 'open'] as const).map(mode => (
+                  <TouchableOpacity
+                    key={mode}
+                    style={styles.modalOption}
+                    onPress={() => { setOfflineModeType(mode); setShowModeModal(false); }}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.modalOptionText}>{modeDisplayMap[mode]}</Text>
+                  </TouchableOpacity>
+                ))}
+                <TouchableOpacity style={styles.modalClose} onPress={() => setShowModeModal(false)} activeOpacity={0.7}>
+                  <Text style={styles.modalCloseText}>Abbrechen</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -562,5 +610,62 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'left',
+  },
+  // Mode Settings Button style
+  modeButton: {
+    backgroundColor: '#0f3460',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    flexDirection: 'row',
+    elevation: 6,
+    shadowColor: '#0f3460',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    borderWidth: 2,
+    borderColor: '#1e4a73',
+    marginBottom: 8,
+  },
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    backgroundColor: '#16213e',
+    borderRadius: 12,
+    padding: 20,
+    width: '80%',
+    maxWidth: 300,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  modalOption: {
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#0f3460',
+  },
+  modalOptionText: {
+    fontSize: 16,
+    color: '#fff',
+    textAlign: 'center',
+  },
+  modalClose: {
+    marginTop: 12,
+    paddingVertical: 10,
+  },
+  modalCloseText: {
+    fontSize: 16,
+    color: '#e94560',
+    textAlign: 'center',
   },
 });

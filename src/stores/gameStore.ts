@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { GamePhase, OfflineGameSettings, GameRound, PlayerClue, Vote, VotingState } from '../types/game';
 import { getRandomWordPair } from '../data/wordPairs';
+import { GamePhase, GameRound, OfflineGameSettings, PlayerClue, Vote, VotingState } from '../types/game';
 
 interface GameState {
   // Player info
@@ -22,6 +22,8 @@ interface GameState {
   setOfflinePlayerName: (index: number, name: string) => void;
   resetOfflineSettings: () => void;
   startOfflineGame: () => void;
+  // Set offline mode type (wordsAndClick, clickOnly, open)
+  setOfflineModeType: (mode: OfflineGameSettings['offlineModeType']) => void;
   togglePlayerCardSeen: (playerName: string) => void;
   generateNewWordPair: () => void;
   startGameRounds: () => void;
@@ -57,6 +59,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     allClues: [],
     wordGuessAttempted: false,
     wordGuessingDisabled: false,
+    offlineModeType: 'wordsAndClick',
   },
   
   // Actions
@@ -190,12 +193,14 @@ export const useGameStore = create<GameState>((set, get) => ({
     return {
       offlineSettings: {
         ...state.offlineSettings,
+        votingState: undefined,
+        offlineModeType: 'wordsAndClick',
         currentWordPair: newWordPair,
-        gameWordPair: newWordPair, // Setze gameWordPair auch auf das neue Wort
+        gameWordPair: newWordPair,
         assignedRoles,
         wordGuessAttempted: false,
         wordGuessingDisabled: false,
-        wordGuessResult: undefined, // Clear previous word guess results
+        wordGuessResult: undefined,
       }
     };
   }),
@@ -524,4 +529,11 @@ export const useGameStore = create<GameState>((set, get) => ({
       currentPhase: 'votingStart' as GamePhase
     };
   }),
+  // Set offline mode type for offline game settings
+  setOfflineModeType: (mode) => set((state) => ({
+    offlineSettings: {
+      ...state.offlineSettings,
+      offlineModeType: mode,
+    }
+  })),
 }));
