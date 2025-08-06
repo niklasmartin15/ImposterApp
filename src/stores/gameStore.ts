@@ -153,10 +153,12 @@ export const useGameStore = create<GameState>((set, get) => ({
       offlineSettings: {
         ...state.offlineSettings,
         assignedRoles,
+        allClues: [], // Lösche alle vorherigen Hinweise
         wordGuessAttempted: false,
         wordGuessingDisabled: false,
         wordGuessResult: undefined, // Clear previous word guess results
         votingState: undefined,     // Clear voting state
+        currentRound: undefined,    // Clear current round
       },
       currentPhase: 'offlineGame' as GamePhase
     };
@@ -198,9 +200,12 @@ export const useGameStore = create<GameState>((set, get) => ({
         currentWordPair: newWordPair,
         gameWordPair: newWordPair, // Setze gameWordPair auch auf das neue Wort
         assignedRoles,
+        allClues: [], // Lösche alle vorherigen Hinweise
         wordGuessAttempted: false,
         wordGuessingDisabled: false,
         wordGuessResult: undefined, // Clear previous word guess results
+        votingState: undefined,     // Clear voting state
+        currentRound: undefined,    // Clear current round
       }
     };
   }),
@@ -221,10 +226,12 @@ export const useGameStore = create<GameState>((set, get) => ({
       offlineSettings: {
         ...state.offlineSettings,
         currentRound: newRound,
+        allClues: [], // Lösche alle vorherigen Hinweise beim Start neuer Game Rounds
         gameWordPair: state.offlineSettings.currentWordPair, // Speichere das aktuelle Wort für das Spiel
         wordGuessAttempted: false,
         wordGuessingDisabled: false,
         wordGuessResult: undefined, // Clear previous word guess results
+        votingState: undefined,     // Clear voting state
       },
       currentPhase: 'gameStarting' as GamePhase
     };
@@ -508,9 +515,11 @@ export const useGameStore = create<GameState>((set, get) => ({
         currentWordPair: newWordPair,
         gameWordPair: newWordPair, // Beide auf das gleiche neue Wort setzen
         assignedRoles: newAssignedRoles,
+        allClues: [], // Lösche alle vorherigen Hinweise bei neuer Runde
         wordGuessAttempted: false,
         wordGuessingDisabled: false,
         wordGuessResult: undefined,
+        votingState: undefined, // Clear voting state
         currentRound: {
           playerOrder: state.offlineSettings.currentRound?.playerOrder || playerNames,
           currentPlayerIndex: 0,
