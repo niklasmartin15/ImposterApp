@@ -49,6 +49,10 @@ export const WordGuessResultsScreen: React.FC = () => {
     return PLAYER_COLORS[playerIndex % PLAYER_COLORS.length];
   };
 
+  // Prüfe den aktuellen Spielmodus
+  const gameMode = offlineSettings.gameMode;
+  const showClues = gameMode === 'wordInput_playerAdvance' || gameMode === 'open_mode';
+
   if (!offlineSettings.wordGuessResult) {
     return (
       <SafeAreaView style={styles.container}>
@@ -177,8 +181,8 @@ export const WordGuessResultsScreen: React.FC = () => {
             ))}
           </View>
 
-          {/* Alle Hinweise aus allen Runden */}
-          {offlineSettings.allClues && offlineSettings.allClues.length > 0 && (
+          {/* Alle Hinweise aus allen Runden - nur bei entsprechenden Spielmodi */}
+          {showClues && offlineSettings.allClues && offlineSettings.allClues.length > 0 && (
             <View style={styles.allCluesContainer}>
               <Text style={styles.sectionTitle}>📝 Alle Hinweise</Text>
               {offlineSettings.allClues.map((clue, index) => (

@@ -64,6 +64,11 @@ export const GameRoundsScreen: React.FC = () => {
 
   const isLastPlayer = currentRound.currentPlayerIndex === currentRound.playerOrder.length - 1;
 
+  // Prüfe den aktuellen Spielmodus
+  const gameMode = offlineSettings.gameMode;
+  const showInputFields = gameMode === 'wordInput_playerAdvance' || gameMode === 'open_mode';
+  const showClues = gameMode === 'wordInput_playerAdvance' || gameMode === 'open_mode';
+
   // Bestimme welche Hinweise angezeigt werden sollen (alle aus allen Runden)
   const allCluesFromAllRounds = offlineSettings.allClues || [];
   const cluestoShow = showAllClues 
@@ -77,6 +82,13 @@ export const GameRoundsScreen: React.FC = () => {
 
     submitPlayerClue(currentClue.trim());
     setCurrentClue('');
+    // Schließe das Wort-Raten Dropdown beim Weitergehen
+    setShowWordGuessDropdown(false);
+    nextPlayer();
+  };
+
+  // Neue Funktion für "Nur Spieler weiterklicken" Modus
+  const handlePlayerAdvanceOnly = () => {
     // Schließe das Wort-Raten Dropdown beim Weitergehen
     setShowWordGuessDropdown(false);
     nextPlayer();
@@ -126,46 +138,69 @@ export const GameRoundsScreen: React.FC = () => {
             ]}>
               {currentPlayer}
             </Text>
-            <Text style={styles.instructionText}>
-              Gib einen Hinweis zu deinem Wort ab:
-            </Text>
+            {showInputFields ? (
+              <Text style={styles.instructionText}>
+                Gib einen Hinweis zu deinem Wort ab:
+              </Text>
+            ) : (
+              <Text style={styles.instructionText}>
+                Schaue dir dein Wort an und klicke dann weiter:
+              </Text>
+            )}
           </View>
 
-          {/* Input für Hinweis */}
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.textInput}
-              value={currentClue}
-              onChangeText={setCurrentClue}
-              placeholder="Dein Hinweis..."
-              placeholderTextColor="#888"
-              multiline={true}
-              numberOfLines={3}
-              textAlignVertical="top"
-              returnKeyType="done"
-              onSubmitEditing={handleSubmitClue}
-              blurOnSubmit={true}
-            />
-          </View>
+          {/* Input für Hinweis - nur bei entsprechenden Spielmodi */}
+          {showInputFields && (
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.textInput}
+                value={currentClue}
+                onChangeText={setCurrentClue}
+                placeholder="Dein Hinweis..."
+                placeholderTextColor="#888"
+                multiline={true}
+                numberOfLines={3}
+                textAlignVertical="top"
+                returnKeyType="done"
+                onSubmitEditing={handleSubmitClue}
+                blurOnSubmit={true}
+              />
+            </View>
+          )}
 
           {/* Buttons */}
           <View style={styles.buttonContainer}>
-            <TouchableOpacity 
-              style={[
-                styles.submitButton,
-                currentClue.trim() === '' && styles.submitButtonDisabled
-              ]}
-              onPress={handleSubmitClue}
-              disabled={currentClue.trim() === ''}
-            >
-              <Text style={styles.submitButtonText}>
-                {isLastPlayer && offlineSettings.currentRoundNumber < offlineSettings.maxRounds 
-                  ? `➡️ Weiter (Runde ${offlineSettings.currentRoundNumber + 1})` 
-                  : isLastPlayer 
-                  ? '🗳️ Zur Abstimmung' 
-                  : '➡️ Weiter'}
-              </Text>
-            </TouchableOpacity>
+            {showInputFields ? (
+              <TouchableOpacity 
+                style={[
+                  styles.submitButton,
+                  currentClue.trim() === '' && styles.submitButtonDisabled
+                ]}
+                onPress={handleSubmitClue}
+                disabled={currentClue.trim() === ''}
+              >
+                <Text style={styles.submitButtonText}>
+                  {isLastPlayer && offlineSettings.currentRoundNumber < offlineSettings.maxRounds 
+                    ? `➡️ Weiter (Runde ${offlineSettings.currentRoundNumber + 1})` 
+                    : isLastPlayer 
+                    ? '🗳️ Zur Abstimmung' 
+                    : '➡️ Weiter'}
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity 
+                style={styles.submitButton}
+                onPress={handlePlayerAdvanceOnly}
+              >
+                <Text style={styles.submitButtonText}>
+                  {isLastPlayer && offlineSettings.currentRoundNumber < offlineSettings.maxRounds 
+                    ? `➡️ Weiter (Runde ${offlineSettings.currentRoundNumber + 1})` 
+                    : isLastPlayer 
+                    ? '🗳️ Zur Abstimmung' 
+                    : '➡️ Weiter'}
+                </Text>
+              </TouchableOpacity>
+            )}
 
             {/* Wort Raten Dropdown - für alle Spieler sichtbar */}
             <TouchableOpacity 
@@ -242,8 +277,8 @@ export const GameRoundsScreen: React.FC = () => {
             )}
           </View>
 
-          {/* Bisherige Hinweise */}
-          {allCluesFromAllRounds.length > 0 && (
+          {/* Bisherige Hinweise - nur bei entsprechenden Spielmodi */}
+          {showClues && allCluesFromAllRounds.length > 0 && (
             <View style={styles.cluesContainer}>
               <View style={styles.cluesHeader}>
                 <Text style={styles.cluesTitle}>💭 Bisherige Hinweise:</Text>
@@ -280,15 +315,31 @@ export const GameRoundsScreen: React.FC = () => {
           {/* Spielregeln */}
           <View style={styles.rulesContainer}>
             <Text style={styles.rulesTitle}>📋 Regeln:</Text>
-            <Text style={styles.rulesText}>
-              • Gib einen Hinweis, der zeigt, dass du das Wort kennst
-            </Text>
-            <Text style={styles.rulesText}>
-              • Vermeide es, das Wort direkt zu nennen
-            </Text>
-            <Text style={styles.rulesText}>
-              • Als Imposter: Versuche zu erraten und mitzuspielen
-            </Text>
+            {showInputFields ? (
+              <>
+                <Text style={styles.rulesText}>
+                  • Gib einen Hinweis, der zeigt, dass du das Wort kennst
+                </Text>
+                <Text style={styles.rulesText}>
+                  • Vermeide es, das Wort direkt zu nennen
+                </Text>
+                <Text style={styles.rulesText}>
+                  • Als Imposter: Versuche zu erraten und mitzuspielen
+                </Text>
+              </>
+            ) : (
+              <>
+                <Text style={styles.rulesText}>
+                  • Schau dir dein Wort/deine Rolle genau an
+                </Text>
+                <Text style={styles.rulesText}>
+                  • Merke dir die Information für die Abstimmung
+                </Text>
+                <Text style={styles.rulesText}>
+                  • Als Imposter: Du kannst das Wort raten!
+                </Text>
+              </>
+            )}
           </View>
         </View>
       </ScrollView>

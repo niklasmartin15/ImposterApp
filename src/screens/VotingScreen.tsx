@@ -62,6 +62,10 @@ export const VotingScreen: React.FC = () => {
   const allClues = offlineSettings.allClues;
   const cluestoShow = showAllClues ? allClues : allClues.slice(-2);
 
+  // Prüfe den aktuellen Spielmodus
+  const gameMode = offlineSettings.gameMode;
+  const showClues = gameMode === 'wordInput_playerAdvance' || gameMode === 'open_mode';
+
   const handleSubmitVote = () => {
     if (selectedPlayer) {
       submitVote(selectedPlayer);
@@ -86,38 +90,40 @@ export const VotingScreen: React.FC = () => {
             </Text>
           </View>
 
-          {/* Alle Hinweise anzeigen */}
-          <View style={styles.cluesContainer}>
-            <View style={styles.cluesHeader}>
-              <Text style={styles.cluesTitle}>💡 Alle Hinweise</Text>
-              {allClues.length > 2 && (
-                <TouchableOpacity 
-                  style={styles.showAllButton}
-                  onPress={() => setShowAllClues(!showAllClues)}
-                >
-                  <Text style={styles.showAllButtonText}>
-                    {showAllClues ? 'Weniger' : 'Alle anzeigen'}
+          {/* Alle Hinweise anzeigen - nur bei entsprechenden Spielmodi */}
+          {showClues && (
+            <View style={styles.cluesContainer}>
+              <View style={styles.cluesHeader}>
+                <Text style={styles.cluesTitle}>💡 Alle Hinweise</Text>
+                {allClues.length > 2 && (
+                  <TouchableOpacity 
+                    style={styles.showAllButton}
+                    onPress={() => setShowAllClues(!showAllClues)}
+                  >
+                    <Text style={styles.showAllButtonText}>
+                      {showAllClues ? 'Weniger' : 'Alle anzeigen'}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+              {cluestoShow.map((clue, index) => (
+                <View key={`${clue.playerName}-${clue.roundNumber}-${index}`} style={styles.clueItem}>
+                  <Text style={[
+                    styles.cluePlayerName, 
+                    { color: getPlayerColor(clue.playerName) }
+                  ]}>
+                    {clue.playerName} (R{clue.roundNumber}):
                   </Text>
-                </TouchableOpacity>
+                  <Text style={styles.clueText}>{clue.clue}</Text>
+                </View>
+              ))}
+              {!showAllClues && allClues.length > 2 && (
+                <Text style={styles.hiddenCluesText}>
+                  ... und {allClues.length - 2} weitere Hinweise
+                </Text>
               )}
             </View>
-            {cluestoShow.map((clue, index) => (
-              <View key={`${clue.playerName}-${clue.roundNumber}-${index}`} style={styles.clueItem}>
-                <Text style={[
-                  styles.cluePlayerName, 
-                  { color: getPlayerColor(clue.playerName) }
-                ]}>
-                  {clue.playerName} (R{clue.roundNumber}):
-                </Text>
-                <Text style={styles.clueText}>{clue.clue}</Text>
-              </View>
-            ))}
-            {!showAllClues && allClues.length > 2 && (
-              <Text style={styles.hiddenCluesText}>
-                ... und {allClues.length - 2} weitere Hinweise
-              </Text>
-            )}
-          </View>
+          )}
 
           {/* Aktueller Wähler */}
           <View style={[

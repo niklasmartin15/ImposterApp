@@ -40,6 +40,10 @@ export const VotingResultsScreen: React.FC = () => {
     return PLAYER_COLORS[playerIndex % PLAYER_COLORS.length];
   };
 
+  // Prüfe den aktuellen Spielmodus
+  const gameMode = offlineSettings.gameMode;
+  const showClues = gameMode === 'wordInput_playerAdvance' || gameMode === 'open_mode';
+
   // Berechne Voting-Ergebnisse
   const votingState = offlineSettings.votingState;
   const assignedRoles = offlineSettings.assignedRoles;
@@ -252,24 +256,26 @@ export const VotingResultsScreen: React.FC = () => {
             </View>
           )}
 
-          {/* Alle Hinweise */}
-          <View style={styles.allCluesContainer}>
-            <Text style={styles.allCluesTitle}>📝 Alle Hinweise</Text>
-            {offlineSettings.allClues.map((clue, index) => (
-              <View key={`${clue.playerName}-${clue.roundNumber}-${index}`} style={styles.clueItem}>
-                <Text style={[
-                  styles.cluePlayerName, 
-                  { color: getPlayerColor(clue.playerName) }
-                ]}>
-                  {clue.playerName} (R{clue.roundNumber}):
-                </Text>
-                <Text style={styles.clueText}>{clue.clue}</Text>
-                {imposters.includes(clue.playerName) && (
-                  <Text style={styles.imposterClueLabel}>IMPOSTER</Text>
-                )}
-              </View>
-            ))}
-          </View>
+          {/* Alle Hinweise - nur bei entsprechenden Spielmodi */}
+          {showClues && (
+            <View style={styles.allCluesContainer}>
+              <Text style={styles.allCluesTitle}>📝 Alle Hinweise</Text>
+              {offlineSettings.allClues.map((clue, index) => (
+                <View key={`${clue.playerName}-${clue.roundNumber}-${index}`} style={styles.clueItem}>
+                  <Text style={[
+                    styles.cluePlayerName, 
+                    { color: getPlayerColor(clue.playerName) }
+                  ]}>
+                    {clue.playerName} (R{clue.roundNumber}):
+                  </Text>
+                  <Text style={styles.clueText}>{clue.clue}</Text>
+                  {imposters.includes(clue.playerName) && (
+                    <Text style={styles.imposterClueLabel}>IMPOSTER</Text>
+                  )}
+                </View>
+              ))}
+            </View>
+          )}
           
           {/* Buttons */}
           <View style={styles.buttonContainer}>
