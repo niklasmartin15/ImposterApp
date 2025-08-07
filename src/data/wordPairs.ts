@@ -387,9 +387,9 @@ export const getDifficultyDisplayName = (difficulty: WordDifficulty): string => 
     case 'easy':
       return 'Einfach';
     case 'medium':
-      return 'Fortgeschritten';
+      return 'Mittel';
     case 'hard':
-      return 'Profi';
+      return 'Schwer';
     case 'random':
       return 'Zufällig';
     default:

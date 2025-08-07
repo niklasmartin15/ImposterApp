@@ -156,7 +156,7 @@ export const OfflineSetupScreen: React.FC = () => {
             <Text style={styles.subtitle}>Einstellungen für das lokale Pass-and-Play</Text>
           </View>
 
-          {/* Player Names */}
+          {/* Player Names with Count Control */}
           <View style={styles.playersContainer}>
             <View style={styles.playersHeader}>
               <View style={styles.settingIconContainer}>
@@ -165,6 +165,31 @@ export const OfflineSetupScreen: React.FC = () => {
               <View style={styles.settingTextContainer}>
                 <Text style={styles.settingTitle}>Spielernamen</Text>
                 <Text style={styles.settingDescription}>Gib die Namen aller Spieler ein</Text>
+              </View>
+              
+              {/* Player Count Control */}
+              <View style={styles.playerCountControl}>
+                <TouchableOpacity 
+                  style={[styles.counterButton, offlineSettings.playerCount <= 3 && styles.counterButtonDisabled]}
+                  onPress={() => handlePlayerCountChange(false)}
+                  disabled={offlineSettings.playerCount <= 3}
+                  activeOpacity={0.7}
+                >
+                  <Text style={[styles.counterButtonText, offlineSettings.playerCount <= 3 && styles.counterButtonTextDisabled]}>−</Text>
+                </TouchableOpacity>
+                
+                <View style={styles.counterValue}>
+                  <Text style={styles.counterValueText}>{offlineSettings.playerCount}</Text>
+                </View>
+                
+                <TouchableOpacity 
+                  style={[styles.counterButton, offlineSettings.playerCount >= 12 && styles.counterButtonDisabled]}
+                  onPress={() => handlePlayerCountChange(true)}
+                  disabled={offlineSettings.playerCount >= 12}
+                  activeOpacity={0.7}
+                >
+                  <Text style={[styles.counterButtonText, offlineSettings.playerCount >= 12 && styles.counterButtonTextDisabled]}>+</Text>
+                </TouchableOpacity>
               </View>
             </View>
             
@@ -221,42 +246,6 @@ export const OfflineSetupScreen: React.FC = () => {
 
           {/* Game Settings Container */}
           <View style={styles.gameSettingsContainer}>
-            {/* Player Count Setting */}
-            <View style={styles.settingCard}>
-              <View style={styles.settingHeader}>
-                <View style={styles.settingIconContainer}>
-                  <Text style={styles.settingIcon}>👥</Text>
-                </View>
-                <View style={styles.settingTextContainer}>
-                  <Text style={styles.settingTitle}>Anzahl Spieler</Text>
-                  <Text style={styles.settingDescription}>3-12 Spieler</Text>
-                </View>
-              </View>
-              <View style={styles.counterContainer}>
-                <TouchableOpacity 
-                  style={[styles.counterButton, offlineSettings.playerCount <= 3 && styles.counterButtonDisabled]}
-                  onPress={() => handlePlayerCountChange(false)}
-                  disabled={offlineSettings.playerCount <= 3}
-                  activeOpacity={0.7}
-                >
-                  <Text style={[styles.counterButtonText, offlineSettings.playerCount <= 3 && styles.counterButtonTextDisabled]}>−</Text>
-                </TouchableOpacity>
-                
-                <View style={styles.counterValue}>
-                  <Text style={styles.counterValueText}>{offlineSettings.playerCount}</Text>
-                </View>
-                
-                <TouchableOpacity 
-                  style={[styles.counterButton, offlineSettings.playerCount >= 12 && styles.counterButtonDisabled]}
-                  onPress={() => handlePlayerCountChange(true)}
-                  disabled={offlineSettings.playerCount >= 12}
-                  activeOpacity={0.7}
-                >
-                  <Text style={[styles.counterButtonText, offlineSettings.playerCount >= 12 && styles.counterButtonTextDisabled]}>+</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-
             {/* Imposter Count Setting */}
             <View style={styles.settingCard}>
               <View style={styles.settingHeader}>
@@ -656,6 +645,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
+  },
+  playerCountControl: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 8,
   },
   playersInputSection: {
     gap: 6,
