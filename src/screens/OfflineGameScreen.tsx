@@ -30,6 +30,21 @@ export const OfflineGameScreen: React.FC = () => {
     setCurrentPhase('offlineSetup');
   };
 
+  // Hilfsfunktion: Schriftgröße für lange Wörter anpassen
+  const getWordFontSize = (word: string, baseFontSize: number) => {
+    if (word.length >= 25) return Math.max(baseFontSize * 0.4, 10);
+    if (word.length >= 18) return Math.max(baseFontSize * 0.5, 12); // Sehr lange Wörter: 60% der Basis-Größe
+    if (word.length >= 14) return Math.max(baseFontSize * 0.55, 15);
+    if (word.length >= 11) return Math.max(baseFontSize * 0.7, 18);
+    if (word.length >= 9) return Math.max(baseFontSize * 0.8, 18); // Lange Wörter: 75% der Basis-Größe
+    return baseFontSize; // Normal
+  };
+
+  // Vereinfachte Funktion - keine Umbrüche mehr
+  const formatWordWithLineBreaks = (word: string) => {
+    return word; // Einfach das Wort zurückgeben, ohne Umbruch
+  };
+
   // Hilfsfunktion: Karten in 2er-Gruppen aufteilen
   const chunkArray = (arr: any[], size: number) => {
     const result = [];
@@ -63,15 +78,19 @@ export const OfflineGameScreen: React.FC = () => {
                 <View style={styles.imposterContent}>
                   <Text style={styles.imposterEmoji}></Text>
                   <Text style={styles.imposterText}>IMPOSTER</Text>
-                  <Text style={styles.imposterSubtext}>Hinweis: {offlineSettings.currentWordPair?.imposterHint}</Text>
+                  <Text style={[
+                    styles.imposterSubtext,
+                    { fontSize: getWordFontSize(offlineSettings.currentWordPair?.imposterHint || '', 14) }
+                  ]}>Hinweis: {formatWordWithLineBreaks(offlineSettings.currentWordPair?.imposterHint || '')}</Text>
                 </View>
               ) : (
                 <View style={styles.wordContent}>
                   <Text style={styles.wordLabel}>Dein Wort:</Text>
                   <Text style={[
                     styles.wordText,
-                    (offlineSettings.currentWordPair?.word?.length || 0) > 8 && styles.wordTextLong
-                  ]}>{offlineSettings.currentWordPair?.word}</Text>
+                    (offlineSettings.currentWordPair?.word?.length || 0) > 8 && styles.wordTextLong,
+                    { fontSize: getWordFontSize(offlineSettings.currentWordPair?.word || '', 28) }
+                  ]}>{formatWordWithLineBreaks(offlineSettings.currentWordPair?.word || '')}</Text>
                 </View>
               )}
               <Text style={styles.cardHintSmall}>👆 Zum Verstecken</Text>
