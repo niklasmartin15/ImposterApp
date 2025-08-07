@@ -30,7 +30,10 @@ export interface LobbySettings {
 export interface WordPair {
   word: string;
   imposterHint: string;
+  difficulty?: WordDifficulty;
 }
+
+export type WordDifficulty = 'easy' | 'medium' | 'hard' | 'random';
 
 export interface OfflineGameSettings {
   playerCount: number;
@@ -48,6 +51,7 @@ export interface OfflineGameSettings {
   wordGuessAttempted: boolean; // Ob bereits ein Wort-Raten-Versuch gemacht wurde
   wordGuessingDisabled: boolean; // Ob Wort-Raten deaktiviert ist (nach falschem Versuch)
   gameMode: GameMode; // Spielmodus
+  wordDifficulty: WordDifficulty; // Schwierigkeitsgrad der Wörter
 }
 
 export interface OfflinePlayerRole {

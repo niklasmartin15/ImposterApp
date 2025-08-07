@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { getRandomWordPair } from '../data/wordPairs';
-import { GameMode, GamePhase, GameRound, OfflineGameSettings, PlayerClue, Vote, VotingState } from '../types/game';
+import { getDifficultyDisplayName, getRandomWordPair, getRandomWordPairByDifficulty } from '../data/wordPairs';
+import { GameMode, GamePhase, GameRound, OfflineGameSettings, PlayerClue, Vote, VotingState, WordDifficulty } from '../types/game';
 
 interface GameState {
   // Player info
@@ -41,6 +41,8 @@ interface GameState {
   simulateVotingForOpenMode: (selectedImposter: string) => void;
   setGameMode: (mode: GameMode) => void;
   getGameModeDisplayName: (mode: GameMode) => string;
+  setWordDifficulty: (difficulty: WordDifficulty) => void;
+  getWordDifficultyDisplayName: (difficulty: WordDifficulty) => string;
 }
 
 export const useGameStore = create<GameState>((set, get) => ({
@@ -61,6 +63,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     wordGuessAttempted: false,
     wordGuessingDisabled: false,
     gameMode: 'wordInput_playerAdvance' as GameMode,
+    wordDifficulty: 'medium' as WordDifficulty,
   },
   
   // Actions
@@ -128,6 +131,7 @@ export const useGameStore = create<GameState>((set, get) => ({
         wordGuessResult: undefined, // Clear any previous word guess results
         votingState: undefined,     // Clear voting state
         gameMode: 'wordInput_playerAdvance' as GameMode, // Standard Spielmodus
+        wordDifficulty: 'medium' as WordDifficulty, // Standard Schwierigkeitsgrad
       }
     };
   }),
@@ -149,10 +153,15 @@ export const useGameStore = create<GameState>((set, get) => ({
       hasSeenCard: false
     }));
 
+    // Generiere ein neues Wort basierend auf der gewählten Schwierigkeit
+    const newWordPair = getRandomWordPairByDifficulty(state.offlineSettings.wordDifficulty);
+
     return {
       offlineSettings: {
         ...state.offlineSettings,
         assignedRoles,
+        currentWordPair: newWordPair,
+        gameWordPair: newWordPair,
         allClues: [], // Lösche alle vorherigen Hinweise
         wordGuessAttempted: false,
         wordGuessingDisabled: false,
@@ -180,8 +189,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   }),
 
   generateNewWordPair: () => set((state) => {
-    // Erzeuge neues Wortpaar und reset Rating-Flags
-    const newWordPair = getRandomWordPair();
+    // Erzeuge neues Wortpaar basierend auf der gewählten Schwierigkeit und reset Rating-Flags
+    const newWordPair = getRandomWordPairByDifficulty(state.offlineSettings.wordDifficulty);
     const playerNames = state.offlineSettings.playerNames.filter(name => name.trim() !== '');
     const impCount = state.offlineSettings.imposterCount;
     // Imposter-Positionen zufällig wählen
@@ -586,5 +595,16 @@ export const useGameStore = create<GameState>((set, get) => ({
       default:
         return 'Unbekannt';
     }
+  },
+
+  setWordDifficulty: (difficulty: WordDifficulty) => set((state) => ({
+    offlineSettings: {
+      ...state.offlineSettings,
+      wordDifficulty: difficulty
+    }
+  })),
+
+  getWordDifficultyDisplayName: (difficulty: WordDifficulty) => {
+    return getDifficultyDisplayName(difficulty);
   },
 }));

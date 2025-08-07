@@ -1,6 +1,138 @@
-import { WordPair } from '../types/game';
+import { WordDifficulty, WordPair } from '../types/game';
 
-//200 Wörter
+// Einfache Wörter - kurze, alltägliche Begriffe
+export const EASY_WORD_PAIRS: WordPair[] = [
+  { word: 'Hund', imposterHint: 'Leine', difficulty: 'easy' },
+  { word: 'Katze', imposterHint: 'Miau', difficulty: 'easy' },
+  { word: 'Auto', imposterHint: 'Räder', difficulty: 'easy' },
+  { word: 'Haus', imposterHint: 'Dach', difficulty: 'easy' },
+  { word: 'Buch', imposterHint: 'Seite', difficulty: 'easy' },
+  { word: 'Ball', imposterHint: 'Rund', difficulty: 'easy' },
+  { word: 'Stuhl', imposterHint: 'Sitzen', difficulty: 'easy' },
+  { word: 'Tisch', imposterHint: 'Essen', difficulty: 'easy' },
+  { word: 'Wasser', imposterHint: 'Trinken', difficulty: 'easy' },
+  { word: 'Brot', imposterHint: 'Bäcker', difficulty: 'easy' },
+  { word: 'Apfel', imposterHint: 'Baum', difficulty: 'easy' },
+  { word: 'Pizza', imposterHint: 'Italien', difficulty: 'easy' },
+  { word: 'Kaffee', imposterHint: 'Morgen', difficulty: 'easy' },
+  { word: 'Handy', imposterHint: 'Anruf', difficulty: 'easy' },
+  { word: 'Fenster', imposterHint: 'Glas', difficulty: 'easy' },
+  { word: 'Lampe', imposterHint: 'Licht', difficulty: 'easy' },
+  { word: 'Sonne', imposterHint: 'Warm', difficulty: 'easy' },
+  { word: 'Mond', imposterHint: 'Nacht', difficulty: 'easy' },
+  { word: 'Blume', imposterHint: 'Garten', difficulty: 'easy' },
+  { word: 'Fisch', imposterHint: 'Wasser', difficulty: 'easy' },
+  { word: 'Vogel', imposterHint: 'Fliegen', difficulty: 'easy' },
+  { word: 'Baum', imposterHint: 'Blätter', difficulty: 'easy' },
+  { word: 'Tor', imposterHint: 'Fußball', difficulty: 'easy' },
+  { word: 'Tür', imposterHint: 'Öffnen', difficulty: 'easy' },
+  { word: 'Bett', imposterHint: 'Schlafen', difficulty: 'easy' },
+  { word: 'Kino', imposterHint: 'Film', difficulty: 'easy' },
+  { word: 'Park', imposterHint: 'Grün', difficulty: 'easy' },
+  { word: 'Zug', imposterHint: 'Schiene', difficulty: 'easy' },
+  { word: 'Bus', imposterHint: 'Fahren', difficulty: 'easy' },
+  { word: 'Rad', imposterHint: 'Fahren', difficulty: 'easy' },
+  { word: 'Eis', imposterHint: 'Kalt', difficulty: 'easy' },
+  { word: 'Feuer', imposterHint: 'Heiß', difficulty: 'easy' },
+  { word: 'Schnee', imposterHint: 'Winter', difficulty: 'easy' },
+  { word: 'Regen', imposterHint: 'Nass', difficulty: 'easy' },
+  { word: 'Wind', imposterHint: 'Luft', difficulty: 'easy' },
+  { word: 'Stern', imposterHint: 'Himmel', difficulty: 'easy' },
+  { word: 'Meer', imposterHint: 'Salz', difficulty: 'easy' },
+  { word: 'See', imposterHint: 'Boot', difficulty: 'easy' },
+  { word: 'Berg', imposterHint: 'Hoch', difficulty: 'easy' },
+  { word: 'Wald', imposterHint: 'Bäume', difficulty: 'easy' },
+];
+
+// Fortgeschrittene Wörter - mittlere Schwierigkeit
+export const MEDIUM_WORD_PAIRS: WordPair[] = [
+  { word: 'Fernseher', imposterHint: 'Couch', difficulty: 'medium' },
+  { word: 'Computer', imposterHint: 'Tastatur', difficulty: 'medium' },
+  { word: 'Krankenhaus', imposterHint: 'Medizin', difficulty: 'medium' },
+  { word: 'Bibliothek', imposterHint: 'Ruhe', difficulty: 'medium' },
+  { word: 'Supermarkt', imposterHint: 'Einkaufswagen', difficulty: 'medium' },
+  { word: 'Flugzeug', imposterHint: 'Flughafen', difficulty: 'medium' },
+  { word: 'Schwimmbad', imposterHint: 'Chlor', difficulty: 'medium' },
+  { word: 'Restaurant', imposterHint: 'Kellner', difficulty: 'medium' },
+  { word: 'Tankstelle', imposterHint: 'Zapfsäule', difficulty: 'medium' },
+  { word: 'Kühlschrank', imposterHint: 'Magnet', difficulty: 'medium' },
+  { word: 'Waschmaschine', imposterHint: 'Schleuder', difficulty: 'medium' },
+  { word: 'Geschirrspüler', imposterHint: 'Teller', difficulty: 'medium' },
+  { word: 'Mikrowelle', imposterHint: 'Erwärmen', difficulty: 'medium' },
+  { word: 'Staubsauger', imposterHint: 'Teppich', difficulty: 'medium' },
+  { word: 'Klimaanlage', imposterHint: 'Kühlung', difficulty: 'medium' },
+  { word: 'Heizung', imposterHint: 'Wärme', difficulty: 'medium' },
+  { word: 'Aufzug', imposterHint: 'Stockwerk', difficulty: 'medium' },
+  { word: 'Rolltreppe', imposterHint: 'Stufen', difficulty: 'medium' },
+  { word: 'Zebrastreifen', imposterHint: 'Übergang', difficulty: 'medium' },
+  { word: 'Kreisverkehr', imposterHint: 'Runde', difficulty: 'medium' },
+  { word: 'Parkplatz', imposterHint: 'Stellplatz', difficulty: 'medium' },
+  { word: 'Ampel', imposterHint: 'Verkehr', difficulty: 'medium' },
+  { word: 'Gehweg', imposterHint: 'Fußgänger', difficulty: 'medium' },
+  { word: 'Spielplatz', imposterHint: 'Rutsche', difficulty: 'medium' },
+  { word: 'Friedhof', imposterHint: 'Grabstein', difficulty: 'medium' },
+  { word: 'Baustelle', imposterHint: 'Bagger', difficulty: 'medium' },
+  { word: 'Werkstatt', imposterHint: 'Reparatur', difficulty: 'medium' },
+  { word: 'Friseur', imposterHint: 'Schere', difficulty: 'medium' },
+  { word: 'Zahnarzt', imposterHint: 'Bohrer', difficulty: 'medium' },
+  { word: 'Apotheke', imposterHint: 'Medikament', difficulty: 'medium' },
+  { word: 'Reisebüro', imposterHint: 'Urlaub', difficulty: 'medium' },
+  { word: 'Postamt', imposterHint: 'Briefmarke', difficulty: 'medium' },
+  { word: 'Rathaus', imposterHint: 'Verwaltung', difficulty: 'medium' },
+  { word: 'Polizeiwache', imposterHint: 'Uniform', difficulty: 'medium' },
+  { word: 'Feuerwache', imposterHint: 'Sirene', difficulty: 'medium' },
+  { word: 'Theater', imposterHint: 'Bühne', difficulty: 'medium' },
+  { word: 'Museum', imposterHint: 'Ausstellung', difficulty: 'medium' },
+  { word: 'Konzerthalle', imposterHint: 'Orchester', difficulty: 'medium' },
+  { word: 'Sportstadion', imposterHint: 'Tribüne', difficulty: 'medium' },
+  { word: 'Fitnessstudio', imposterHint: 'Training', difficulty: 'medium' },
+];
+
+// Schwere Wörter - Fachbegriffe und komplexe Wörter
+export const HARD_WORD_PAIRS: WordPair[] = [
+  { word: 'Quantenphysik', imposterHint: 'Teilchen', difficulty: 'hard' },
+  { word: 'Biochemie', imposterHint: 'Molekül', difficulty: 'hard' },
+  { word: 'Neurologie', imposterHint: 'Gehirn', difficulty: 'hard' },
+  { word: 'Kardiologie', imposterHint: 'Herz', difficulty: 'hard' },
+  { word: 'Rheumatologie', imposterHint: 'Gelenke', difficulty: 'hard' },
+  { word: 'Dermatologie', imposterHint: 'Haut', difficulty: 'hard' },
+  { word: 'Ophthalmologie', imposterHint: 'Auge', difficulty: 'hard' },
+  { word: 'Gastroenterologie', imposterHint: 'Magen', difficulty: 'hard' },
+  { word: 'Pneumologie', imposterHint: 'Lunge', difficulty: 'hard' },
+  { word: 'Endokrinologie', imposterHint: 'Hormone', difficulty: 'hard' },
+  { word: 'Thermodynamik', imposterHint: 'Energie', difficulty: 'hard' },
+  { word: 'Elektrodynamik', imposterHint: 'Magnetfeld', difficulty: 'hard' },
+  { word: 'Aerodynamik', imposterHint: 'Strömung', difficulty: 'hard' },
+  { word: 'Hydrodynamik', imposterHint: 'Flüssigkeit', difficulty: 'hard' },
+  { word: 'Kristallographie', imposterHint: 'Struktur', difficulty: 'hard' },
+  { word: 'Spektroskopie', imposterHint: 'Licht', difficulty: 'hard' },
+  { word: 'Chromatographie', imposterHint: 'Trennung', difficulty: 'hard' },
+  { word: 'Röntgenographie', imposterHint: 'Strahlung', difficulty: 'hard' },
+  { word: 'Magnetresonanz', imposterHint: 'Schwingung', difficulty: 'hard' },
+  { word: 'Ultraschall', imposterHint: 'Frequenz', difficulty: 'hard' },
+  { word: 'Photosynthese', imposterHint: 'Chlorophyll', difficulty: 'hard' },
+  { word: 'Zellatmung', imposterHint: 'Mitochondrien', difficulty: 'hard' },
+  { word: 'Proteinsynthese', imposterHint: 'Ribosom', difficulty: 'hard' },
+  { word: 'Transkription', imposterHint: 'DNA', difficulty: 'hard' },
+  { word: 'Translation', imposterHint: 'RNA', difficulty: 'hard' },
+  { word: 'Metamorphose', imposterHint: 'Verwandlung', difficulty: 'hard' },
+  { word: 'Photosynthese', imposterHint: 'Kohlendioxid', difficulty: 'hard' },
+  { word: 'Oxidation', imposterHint: 'Sauerstoff', difficulty: 'hard' },
+  { word: 'Katalyse', imposterHint: 'Beschleunigung', difficulty: 'hard' },
+  { word: 'Elektrolyse', imposterHint: 'Spaltung', difficulty: 'hard' },
+  { word: 'Destillation', imposterHint: 'Verdampfung', difficulty: 'hard' },
+  { word: 'Sublimation', imposterHint: 'Übergang', difficulty: 'hard' },
+  { word: 'Kristallisation', imposterHint: 'Bildung', difficulty: 'hard' },
+  { word: 'Polymerisation', imposterHint: 'Verbindung', difficulty: 'hard' },
+  { word: 'Hydrolyse', imposterHint: 'Spaltung', difficulty: 'hard' },
+  { word: 'Kondensation', imposterHint: 'Verdichtung', difficulty: 'hard' },
+  { word: 'Evaporation', imposterHint: 'Verdunstung', difficulty: 'hard' },
+  { word: 'Permeabilität', imposterHint: 'Durchlässigkeit', difficulty: 'hard' },
+  { word: 'Viskosität', imposterHint: 'Zähigkeit', difficulty: 'hard' },
+  { word: 'Elastizität', imposterHint: 'Verformung', difficulty: 'hard' },
+];
+
+//200 Wörter - Gemischte Sammlung (für Rückwärtskompatibilität)
 export const WORD_PAIRS: WordPair[] = [
   { word: 'Hotel', imposterHint: 'Urlaub' },
   { word: 'Zahnarzt', imposterHint: 'Termin' },
@@ -221,4 +353,46 @@ export const WORD_PAIRS: WordPair[] = [
 export const getRandomWordPair = (): WordPair => {
   const randomIndex = Math.floor(Math.random() * WORD_PAIRS.length);
   return WORD_PAIRS[randomIndex];
+};
+
+// Function to get a random word pair by difficulty
+export const getRandomWordPairByDifficulty = (difficulty: WordDifficulty): WordPair => {
+  let wordPool: WordPair[];
+  
+  switch (difficulty) {
+    case 'easy':
+      wordPool = EASY_WORD_PAIRS;
+      break;
+    case 'medium':
+      wordPool = MEDIUM_WORD_PAIRS;
+      break;
+    case 'hard':
+      wordPool = HARD_WORD_PAIRS;
+      break;
+    case 'random':
+      // Kombiniere alle Schwierigkeitsgrade für zufällige Auswahl
+      wordPool = [...EASY_WORD_PAIRS, ...MEDIUM_WORD_PAIRS, ...HARD_WORD_PAIRS];
+      break;
+    default:
+      wordPool = WORD_PAIRS;
+  }
+  
+  const randomIndex = Math.floor(Math.random() * wordPool.length);
+  return wordPool[randomIndex];
+};
+
+// Get difficulty display name
+export const getDifficultyDisplayName = (difficulty: WordDifficulty): string => {
+  switch (difficulty) {
+    case 'easy':
+      return 'Einfach';
+    case 'medium':
+      return 'Fortgeschritten';
+    case 'hard':
+      return 'Profi';
+    case 'random':
+      return 'Zufällig';
+    default:
+      return 'Standard';
+  }
 };

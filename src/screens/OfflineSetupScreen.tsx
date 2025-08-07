@@ -10,7 +10,7 @@ import {
   View
 } from 'react-native';
 import { useGameStore } from '../stores/gameStore';
-import { GameMode } from '../types/game';
+import { GameMode, WordDifficulty } from '../types/game';
 
 export const OfflineSetupScreen: React.FC = () => {
   const { 
@@ -21,7 +21,9 @@ export const OfflineSetupScreen: React.FC = () => {
     setCurrentPhase,
     startOfflineGame,
     getGameModeDisplayName,
-    setGameMode
+    setGameMode,
+    setWordDifficulty,
+    getWordDifficultyDisplayName
   } = useGameStore();
 
   // Berechne die maximale Anzahl der Imposter
@@ -53,6 +55,49 @@ export const OfflineSetupScreen: React.FC = () => {
       ? Math.min(offlineSettings.imposterCount + 1, maxImposters) 
       : Math.max(offlineSettings.imposterCount - 1, 1);
     setOfflineImposterCount(newCount);
+  };
+
+  const handleWordDifficultyChange = (increment: boolean) => {
+    const difficulties: WordDifficulty[] = ['easy', 'medium', 'hard', 'random'];
+    const currentIndex = difficulties.indexOf(offlineSettings.wordDifficulty);
+    
+    if (increment && currentIndex < difficulties.length - 1) {
+      setWordDifficulty(difficulties[currentIndex + 1]);
+    } else if (!increment && currentIndex > 0) {
+      setWordDifficulty(difficulties[currentIndex - 1]);
+    }
+  };
+
+  // Hilfsfunktion für die Hintergrundfarbe basierend auf Schwierigkeit
+  const getDifficultyBackgroundColor = () => {
+    switch (offlineSettings.wordDifficulty) {
+      case 'easy':
+        return '#1a2e25'; // Sehr blasses Grün
+      case 'medium':
+        return '#2e2a1a'; // Sehr blasses Gelb
+      case 'hard':
+        return '#2e1a1a'; // Sehr blasses Rot
+      case 'random':
+        return '#2a2a2a'; // Sehr blasses Grau/Weiß
+      default:
+        return '#16213e'; // Standard-Blau
+    }
+  };
+
+  // Hilfsfunktion für die Counter-Value Farbe basierend auf Schwierigkeit
+  const getDifficultyCounterColor = () => {
+    switch (offlineSettings.wordDifficulty) {
+      case 'easy':
+        return '#2d5a41'; // Kräftiges Grün
+      case 'medium':
+        return '#5a5a2d'; // Kräftiges Gelb
+      case 'hard':
+        return '#5a2d2d'; // Kräftiges Rot
+      case 'random':
+        return '#4a4a4a'; // Kräftiges Grau/Weiß
+      default:
+        return '#0f3460'; // Standard-Blau
+    }
   };
 
   // Zeige Fehler erst nach erstem Klick auf Start
@@ -228,6 +273,44 @@ export const OfflineSetupScreen: React.FC = () => {
                   activeOpacity={0.7}
                 >
                   <Text style={[styles.counterButtonText, offlineSettings.imposterCount >= getMaxImposters() && styles.counterButtonTextDisabled]}>+</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Word Difficulty Setting */}
+            <View style={[styles.settingCard, { backgroundColor: getDifficultyBackgroundColor() }]}>
+              <View style={styles.settingHeader}>
+                <View style={styles.settingIconContainer}>
+                  <Text style={styles.settingIcon}>🎯</Text>
+                </View>
+                <View style={styles.settingTextContainer}>
+                  <Text style={styles.settingTitle}>Wort-Schwierigkeit</Text>
+                  <Text style={styles.settingDescription}>Wähle den Schwierigkeitsgrad der Wörter</Text>
+                </View>
+              </View>
+              <View style={styles.counterContainer}>
+                <TouchableOpacity 
+                  style={[styles.counterButton, offlineSettings.wordDifficulty === 'easy' && styles.counterButtonDisabled]}
+                  onPress={() => handleWordDifficultyChange(false)}
+                  disabled={offlineSettings.wordDifficulty === 'easy'}
+                  activeOpacity={0.7}
+                >
+                  <Text style={[styles.counterButtonText, offlineSettings.wordDifficulty === 'easy' && styles.counterButtonTextDisabled]}>−</Text>
+                </TouchableOpacity>
+                
+                <View style={[styles.counterValue, { backgroundColor: getDifficultyCounterColor() }]}>
+                  <Text style={styles.counterValueText}>
+                    {offlineSettings.wordDifficulty === 'random' ? 'Zufällig' : getWordDifficultyDisplayName(offlineSettings.wordDifficulty)}
+                  </Text>
+                </View>
+                
+                <TouchableOpacity 
+                  style={[styles.counterButton, offlineSettings.wordDifficulty === 'random' && styles.counterButtonDisabled]}
+                  onPress={() => handleWordDifficultyChange(true)}
+                  disabled={offlineSettings.wordDifficulty === 'random'}
+                  activeOpacity={0.7}
+                >
+                  <Text style={[styles.counterButtonText, offlineSettings.wordDifficulty === 'random' && styles.counterButtonTextDisabled]}>+</Text>
                 </TouchableOpacity>
               </View>
             </View>
