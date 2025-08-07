@@ -20,7 +20,8 @@ export const OfflineGameScreen: React.FC = () => {
     setCurrentPhase,
     generateNewWordPair,
     startGameRounds,
-    getGameModeDisplayName
+    getGameModeDisplayName,
+    getWordDifficultyDisplayName
   } = useGameStore();
 
   const [showGameModeSettings, setShowGameModeSettings] = useState(false);
@@ -142,7 +143,9 @@ export const OfflineGameScreen: React.FC = () => {
                 <Text style={styles.buttonIcon}>🎲</Text>
               </View>
               <View style={styles.buttonTextContainer}>
-                <Text style={styles.newWordButtonText}>Neues Wort</Text>
+                <Text style={styles.newWordButtonText}>
+                  Neues Wort (Schwierigkeit: {getWordDifficultyDisplayName(offlineSettings.wordDifficulty)})
+                </Text>
                 <Text style={styles.buttonSubText}>Andere Begriffe generieren</Text>
               </View>
             </TouchableOpacity>
