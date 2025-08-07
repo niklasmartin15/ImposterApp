@@ -100,6 +100,22 @@ export const OfflineSetupScreen: React.FC = () => {
     }
   };
 
+  // Hilfsfunktion für die Beschreibung basierend auf Schwierigkeit
+  const getDifficultyDescription = () => {
+    switch (offlineSettings.wordDifficulty) {
+      case 'easy':
+        return 'Kurze, simple Wörter aus dem Alltag';
+      case 'medium':
+        return 'Die perfekte Mitte zwischen leicht und schwer';
+      case 'hard':
+        return 'Fachbegriffe und komplexe, lange Wörter';
+      case 'random':
+        return 'Wörter aus allen Schwierigkeitsgraden';
+      default:
+        return 'Wähle den Schwierigkeitsgrad der Wörter';
+    }
+  };
+
   // Zeige Fehler erst nach erstem Klick auf Start
   const [showNameErrors, setShowNameErrors] = useState(false);
   const [showGameModeSettings, setShowGameModeSettings] = useState(false);
@@ -312,6 +328,13 @@ export const OfflineSetupScreen: React.FC = () => {
                 >
                   <Text style={[styles.counterButtonText, offlineSettings.wordDifficulty === 'random' && styles.counterButtonTextDisabled]}>+</Text>
                 </TouchableOpacity>
+              </View>
+              
+              {/* Difficulty Description */}
+              <View style={styles.difficultyDescriptionContainer}>
+                <Text style={styles.difficultyDescriptionText}>
+                  {getDifficultyDescription()}
+                </Text>
               </View>
             </View>
           </View>
@@ -962,5 +985,21 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'left',
+  },
+
+  // Difficulty Description Styles
+  difficultyDescriptionContainer: {
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.1)',
+    alignItems: 'center',
+  },
+  difficultyDescriptionText: {
+    fontSize: 11,
+    color: 'rgba(255, 255, 255, 0.7)',
+    textAlign: 'center',
+    lineHeight: 14,
+    fontStyle: 'italic',
   },
 });
