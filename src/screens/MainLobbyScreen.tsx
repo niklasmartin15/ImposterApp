@@ -128,7 +128,7 @@ export const MainLobbyScreen: React.FC = () => {
                     • Automatische Rollenvergabe{'\n'}
                     • Integrierte Abstimmung{'\n'}
                     • Letzte-Chance Wortraten{'\n'}
-                    • Über 200 Wortpaare{'\n'}
+                    • Über 800 Wortpaare{'\n'}
                     • Schneller Neustart{'\n'}
                     • 3 verschiedene Spielmodi{'\n'}
                   </Text>
