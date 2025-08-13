@@ -194,13 +194,20 @@ export const GameRoundsScreen: React.FC = () => {
                   onPress={handleSubmitClue}
                   disabled={currentClue.trim() === ''}
                 >
-                  <Text style={styles.submitButtonText}>
-                    {isLastPlayer && offlineSettings.currentRoundNumber < offlineSettings.maxRounds 
-                      ? `➡️ Weiter (Runde ${offlineSettings.currentRoundNumber + 1})` 
-                      : isLastPlayer 
-                      ? '🗳️ Zur Abstimmung' 
-                      : '➡️ Weiter'}
-                  </Text>
+                  <View style={styles.submitButtonIconContainer}>
+                    <Text style={styles.submitButtonIcon}>
+                      {isLastPlayer ? '🗳️' : '➡️'}
+                    </Text>
+                  </View>
+                  <View style={styles.submitButtonTextContainer}>
+                    <Text style={styles.submitButtonText}>
+                      {isLastPlayer && offlineSettings.currentRoundNumber < offlineSettings.maxRounds 
+                        ? `Weiter (Runde ${offlineSettings.currentRoundNumber + 1})` 
+                        : isLastPlayer 
+                        ? 'Zur Abstimmung' 
+                        : 'Weiter'}
+                    </Text>
+                  </View>
                 </TouchableOpacity>
 
                 {/* Imposter Wort-Rate Dropdown - für alle sichtbar */}
@@ -416,13 +423,20 @@ export const GameRoundsScreen: React.FC = () => {
                   style={styles.submitButton}
                   onPress={handlePlayerAdvanceOnly}
                 >
-                  <Text style={styles.submitButtonText}>
-                    {isLastPlayer && offlineSettings.currentRoundNumber < offlineSettings.maxRounds 
-                      ? `➡️ Weiter (Runde ${offlineSettings.currentRoundNumber + 1})` 
-                      : isLastPlayer 
-                      ? '🗳️ Zur Abstimmung' 
-                      : '➡️ Weiter'}
-                  </Text>
+                  <View style={styles.submitButtonIconContainer}>
+                    <Text style={styles.submitButtonIcon}>
+                      {isLastPlayer ? '🗳️' : '➡️'}
+                    </Text>
+                  </View>
+                  <View style={styles.submitButtonTextContainer}>
+                    <Text style={styles.submitButtonText}>
+                      {isLastPlayer && offlineSettings.currentRoundNumber < offlineSettings.maxRounds 
+                        ? `Weiter (Runde ${offlineSettings.currentRoundNumber + 1})` 
+                        : isLastPlayer 
+                        ? 'Zur Abstimmung' 
+                        : 'Weiter'}
+                    </Text>
+                  </View>
                 </TouchableOpacity>
 
                 {/* Imposter Wort-Rate Dropdown - für alle sichtbar */}
@@ -722,29 +736,67 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     backgroundColor: '#e94560',
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 28,
+    borderRadius: 16,
     alignItems: 'center',
     marginBottom: 12,
-    elevation: 8,
+    elevation: 12,
     shadowColor: '#e94560',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    borderWidth: 2,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    borderWidth: 3,
     borderColor: '#ff6b8a',
+    position: 'relative',
+    overflow: 'hidden',
+    // Zusätzlicher innerer Glow-Effekt
+    transform: [{ scale: 1 }],
   },
   submitButtonDisabled: {
     backgroundColor: '#555',
     borderColor: '#666',
-    elevation: 2,
-    shadowOpacity: 0.1,
+    elevation: 4,
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
   },
   submitButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 17,
+    fontWeight: '800',
     color: '#fff',
+    letterSpacing: 0.5,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+    flex: 1,
+  },
+  submitButtonInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  submitButtonIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  submitButtonTextContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  submitButtonIcon: {
+    fontSize: 18,
+    textAlign: 'center',
   },
   backButton: {
     backgroundColor: 'transparent',
