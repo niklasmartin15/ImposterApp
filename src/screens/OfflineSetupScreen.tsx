@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import {
-  Modal,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View
+    Modal,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
 } from 'react-native';
 import { useGameStore } from '../stores/gameStore';
 import { GameMode, WordDifficulty } from '../types/game';
@@ -814,22 +814,25 @@ const styles = StyleSheet.create({
   // Modal Styles
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(0, 0, 0, 0.85)',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 20,
   },
   modalContainer: {
     backgroundColor: '#1a1a2e',
     borderRadius: 20,
-    width: '90%',
+    width: '100%',
     maxWidth: 400,
-    maxHeight: '80%',
-    elevation: 20,
+    maxHeight: '90%',
+    minHeight: 300,
+    elevation: 25,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.5,
-    shadowRadius: 20,
-    borderWidth: 2,
+    shadowOffset: { width: 0, height: 15 },
+    shadowOpacity: 0.6,
+    shadowRadius: 25,
+    borderWidth: 3,
     borderColor: '#0f3460',
   },
   modalSafeArea: {
