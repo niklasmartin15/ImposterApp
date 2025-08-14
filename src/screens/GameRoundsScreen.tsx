@@ -450,7 +450,7 @@ export const GameRoundsScreen: React.FC = () => {
                   • Merke dir die Information für die Abstimmung
                 </Text>
                 <Text style={styles.rulesText}>
-                  • Versuche Hinweise zu geben, die nicht zu offensichtlich sind
+                  • Versuche Hinweise zu geben, die nicht zu offensichtlich sind -
                 </Text>
                 <Text style={styles.rulesText}>
                   • Als Imposter: Du kannst das Wort raten!
