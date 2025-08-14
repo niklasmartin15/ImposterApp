@@ -60,6 +60,17 @@ export const OfflineGameScreen: React.FC = () => {
     return result;
   };
 
+  const handleClickMethodChange = (newMethod: 'double' | 'hold') => {
+    // Wenn zu "Halten & Loslassen" gewechselt wird, alle umgedrehten Karten als gesehen markieren
+    if (newMethod === 'hold' && clickMethod === 'double') {
+      const flippedCards = offlineSettings.assignedRoles?.filter(role => role.isFlipped && !role.hasSeenCard) || [];
+      flippedCards.forEach(role => {
+        markPlayerCardSeen(role.playerName);
+      });
+    }
+    setClickMethod(newMethod);
+  };
+
   const renderPlayerCard = (role: any, index: number) => {
     const isFlipped = role.isFlipped && !role.hasSeenCard; // Nur umgedreht wenn noch nicht als gesehen markiert
     const hasSeenCard = role.hasSeenCard;
@@ -184,7 +195,7 @@ export const OfflineGameScreen: React.FC = () => {
                   styles.clickMethodButton,
                   clickMethod === 'hold' && styles.clickMethodButtonActive
                 ]}
-                onPress={() => setClickMethod('hold')}
+                onPress={() => handleClickMethodChange('hold')}
               >
                 <Text style={[
                   styles.clickMethodButtonText,
@@ -196,7 +207,7 @@ export const OfflineGameScreen: React.FC = () => {
                   styles.clickMethodButton,
                   clickMethod === 'double' && styles.clickMethodButtonActive
                 ]}
-                onPress={() => setClickMethod('double')}
+                onPress={() => handleClickMethodChange('double')}
               >
                 <Text style={[
                   styles.clickMethodButtonText,
