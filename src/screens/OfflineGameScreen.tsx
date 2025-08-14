@@ -55,28 +55,43 @@ export const OfflineGameScreen: React.FC = () => {
   };
 
   const renderPlayerCard = (role: any, index: number) => {
-    const isFlipped = role.hasSeenCard;
+    const isFlipped = role.isFlipped && !role.hasSeenCard; // Nur umgedreht wenn noch nicht als gesehen markiert
+    const hasSeenCard = role.hasSeenCard;
+    
     return (
       <TouchableOpacity
         key={role.playerName}
-        style={styles.card}
-        onPress={() => togglePlayerCardSeen(role.playerName)}
-        activeOpacity={0.8}
+        style={[styles.card, hasSeenCard && styles.cardDisabled]}
+        onPress={() => !hasSeenCard && togglePlayerCardSeen(role.playerName)}
+        activeOpacity={hasSeenCard ? 1 : 0.8}
+        disabled={hasSeenCard}
       >
         <View style={[styles.cardInner, isFlipped && styles.cardFlipped]}>
           {!isFlipped ? (
-            // Front of card - Player name
+            // Front of card - Player name (oder "gesehen" state)
             <View style={styles.cardFront}>
-              <Text style={styles.cardPlayerName}>{role.playerName}</Text>
-              <Text style={styles.cardHint}>👆 Tippen zum Umdrehen</Text>
+              {hasSeenCard && (
+                <View style={styles.cardSeenIndicator}>
+                  <Text style={styles.cardSeenIcon}>✅</Text>
+                  <Text style={styles.cardSeenText}>Bereits gesehen</Text>
+                </View>
+              )}
+              <Text style={[styles.cardPlayerName, hasSeenCard && styles.cardPlayerNameSeen]}>
+                {role.playerName}
+              </Text>
+              {!hasSeenCard ? (
+                <Text style={styles.cardHint}>👆 Tippen zum Umdrehen</Text>
+              ) : (
+                <Text style={styles.cardHintSeen}>✅ Rolle wurde gesehen</Text>
+              )}
             </View>
           ) : (
-            // Back of card - Role reveal
+            // Back of card - Role reveal (nur wenn umgedreht und noch nicht gesehen)
             <View style={styles.cardBack}>
               <Text style={styles.cardPlayerNameSmall}>{role.playerName}</Text>
               {role.isImposter ? (
                 <View style={styles.imposterContent}>
-                  <Text style={styles.imposterEmoji}></Text>
+                  <Text style={styles.imposterEmoji}>🕵️</Text>
                   <Text style={styles.imposterText}>IMPOSTER</Text>
                   <Text style={[
                     styles.imposterSubtext,
@@ -93,7 +108,7 @@ export const OfflineGameScreen: React.FC = () => {
                   ]}>{formatWordWithLineBreaks(offlineSettings.currentWordPair?.word || '')}</Text>
                 </View>
               )}
-              <Text style={styles.cardHintSmall}>👆 Zum Verstecken</Text>
+              <Text style={styles.cardHintSmall}>👆 Erneut tippen um als gesehen zu markieren</Text>
             </View>
           )}
         </View>
@@ -123,6 +138,22 @@ export const OfflineGameScreen: React.FC = () => {
               <Text style={styles.infoText}>
                 {offlineSettings.imposterCount} von {offlineSettings.playerCount} Spielern sind Imposter
               </Text>
+            </View>
+          </View>
+
+          {/* Fortschritts-Info Card */}
+          <View style={styles.infoCard}>
+            <View style={styles.infoIconContainer}>
+              <Text style={styles.infoIcon}>📊</Text>
+            </View>
+            <View style={styles.infoTextContainer}>
+              <Text style={styles.infoTitle}>Karten-Fortschritt</Text>
+              <Text style={styles.infoText}>
+                {(offlineSettings.assignedRoles || []).filter(role => role.hasSeenCard).length} von {offlineSettings.playerCount} Karten aufgedeckt
+              </Text>
+              {(offlineSettings.assignedRoles || []).filter(role => role.hasSeenCard).length === offlineSettings.playerCount && (
+                <Text style={styles.infoTextComplete}>✅ Alle Spieler haben ihre Rollen gesehen!</Text>
+              )}
             </View>
           </View>
 
@@ -170,18 +201,27 @@ export const OfflineGameScreen: React.FC = () => {
             </TouchableOpacity>
 
             <TouchableOpacity 
-              style={styles.continueButton}
+              style={[
+                styles.continueButton,
+                (offlineSettings.assignedRoles || []).filter(role => role.hasSeenCard).length === offlineSettings.playerCount && styles.continueButtonReady
+              ]}
               onPress={() => {
                 startGameRounds();
               }}
               activeOpacity={0.8}
             >
               <View style={styles.buttonIconContainer}>
-                <Text style={styles.buttonIcon}>🎮</Text>
+                <Text style={styles.buttonIcon}>
+                  {(offlineSettings.assignedRoles || []).filter(role => role.hasSeenCard).length === offlineSettings.playerCount ? '🚀' : '🎮'}
+                </Text>
               </View>
               <View style={styles.buttonTextContainer}>
                 <Text style={styles.continueButtonText}>Spiel beginnen</Text>
-                <Text style={styles.buttonSubText}>Alle haben ihre Rollen gesehen</Text>
+                <Text style={styles.buttonSubText}>
+                  {(offlineSettings.assignedRoles || []).filter(role => role.hasSeenCard).length === offlineSettings.playerCount 
+                    ? 'Alle Karten aufgedeckt - Bereit zum Start!' 
+                    : 'Alle haben ihre Rollen gesehen'}
+                </Text>
               </View>
             </TouchableOpacity>
 
@@ -405,6 +445,13 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'left',
   },
+  infoTextComplete: {
+    fontSize: 11,
+    color: '#28a745',
+    fontWeight: 'bold',
+    textAlign: 'left',
+    marginTop: 4,
+  },
   cardsContainer: {
     marginBottom: 12,
   },
@@ -464,12 +511,43 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 12,
   },
+  cardDisabled: {
+    opacity: 0.6,
+  },
+  cardSeenIndicator: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: 'rgba(40, 167, 69, 0.9)',
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3,
+  },
+  cardSeenIcon: {
+    fontSize: 12,
+    marginRight: 4,
+  },
+  cardSeenText: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
   cardPlayerName: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#eee',
     textAlign: 'center',
     marginBottom: 8,
+  },
+  cardPlayerNameSeen: {
+    color: '#28a745',
   },
   cardPlayerNameSmall: {
     fontSize: 14,
@@ -482,6 +560,12 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#888',
     textAlign: 'center',
+  },
+  cardHintSeen: {
+    fontSize: 11,
+    color: '#28a745',
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
   cardHintSmall: {
     fontSize: 10,
@@ -567,6 +651,14 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     borderWidth: 2,
     borderColor: '#ff6b8a',
+  },
+  continueButtonReady: {
+    backgroundColor: '#28a745',
+    borderColor: '#34ce57',
+    elevation: 12,
+    shadowColor: '#28a745',
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
   },
   backButton: {
     backgroundColor: '#0f3460',

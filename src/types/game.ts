@@ -58,6 +58,7 @@ export interface OfflinePlayerRole {
   playerName: string;
   isImposter: boolean;
   hasSeenCard: boolean;
+  isFlipped?: boolean; // Ob die Karte umgedreht wurde (erster Klick)
 }
 
 export interface PlayerClue {

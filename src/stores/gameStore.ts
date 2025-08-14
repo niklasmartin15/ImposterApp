@@ -150,7 +150,8 @@ export const useGameStore = create<GameState>((set, get) => ({
     const assignedRoles = playerNames.map((playerName, index) => ({
       playerName,
       isImposter: imposterIndices.includes(index),
-      hasSeenCard: false
+      hasSeenCard: false,
+      isFlipped: false
     }));
 
     // Generiere ein neues Wort basierend auf der gewählten Schwierigkeit
@@ -174,11 +175,21 @@ export const useGameStore = create<GameState>((set, get) => ({
   }),
 
   togglePlayerCardSeen: (playerName: string) => set((state) => {
-    const newRoles = state.offlineSettings.assignedRoles?.map(role => 
-      role.playerName === playerName 
-        ? { ...role, hasSeenCard: !role.hasSeenCard }
-        : role
-    ) || [];
+    const newRoles = state.offlineSettings.assignedRoles?.map(role => {
+      if (role.playerName === playerName) {
+        // Wenn noch nicht umgedreht: umdrehen
+        if (!role.isFlipped) {
+          return { ...role, isFlipped: true };
+        }
+        // Wenn bereits umgedreht aber noch nicht als gesehen markiert: als gesehen markieren
+        else if (!role.hasSeenCard) {
+          return { ...role, hasSeenCard: true };
+        }
+        // Wenn bereits als gesehen markiert: nichts ändern (disabled)
+        return role;
+      }
+      return role;
+    }) || [];
 
     return {
       offlineSettings: {
@@ -201,7 +212,8 @@ export const useGameStore = create<GameState>((set, get) => ({
     const assignedRoles = playerNames.map((playerName, idx) => ({
       playerName,
       isImposter: imposterIndices.includes(idx),
-      hasSeenCard: false
+      hasSeenCard: false,
+      isFlipped: false
     }));
     return {
       offlineSettings: {
@@ -476,7 +488,8 @@ export const useGameStore = create<GameState>((set, get) => ({
     const assignedRoles = playerNames.map((playerName, idx) => ({
       playerName,
       isImposter: imposterIndices.includes(idx),
-      hasSeenCard: false
+      hasSeenCard: false,
+      isFlipped: false
     }));
 
     return {
@@ -511,7 +524,8 @@ export const useGameStore = create<GameState>((set, get) => ({
     const newAssignedRoles = playerNames.map((playerName, idx) => ({
       playerName,
       isImposter: imposterIndices.includes(idx),
-      hasSeenCard: false
+      hasSeenCard: false,
+      isFlipped: false
     }));
     
     // Neues Wortpaar für die neue Runde
