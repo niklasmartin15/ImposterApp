@@ -164,7 +164,7 @@ export const OfflineGameScreen: React.FC = () => {
                 </View>
               )}
               <Text style={styles.cardHintSmall}>
-                {clickMethod === 'hold' ? 'Loslassen markiert als gesehen' : '👆 Erneut tippen um als gesehen zu markieren'}
+                {clickMethod === 'hold' ? 'Loslassen: Karte umdrehen' : '👆 Erneut tippen um zu schließen'}
               </Text>
             </View>
           )}
@@ -200,7 +200,7 @@ export const OfflineGameScreen: React.FC = () => {
                 <Text style={[
                   styles.clickMethodButtonText,
                   clickMethod === 'hold' && styles.clickMethodButtonTextActive
-                ]}>Halten</Text>
+                ]}>Halten & Loslassen</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[
@@ -1155,66 +1155,45 @@ const styles = StyleSheet.create({
   },
   // Klick-Methode Auswahl Styles
   clickMethodContainer: {
-    backgroundColor: 'rgba(15, 52, 96, 0.9)',
-    borderRadius: 20,
-    padding: 20,
-    marginBottom: 24,
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    backgroundColor: 'rgba(15, 52, 96, 0.8)',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   clickMethodTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 16,
+    marginBottom: 12,
     textAlign: 'center',
-    letterSpacing: 0.5,
   },
   clickMethodButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 16,
+    gap: 12,
   },
   clickMethodButton: {
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    borderRadius: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    transform: [{ scale: 1 }],
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   clickMethodButtonActive: {
-    backgroundColor: 'rgba(233, 69, 96, 0.25)',
+    backgroundColor: 'rgba(233, 69, 96, 0.2)',
     borderColor: '#e94560',
-    borderWidth: 3,
-    elevation: 8,
-    shadowColor: '#e94560',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    transform: [{ scale: 1.02 }],
   },
   clickMethodButtonText: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: 'rgba(255, 255, 255, 0.85)',
+    fontSize: 14,
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'center',
-    letterSpacing: 0.3,
   },
   clickMethodButtonTextActive: {
-    color: '#ff6b8a',
-    fontWeight: 'bold',
+    color: '#e94560',
   },
 });
