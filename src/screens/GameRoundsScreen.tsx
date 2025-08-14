@@ -167,33 +167,35 @@ export const GameRoundsScreen: React.FC = () => {
                 </Text>
               </View>
 
-              {/* Input für Hinweis */}
-              <View style={styles.inputContainer}>
-                <TextInput
-                  style={styles.textInput}
-                  value={currentClue}
-                  onChangeText={setCurrentClue}
-                  placeholder="Dein Hinweis..."
-                  placeholderTextColor="#888"
-                  multiline={true}
-                  numberOfLines={3}
-                  textAlignVertical="top"
-                  returnKeyType="done"
-                  onSubmitEditing={handleSubmitClue}
-                  blurOnSubmit={true}
-                />
-              </View>
+              {/* Input und Button Container */}
+              <View style={styles.inputActionContainer}>
+                {/* Input für Hinweis */}
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.textInput}
+                    value={currentClue}
+                    onChangeText={setCurrentClue}
+                    placeholder="Dein Hinweis..."
+                    placeholderTextColor="#888"
+                    multiline={true}
+                    numberOfLines={3}
+                    textAlignVertical="top"
+                    returnKeyType="done"
+                    onSubmitEditing={handleSubmitClue}
+                    blurOnSubmit={true}
+                  />
+                </View>
 
-              {/* Button für Input-Modi */}
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity 
-                  style={[
-                    styles.submitButton,
-                    currentClue.trim() === '' && styles.submitButtonDisabled
-                  ]}
-                  onPress={handleSubmitClue}
-                  disabled={currentClue.trim() === ''}
-                >
+                {/* Button für Input-Modi */}
+                <View style={styles.buttonContainer}>
+                  <TouchableOpacity 
+                    style={[
+                      styles.submitButton,
+                      currentClue.trim() === '' && styles.submitButtonDisabled
+                    ]}
+                    onPress={handleSubmitClue}
+                    disabled={currentClue.trim() === ''}
+                  >
                   <View style={styles.submitButtonIconContainer}>
                     <Text style={styles.submitButtonIcon}>
                       {isLastPlayer ? '🗳️' : '➡️'}
@@ -209,6 +211,8 @@ export const GameRoundsScreen: React.FC = () => {
                     </Text>
                   </View>
                 </TouchableOpacity>
+                </View>
+              </View>
 
                 {/* Imposter Wort-Rate Dropdown - für alle sichtbar */}
                 <View style={styles.wordGuessContainer}>
@@ -269,7 +273,6 @@ export const GameRoundsScreen: React.FC = () => {
                     </View>
                   )}
                 </View>
-              </View>
             </>
           )}
 
@@ -1122,5 +1125,13 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#bbb',
     textAlign: 'center',
+  },
+  inputActionContainer: {
+    backgroundColor: '#0f1f3d',
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#0f3460',
+    marginTop: 8,
   },
 });
