@@ -188,8 +188,15 @@ export const useGameStore = create<GameState>((set, get) => ({
         }
         // Wenn bereits als gesehen markiert: nichts ändern (disabled)
         return role;
+      } else {
+        // Für alle anderen Karten: Wenn sie umgedreht sind aber noch nicht als gesehen markiert,
+        // automatisch als gesehen markieren (nur wenn die aktuelle Karte umgedreht wird)
+        const currentRole = state.offlineSettings.assignedRoles?.find(r => r.playerName === playerName);
+        if (currentRole && !currentRole.isFlipped && role.isFlipped && !role.hasSeenCard) {
+          return { ...role, hasSeenCard: true };
+        }
+        return role;
       }
-      return role;
     }) || [];
 
     return {
