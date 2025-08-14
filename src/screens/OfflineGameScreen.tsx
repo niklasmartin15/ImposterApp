@@ -27,7 +27,7 @@ export const OfflineGameScreen: React.FC = () => {
 
   const [showGameModeSettings, setShowGameModeSettings] = useState(false);
   const [pressedCard, setPressedCard] = useState<string | null>(null);
-  const [clickMethod, setClickMethod] = useState<'double' | 'hold'>('double');
+  const [clickMethod, setClickMethod] = useState<'double' | 'hold'>('hold');
   const pressedCardRef = useRef<string | null>(null);
 
   const handleBack = () => {
@@ -180,18 +180,6 @@ export const OfflineGameScreen: React.FC = () => {
               <TouchableOpacity
                 style={[
                   styles.clickMethodButton,
-                  clickMethod === 'double' && styles.clickMethodButtonActive
-                ]}
-                onPress={() => setClickMethod('double')}
-              >
-                <Text style={[
-                  styles.clickMethodButtonText,
-                  clickMethod === 'double' && styles.clickMethodButtonTextActive
-                ]}>Doppelklick</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.clickMethodButton,
                   clickMethod === 'hold' && styles.clickMethodButtonActive
                 ]}
                 onPress={() => setClickMethod('hold')}
@@ -200,6 +188,18 @@ export const OfflineGameScreen: React.FC = () => {
                   styles.clickMethodButtonText,
                   clickMethod === 'hold' && styles.clickMethodButtonTextActive
                 ]}>Halten & Loslassen</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.clickMethodButton,
+                  clickMethod === 'double' && styles.clickMethodButtonActive
+                ]}
+                onPress={() => setClickMethod('double')}
+              >
+                <Text style={[
+                  styles.clickMethodButtonText,
+                  clickMethod === 'double' && styles.clickMethodButtonTextActive
+                ]}>Doppelklick</Text>
               </TouchableOpacity>
             </View>
           </View>
