@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import {
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { useGameStore } from '../stores/gameStore';
 
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   continueButton: {
-    backgroundColor: '#0f7226ff',
+    backgroundColor: '#139030ff',
     paddingVertical: 16,
     paddingHorizontal: 20,
     borderRadius: 16,
@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     transform: [{ scale: 1.02 }],
   },
   endButton: {
-    backgroundColor: '#a81e35ff',
+    backgroundColor: '#b0142eff',
     paddingVertical: 16,
     paddingHorizontal: 20,
     borderRadius: 16,
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 10,
     borderWidth: 3,
-    borderColor: '#ff6b8a',
+    borderColor: '#de3459ff',
     transform: [{ scale: 1.02 }],
   },
   continueButtonText: {

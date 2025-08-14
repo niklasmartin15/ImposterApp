@@ -735,7 +735,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   submitButton: {
-    backgroundColor: '#e94560',
+    backgroundColor: '#97192eff',
     paddingVertical: 16,
     paddingHorizontal: 28,
     borderRadius: 16,
@@ -754,7 +754,7 @@ const styles = StyleSheet.create({
     transform: [{ scale: 1 }],
   },
   submitButtonDisabled: {
-    backgroundColor: '#555',
+    backgroundColor: '#303030ff',
     borderColor: '#666',
     elevation: 4,
     shadowOpacity: 0.2,
