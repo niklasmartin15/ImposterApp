@@ -738,7 +738,7 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   submitButton: {
-    backgroundColor: '#a31a31ff',
+    backgroundColor: '#ac152eff',
     paddingVertical: 16,
     paddingHorizontal: 28,
     borderRadius: 10,
@@ -750,7 +750,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4,
     shadowRadius: 12,
     borderWidth: 3,
-    borderColor: '#ff6b8a',
+    borderColor: '#c63151ff',
     position: 'relative',
     overflow: 'hidden',
     // Zusätzlicher innerer Glow-Effekt
@@ -1098,7 +1098,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   wordGuessSubmitButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#1b8d1fff',
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,
