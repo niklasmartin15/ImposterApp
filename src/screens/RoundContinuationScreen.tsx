@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { useGameStore } from '../stores/gameStore';
 
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 120,
     paddingHorizontal: 8,
     paddingTop: 20,
   },
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#16213e',
     borderRadius: 12,
     padding: 12,
-    marginBottom: 12,
+    marginBottom: 30,
     elevation: 6,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
@@ -241,8 +241,8 @@ const styles = StyleSheet.create({
     textAlign: 'left',
   },
   buttonContainer: {
-    gap: 8,
-    marginBottom: 12,
+    gap: 16,
+    marginBottom: 50,
   },
   continueButton: {
     backgroundColor: '#e94560',
@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#16213e',
     borderRadius: 12,
     padding: 12,
-    marginBottom: 12,
+    marginBottom: 20,
     elevation: 6,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
