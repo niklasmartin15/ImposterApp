@@ -439,68 +439,6 @@ export const GameRoundsScreen: React.FC = () => {
                     </Text>
                   </View>
                 </TouchableOpacity>
-
-                {/* Imposter Wort-Rate Dropdown - für alle sichtbar */}
-                <View style={styles.wordGuessContainer}>
-                  <TouchableOpacity 
-                    style={styles.wordGuessToggleButton}
-                    onPress={toggleWordGuess}
-                    activeOpacity={0.8}
-                  >
-                    <Text style={styles.wordGuessToggleText}>
-                      {showWordGuess ? '▲ Wort-Raten schließen' : '▼ Wort raten (Imposter)'}
-                    </Text>
-                    {!showWordGuess && (
-                      <Text style={styles.wordGuessToggleSubtext}>
-                        klicke zum öffnen
-                      </Text>
-                    )}
-                  </TouchableOpacity>
-
-                  {showWordGuess && (
-                    <View style={styles.wordGuessInputContainer}>
-                      {currentPlayerIsImposter ? (
-                        <>
-                          <Text style={styles.wordGuessHint}>
-                            💡 Dein Hinweis: &quot;{offlineSettings.gameWordPair?.imposterHint}&quot;
-                          </Text>
-                          <TextInput
-                            style={styles.wordGuessInput}
-                            value={guessedWord}
-                            onChangeText={setGuessedWord}
-                            placeholder="Rate das Lösungswort..."
-                            placeholderTextColor="#888"
-                            autoCapitalize="words"
-                          />
-                          <TouchableOpacity 
-                            style={[
-                              styles.wordGuessSubmitButton,
-                              guessedWord.trim() === '' && styles.wordGuessSubmitButtonDisabled
-                            ]}
-                            onPress={handleWordGuess}
-                            disabled={guessedWord.trim() === ''}
-                            activeOpacity={0.8}
-                          >
-                            <Text style={styles.wordGuessSubmitButtonText}>
-                              🎯 Wort raten
-                            </Text>
-                          </TouchableOpacity>
-                        </>
-                      ) : (
-                        <>
-                          <Text style={styles.wordGuessNotImposterText}>
-                            ❌ Du bist kein Imposter
-                          </Text>
-                          <Text style={styles.wordGuessNotImposterSubtext}>
-                            Nur Imposter können das Wort raten.
-                          </Text>
-                          
-                        </>
-                      )}
-                    </View>
-                  )}
-                </View>
-                
               </View>
                             {/* Spielregeln */}
               <View style={styles.rulesContainer}>
