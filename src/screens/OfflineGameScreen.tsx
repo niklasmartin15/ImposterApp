@@ -28,6 +28,8 @@ export const OfflineGameScreen: React.FC = () => {
   const [showGameModeSettings, setShowGameModeSettings] = useState(false);
   const [pressedCard, setPressedCard] = useState<string | null>(null);
   const [clickMethod, setClickMethod] = useState<'double' | 'hold'>('hold');
+  const [showStartConfirmation, setShowStartConfirmation] = useState(false);
+  const [showNewWordConfirmation, setShowNewWordConfirmation] = useState(false);
   const pressedCardRef = useRef<string | null>(null);
 
   const handleBack = () => {
@@ -261,10 +263,7 @@ export const OfflineGameScreen: React.FC = () => {
           <View style={styles.buttonContainer}>
             <TouchableOpacity 
               style={styles.newWordButton}
-              onPress={() => {
-                generateNewWordPair();
-                console.log('Neues Wort generiert');
-              }}
+              onPress={() => setShowNewWordConfirmation(true)}
               activeOpacity={0.8}
             >
               <View style={styles.buttonIconContainer}>
@@ -284,7 +283,12 @@ export const OfflineGameScreen: React.FC = () => {
                 (offlineSettings.assignedRoles || []).filter(role => role.hasSeenCard).length === offlineSettings.playerCount && styles.continueButtonReady
               ]}
               onPress={() => {
-                startGameRounds();
+                const allCardsSeen = (offlineSettings.assignedRoles || []).filter(role => role.hasSeenCard).length === offlineSettings.playerCount;
+                if (allCardsSeen) {
+                  startGameRounds();
+                } else {
+                  setShowStartConfirmation(true);
+                }
               }}
               activeOpacity={0.8}
             >
@@ -435,6 +439,135 @@ export const OfflineGameScreen: React.FC = () => {
                   </View>
                 </View>
               </ScrollView>
+            </SafeAreaView>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Start Confirmation Modal */}
+      <Modal
+        visible={showStartConfirmation}
+        transparent={true}
+        animationType="none"
+        statusBarTranslucent={true}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <SafeAreaView style={styles.modalSafeArea}>
+              <View style={styles.modalContent}>
+                <View style={styles.modalHeaderContainer}>
+                  <Text style={styles.modalTitle}>⚠️ Bestätigung</Text>
+                  <Text style={styles.modalSubtitle}>Noch nicht alle Spieler haben ihre Rollen gesehen</Text>
+                </View>
+
+                <View style={styles.modalInfoContainer}>
+                  <Text style={styles.modalInfoText}>
+                    {(offlineSettings.assignedRoles || []).filter(role => role.hasSeenCard).length} von {offlineSettings.playerCount} Spielern haben ihre Karten angeschaut.
+                  </Text>
+                  <Text style={styles.modalInfoText}>
+                    Möchten Sie trotzdem das Spiel starten?
+                  </Text>
+                </View>
+
+                <View style={styles.modalButtonContainer}>
+                  <TouchableOpacity 
+                    style={[styles.modalBackButton, { backgroundColor: '#e94560' }]}
+                    onPress={() => {
+                      startGameRounds();
+                      setShowStartConfirmation(false);
+                    }}
+                    activeOpacity={0.8}
+                  >
+                    <View style={styles.modalButtonIconContainer}>
+                      <Text style={styles.modalButtonIcon}>▶️</Text>
+                    </View>
+                    <View style={styles.modalButtonTextContainer}>
+                      <Text style={styles.modalBackButtonText}>Ja, Spiel starten</Text>
+                      <Text style={styles.modalButtonSubText}>Trotzdem beginnen</Text>
+                    </View>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity 
+                    style={styles.modalBackButton}
+                    onPress={() => setShowStartConfirmation(false)}
+                    activeOpacity={0.8}
+                  >
+                    <View style={styles.modalButtonIconContainer}>
+                      <Text style={styles.modalButtonIcon}>←</Text>
+                    </View>
+                    <View style={styles.modalButtonTextContainer}>
+                      <Text style={styles.modalBackButtonText}>Abbrechen</Text>
+                      <Text style={styles.modalButtonSubText}>Zurück zu den Rollenkarten</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </SafeAreaView>
+          </View>
+        </View>
+      </Modal>
+
+      {/* New Word Confirmation Modal */}
+      <Modal
+        visible={showNewWordConfirmation}
+        transparent={true}
+        animationType="none"
+        statusBarTranslucent={true}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <SafeAreaView style={styles.modalSafeArea}>
+              <View style={styles.modalContent}>
+                <View style={styles.modalHeaderContainer}>
+                  <Text style={styles.modalTitle}>🎲 Neues Wort & Neue Imposter</Text>
+                  <Text style={styles.modalSubtitle}>Alle Rollen werden neu verteilt</Text>
+                </View>
+
+                <View style={styles.modalInfoContainer}>
+                  <Text style={styles.modalInfoText}>
+                    ⚠️ Achtung: Diese Aktion wird ein komplett neues Wort generieren und alle Imposter-Rollen neu verteilen.
+                  </Text>
+                  <Text style={styles.modalInfoText}>
+                    Alle bereits angeschauten Karten werden zurückgesetzt.
+                  </Text>
+                  <Text style={styles.modalInfoText}>
+                    Möchten Sie fortfahren?
+                  </Text>
+                </View>
+
+                <View style={styles.modalButtonContainer}>
+                  <TouchableOpacity 
+                    style={[styles.modalBackButton, { backgroundColor: '#e94560' }]}
+                    onPress={() => {
+                      generateNewWordPair();
+                      setShowNewWordConfirmation(false);
+                    }}
+                    activeOpacity={0.8}
+                  >
+                    <View style={styles.modalButtonIconContainer}>
+                      <Text style={styles.modalButtonIcon}>🎲</Text>
+                    </View>
+                    <View style={styles.modalButtonTextContainer}>
+                      <Text style={styles.modalBackButtonText}>Ja, neu generieren</Text>
+                      <Text style={styles.modalButtonSubText}>Neues Wort & neue Imposter</Text>
+                    </View>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity 
+                    style={styles.modalBackButton}
+                    onPress={() => setShowNewWordConfirmation(false)}
+                    activeOpacity={0.8}
+                  >
+                    <View style={styles.modalButtonIconContainer}>
+                      <Text style={styles.modalButtonIcon}>←</Text>
+                    </View>
+                    <View style={styles.modalButtonTextContainer}>
+                      <Text style={styles.modalBackButtonText}>Abbrechen</Text>
+                      <Text style={styles.modalButtonSubText}>Behalten der aktuellen Einstellungen</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </SafeAreaView>
           </View>
         </View>
@@ -987,6 +1120,22 @@ const styles = StyleSheet.create({
   modalButtonSubText: {
     fontSize: 10,
     color: 'rgba(255, 255, 255, 0.8)',
+    textAlign: 'left',
+  },
+  // Modal Info Styles für Bestätigungsmodals
+  modalInfoContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  modalInfoText: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.9)',
+    lineHeight: 20,
+    marginBottom: 8,
     textAlign: 'left',
   },
   // Klick-Methode Auswahl Styles
