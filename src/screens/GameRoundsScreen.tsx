@@ -220,7 +220,7 @@ export const GameRoundsScreen: React.FC = () => {
                     activeOpacity={0.8}
                   >
                     <Text style={styles.wordGuessToggleText}>
-                      {showWordGuess ? '🔼 Wort-Raten schließen' : '🔽 Wort raten (Imposter)'}
+                      {showWordGuess ? '▲ Wort-Raten schließen' : '▼ Wort raten (Imposter)'}
                     </Text>
                     {!showWordGuess && (
                       <Text style={styles.wordGuessToggleSubtext}>
@@ -448,7 +448,7 @@ export const GameRoundsScreen: React.FC = () => {
                     activeOpacity={0.8}
                   >
                     <Text style={styles.wordGuessToggleText}>
-                      {showWordGuess ? '🔼 Wort-Raten schließen' : '🔽 Wort raten (Imposter)'}
+                      {showWordGuess ? '▲ Wort-Raten schließen' : '▼ Wort raten (Imposter)'}
                     </Text>
                     {!showWordGuess && (
                       <Text style={styles.wordGuessToggleSubtext}>
@@ -1056,14 +1056,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 8,
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#FFA726',
+    borderWidth: 1,
+    borderColor: '#0f3460',
     marginBottom: 8,
   },
   wordGuessToggleText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#FFA726',
+    color: '#fff',
   },
   wordGuessToggleSubtext: {
     fontSize: 11,
