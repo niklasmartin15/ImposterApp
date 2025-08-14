@@ -496,11 +496,13 @@ export const GameRoundsScreen: React.FC = () => {
                           <Text style={styles.wordGuessNotImposterSubtext}>
                             Nur Imposter können das Wort raten.
                           </Text>
+                          
                         </>
                       )}
                     </View>
                   )}
                 </View>
+                
               </View>
                             {/* Spielregeln */}
               <View style={styles.rulesContainer}>
@@ -521,7 +523,7 @@ export const GameRoundsScreen: React.FC = () => {
               </View>
             </>
           )}
-
+            <View style={{ margin: 6 }} />
           {/* Bisherige Hinweise - nur bei entsprechenden Spielmodi */}
           {showClues && allCluesFromAllRounds.length > 0 && (
             <View style={styles.cluesContainer}>
@@ -1042,15 +1044,21 @@ const styles = StyleSheet.create({
   // Wort-Rate Styles
   wordGuessContainer: {
     marginTop: 12,
+    backgroundColor: '#0f1f3d',
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#0f3460',
   },
   wordGuessToggleButton: {
-    backgroundColor: '#0f3460',
+    backgroundColor: '#16213e',
     paddingVertical: 12,
     paddingHorizontal: 16,
-    borderRadius: 10,
+    borderRadius: 8,
     alignItems: 'center',
     borderWidth: 2,
     borderColor: '#FFA726',
+    marginBottom: 8,
   },
   wordGuessToggleText: {
     fontSize: 14,
@@ -1064,12 +1072,12 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   wordGuessInputContainer: {
-    backgroundColor: '#0f1f3d',
-    borderRadius: 10,
-    padding: 16,
-    marginTop: 8,
+    backgroundColor: '#16213e',
+    borderRadius: 8,
+    padding: 12,
+    marginTop: 0,
     borderWidth: 1,
-    borderColor: '#FFA726',
+    borderColor: '#0f3460',
   },
   wordGuessHint: {
     fontSize: 13,
@@ -1129,9 +1137,11 @@ const styles = StyleSheet.create({
   inputActionContainer: {
     backgroundColor: '#0f1f3d',
     borderRadius: 12,
-    padding: 16,
+    paddingTop: 16,
+    paddingHorizontal: 15,
+    paddingBottom: 0,
     borderWidth: 1,
     borderColor: '#0f3460',
-    marginTop: 8,
+    marginTop: 2,
   },
 });
