@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Dimensions,
   Modal,
@@ -25,6 +25,9 @@ export const OfflineGameScreen: React.FC = () => {
   } = useGameStore();
 
   const [showGameModeSettings, setShowGameModeSettings] = useState(false);
+  const [pressedCard, setPressedCard] = useState<string | null>(null);
+  const [clickMethod, setClickMethod] = useState<'double' | 'hold'>('double');
+  const pressedCardRef = useRef<string | null>(null);
 
   const handleBack = () => {
     setCurrentPhase('offlineSetup');
@@ -57,17 +60,53 @@ export const OfflineGameScreen: React.FC = () => {
   const renderPlayerCard = (role: any, index: number) => {
     const isFlipped = role.isFlipped && !role.hasSeenCard; // Nur umgedreht wenn noch nicht als gesehen markiert
     const hasSeenCard = role.hasSeenCard;
+    const isPressedDown = pressedCard === role.playerName; // Neue Variable für Press-and-Hold
+    
+    // Für Hold-Methode: Rolle nur anzeigen wenn gedrückt UND noch nicht gesehen
+    // Für Double-Methode: Rolle anzeigen wenn isFlipped und noch nicht gesehen
+    const shouldShowRole = clickMethod === 'hold' 
+      ? (isPressedDown && !hasSeenCard) 
+      : (isFlipped && !hasSeenCard);
+    
+    const touchProps = clickMethod === 'hold' ? {
+      // Press-and-Hold Methode - mit Ref für zuverlässige State-Updates
+      delayLongPress: 200,
+      onPressIn: () => {
+        if (!hasSeenCard) {
+          pressedCardRef.current = role.playerName;
+          setPressedCard(role.playerName);
+        }
+      },
+      onPressOut: () => {
+        // Ref verwenden für zuverlässige Überprüfung
+        const wasPressed = pressedCardRef.current === role.playerName;
+        
+        // State und Ref zurücksetzen
+        pressedCardRef.current = null;
+        setPressedCard(null);
+        
+        // Nur als gesehen markieren wenn die Karte tatsächlich gedrückt war
+        if (wasPressed && !hasSeenCard) {
+          togglePlayerCardSeen(role.playerName);
+        }
+      },
+      // onPress komplett deaktivieren für hold-Methode
+      onPress: undefined,
+    } : {
+      // Doppelklick Methode
+      onPress: () => !hasSeenCard && togglePlayerCardSeen(role.playerName),
+    };
     
     return (
       <TouchableOpacity
         key={role.playerName}
         style={[styles.card, hasSeenCard && styles.cardDisabled]}
-        onPress={() => !hasSeenCard && togglePlayerCardSeen(role.playerName)}
+        {...touchProps}
         activeOpacity={hasSeenCard ? 1 : 0.8}
         disabled={hasSeenCard}
       >
-        <View style={[styles.cardInner, isFlipped && styles.cardFlipped]}>
-          {!isFlipped ? (
+        <View style={[styles.cardInner, shouldShowRole && styles.cardFlipped]}>
+          {!shouldShowRole ? (
             // Front of card - Player name (oder "gesehen" state)
             <View style={styles.cardFront}>
               {hasSeenCard && (
@@ -80,7 +119,9 @@ export const OfflineGameScreen: React.FC = () => {
                 {role.playerName}
               </Text>
               {!hasSeenCard ? (
-                <Text style={styles.cardHint}>👆 Tippen zum Umdrehen</Text>
+                <Text style={styles.cardHint}>
+                  {clickMethod === 'hold' ? '👆 Halten zum Anschauen' : '👆 Tippen zum Umdrehen'}
+                </Text>
               ) : (
                 <Text style={styles.cardHintSeen}> Rolle wurde angeschaut!</Text>
               )}
@@ -108,7 +149,9 @@ export const OfflineGameScreen: React.FC = () => {
                   ]}>{formatWordWithLineBreaks(offlineSettings.currentWordPair?.word || '')}</Text>
                 </View>
               )}
-              <Text style={styles.cardHintSmall}>👆 Erneut tippen um als gesehen zu markieren</Text>
+              <Text style={styles.cardHintSmall}>
+                {clickMethod === 'hold' ? 'Loslassen markiert als gesehen' : '👆 Erneut tippen um als gesehen zu markieren'}
+              </Text>
             </View>
           )}
         </View>
@@ -127,6 +170,37 @@ export const OfflineGameScreen: React.FC = () => {
           <View style={styles.headerContainer}>
             <Text style={styles.title}>🃏 Rollenkarten</Text>
             <Text style={styles.subtitle}>Jeder Spieler schaut sich heimlich seine Karte an</Text>
+          </View>
+
+          {/* Klick-Methode Auswahl */}
+          <View style={styles.clickMethodContainer}>
+            <Text style={styles.clickMethodTitle}>Klick-Methode:</Text>
+            <View style={styles.clickMethodButtons}>
+              <TouchableOpacity
+                style={[
+                  styles.clickMethodButton,
+                  clickMethod === 'double' && styles.clickMethodButtonActive
+                ]}
+                onPress={() => setClickMethod('double')}
+              >
+                <Text style={[
+                  styles.clickMethodButtonText,
+                  clickMethod === 'double' && styles.clickMethodButtonTextActive
+                ]}>Doppelklick</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.clickMethodButton,
+                  clickMethod === 'hold' && styles.clickMethodButtonActive
+                ]}
+                onPress={() => setClickMethod('hold')}
+              >
+                <Text style={[
+                  styles.clickMethodButtonText,
+                  clickMethod === 'hold' && styles.clickMethodButtonTextActive
+                ]}>Halten & Loslassen</Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           <View style={styles.infoCard}>
@@ -223,7 +297,7 @@ export const OfflineGameScreen: React.FC = () => {
                 <Text style={styles.buttonSubText}>
                   {(offlineSettings.assignedRoles || []).filter(role => role.hasSeenCard).length === offlineSettings.playerCount 
                     ? 'Alle Karten aufgedeckt - Bereit zum Start!' 
-                    : 'Alle haben ihre Rollen gesehen'}
+                    : 'Nicht alle haben ihre Rollen gesehen'}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -913,5 +987,48 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'left',
+  },
+  // Klick-Methode Auswahl Styles
+  clickMethodContainer: {
+    backgroundColor: 'rgba(15, 52, 96, 0.8)',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  clickMethodTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  clickMethodButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  clickMethodButton: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  clickMethodButtonActive: {
+    backgroundColor: 'rgba(233, 69, 96, 0.2)',
+    borderColor: '#e94560',
+  },
+  clickMethodButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: 'rgba(255, 255, 255, 0.8)',
+    textAlign: 'center',
+  },
+  clickMethodButtonTextActive: {
+    color: '#e94560',
   },
 });
