@@ -178,7 +178,7 @@ export const GameRoundsScreen: React.FC = () => {
                     placeholder="Dein Hinweis..."
                     placeholderTextColor="#888"
                     multiline={true}
-                    numberOfLines={3}
+                    numberOfLines={2}
                     textAlignVertical="top"
                     returnKeyType="done"
                     onSubmitEditing={handleSubmitClue}
@@ -200,8 +200,6 @@ export const GameRoundsScreen: React.FC = () => {
                     <Text style={styles.submitButtonIcon}>
                       {isLastPlayer ? '🗳️' : '➡️'}
                     </Text>
-                  </View>
-                  <View style={styles.submitButtonTextContainer}>
                     <Text style={styles.submitButtonText}>
                       {isLastPlayer && offlineSettings.currentRoundNumber < offlineSettings.maxRounds 
                         ? `Weiter (Runde ${offlineSettings.currentRoundNumber + 1})` 
@@ -724,11 +722,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: '#0f3460',
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     fontSize: 16,
     color: '#fff',
-    minHeight: 20,
+    minHeight: 25,
     textAlignVertical: 'top',
     elevation: 4,
     shadowColor: '#000',
@@ -782,12 +780,13 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   submitButtonIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -802,6 +801,7 @@ const styles = StyleSheet.create({
   submitButtonIcon: {
     fontSize: 18,
     textAlign: 'center',
+    marginRight: 8,
   },
   backButton: {
     backgroundColor: 'transparent',
