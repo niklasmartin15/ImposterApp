@@ -487,6 +487,8 @@ export const OfflineGameScreen: React.FC = () => {
                     </View>
                   </TouchableOpacity>
 
+                  <View style={{ height: 12 }} />
+
                   <TouchableOpacity 
                     style={styles.modalBackButton}
                     onPress={() => setShowStartConfirmation(false)}
@@ -552,6 +554,8 @@ export const OfflineGameScreen: React.FC = () => {
                       <Text style={styles.modalButtonSubText}>Neues Wort & neue Imposter</Text>
                     </View>
                   </TouchableOpacity>
+
+                  <View style={{ height: 12 }} />
 
                   <TouchableOpacity 
                     style={styles.modalBackButton}
