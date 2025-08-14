@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import {
-    Dimensions,
-    Modal,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Dimensions,
+  Modal,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { useGameStore } from '../stores/gameStore';
 
@@ -72,8 +72,8 @@ export const OfflineGameScreen: React.FC = () => {
             <View style={styles.cardFront}>
               {hasSeenCard && (
                 <View style={styles.cardSeenIndicator}>
-                  <Text style={styles.cardSeenIcon}>✅</Text>
-                  <Text style={styles.cardSeenText}>Bereits gesehen</Text>
+                  <Text style={styles.cardSeenIcon}>👀</Text>
+                  <Text style={styles.cardSeenText}>gesehen</Text>
                 </View>
               )}
               <Text style={[styles.cardPlayerName, hasSeenCard && styles.cardPlayerNameSeen]}>
@@ -82,7 +82,7 @@ export const OfflineGameScreen: React.FC = () => {
               {!hasSeenCard ? (
                 <Text style={styles.cardHint}>👆 Tippen zum Umdrehen</Text>
               ) : (
-                <Text style={styles.cardHintSeen}>✅ Rolle wurde gesehen</Text>
+                <Text style={styles.cardHintSeen}> Rolle wurde angeschaut!</Text>
               )}
             </View>
           ) : (
@@ -140,8 +140,10 @@ export const OfflineGameScreen: React.FC = () => {
               </Text>
             </View>
           </View>
-
+          
           {/* Fortschritts-Info Card */}
+          
+          {/*
           <View style={styles.infoCard}>
             <View style={styles.infoIconContainer}>
               <Text style={styles.infoIcon}>📊</Text>
@@ -156,6 +158,7 @@ export const OfflineGameScreen: React.FC = () => {
               )}
             </View>
           </View>
+          */}
 
   {/* Karten in 2er-Reihen, responsive und mit gleichem Abstand */}
   <View style={styles.cardsContainer}>
@@ -212,7 +215,7 @@ export const OfflineGameScreen: React.FC = () => {
             >
               <View style={styles.buttonIconContainer}>
                 <Text style={styles.buttonIcon}>
-                  {(offlineSettings.assignedRoles || []).filter(role => role.hasSeenCard).length === offlineSettings.playerCount ? '🚀' : '🎮'}
+                  {(offlineSettings.assignedRoles || []).filter(role => role.hasSeenCard).length === offlineSettings.playerCount ? '✅' : '🎮'}
                 </Text>
               </View>
               <View style={styles.buttonTextContainer}>
@@ -516,9 +519,10 @@ const styles = StyleSheet.create({
   },
   cardSeenIndicator: {
     position: 'absolute',
-    top: 8,
-    right: 8,
-    backgroundColor: 'rgba(40, 167, 69, 0.9)',
+    top: 12,
+    left: '57%',
+    transform: [{ translateX: -50 }],
+    backgroundColor: 'rgba(56, 70, 60, 0.9)',
     borderRadius: 12,
     paddingHorizontal: 8,
     paddingVertical: 4,
