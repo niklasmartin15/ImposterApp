@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Dimensions,
   Modal,
@@ -17,6 +17,7 @@ export const OfflineGameScreen: React.FC = () => {
   const { 
     offlineSettings, 
     togglePlayerCardSeen,
+    markPlayerCardSeen,
     setCurrentPhase,
     generateNewWordPair,
     startGameRounds,
@@ -78,16 +79,16 @@ export const OfflineGameScreen: React.FC = () => {
         }
       },
       onPressOut: () => {
-        // Ref verwenden für zuverlässige Überprüfung
+        // Überprüfung ob die Karte gedrückt war
         const wasPressed = pressedCardRef.current === role.playerName;
         
-        // State und Ref zurücksetzen
+        // State sofort zurücksetzen
         pressedCardRef.current = null;
         setPressedCard(null);
         
-        // Nur als gesehen markieren wenn die Karte tatsächlich gedrückt war
-        if (wasPressed && !hasSeenCard) {
-          togglePlayerCardSeen(role.playerName);
+        // Als gesehen markieren wenn die Karte gedrückt war UND noch nicht gesehen ist
+        if (wasPressed && !role.hasSeenCard) {
+          markPlayerCardSeen(role.playerName); // Für Hold-Methode direkt als gesehen markieren
         }
       },
       // onPress komplett deaktivieren für hold-Methode

@@ -23,6 +23,7 @@ interface GameState {
   resetOfflineSettings: () => void;
   startOfflineGame: () => void;
   togglePlayerCardSeen: (playerName: string) => void;
+  markPlayerCardSeen: (playerName: string) => void;
   generateNewWordPair: () => void;
   startGameRounds: () => void;
   submitPlayerClue: (clue: string) => void;
@@ -187,6 +188,24 @@ export const useGameStore = create<GameState>((set, get) => ({
         }
         // Wenn bereits als gesehen markiert: nichts ändern (disabled)
         return role;
+      }
+      return role;
+    }) || [];
+
+    return {
+      offlineSettings: {
+        ...state.offlineSettings,
+        assignedRoles: newRoles
+      }
+    };
+  }),
+
+  // Neue Funktion für "Halten & Loslassen"-Methode
+  markPlayerCardSeen: (playerName: string) => set((state) => {
+    const newRoles = state.offlineSettings.assignedRoles?.map(role => {
+      if (role.playerName === playerName && !role.hasSeenCard) {
+        // Direkt als gesehen markieren, ohne den isFlipped Zwischenschritt
+        return { ...role, hasSeenCard: true, isFlipped: false };
       }
       return role;
     }) || [];
