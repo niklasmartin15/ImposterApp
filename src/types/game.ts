@@ -102,4 +102,4 @@ export interface GameModeConfig {
   description: string;
 }
 
-export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'offlineGame' | 'gameStarting' | 'gameRounds' | 'votingStart' | 'voting' | 'votingAnimation' | 'votingResults' | 'imposterLastChance' | 'wordGuessResults' | 'roundContinuation' | 'gameRoom' | 'playing' | 'results' | 'gameModeSettings';
+export type GamePhase = 'nameInput' | 'mainLobby' | 'offlineSetup' | 'offlineGame' | 'gameStarting' | 'gameRounds' | 'votingStart' | 'voting' | 'votingAnimation' | 'votingResults' | 'imposterLastChance' | 'wordGuessResults' | 'roundContinuation' | 'gameRoom' | 'playing' | 'results' | 'gameModeSettings' | 'onlineMenu' | 'joinLobby' | 'createLobby' | 'lobbyBrowser';

@@ -1,21 +1,41 @@
 import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
   SafeAreaView,
   ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { useGameStore } from '../stores/gameStore';
 
 export const MainLobbyScreen: React.FC = () => {
   const [showGameInfo, setShowGameInfo] = useState(false);
+  const [showOnlineDropdown, setShowOnlineDropdown] = useState(false);
 
   const handleOfflineGame = () => {
     // Navigate to offline setup screen
     const { setCurrentPhase } = useGameStore.getState();
     setCurrentPhase('offlineSetup');
+  };
+
+  const handleOnlineGame = () => {
+    // Toggle online dropdown
+    setShowOnlineDropdown(!showOnlineDropdown);
+  };
+
+  const handleJoinLobby = () => {
+    // Navigate to lobby browser screen
+    const { setCurrentPhase } = useGameStore.getState();
+    setCurrentPhase('lobbyBrowser');
+    setShowOnlineDropdown(false);
+  };
+
+  const handleCreateLobby = () => {
+    // Navigate to create lobby screen
+    const { setCurrentPhase } = useGameStore.getState();
+    setCurrentPhase('createLobby');
+    setShowOnlineDropdown(false);
   };
 
   return (
@@ -48,19 +68,49 @@ export const MainLobbyScreen: React.FC = () => {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={[styles.onlineButton, styles.onlineButtonDisabled]}
-            disabled={true}
-            activeOpacity={0.6}
-          >
-            <View style={styles.buttonIconContainer}>
-              <Text style={[styles.buttonIcon, styles.buttonIconDisabled]}>🌐</Text>
-            </View>
-            <View style={styles.buttonTextContainer}>
-              <Text style={[styles.onlineButtonText, styles.onlineButtonTextDisabled]}>Online spielen</Text>
-              <Text style={[styles.buttonSubText, styles.buttonSubTextDisabled]}>Coming soon...</Text>
-            </View>
-          </TouchableOpacity>
+          {/* Online Button with Dropdown */}
+          <View style={styles.onlineButtonContainer}>
+            <TouchableOpacity 
+              style={[styles.onlineButton, showOnlineDropdown && styles.onlineButtonActive]}
+              onPress={handleOnlineGame}
+              activeOpacity={0.8}
+            >
+              <View style={styles.buttonIconContainer}>
+                <Text style={styles.buttonIcon}>🌐</Text>
+              </View>
+              <View style={styles.buttonTextContainer}>
+                <Text style={styles.onlineButtonText}>Online spielen</Text>
+                <Text style={styles.buttonSubText}>Mit Freunden über das Internet</Text>
+              </View>
+              <Text style={styles.dropdownArrow}>
+                {showOnlineDropdown ? '▲' : '▼'}
+              </Text>
+            </TouchableOpacity>
+
+            {showOnlineDropdown && (
+              <View style={styles.dropdown}>
+                <TouchableOpacity 
+                  style={styles.dropdownButton}
+                  onPress={handleJoinLobby}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.dropdownButtonText}>🔍 Join a Lobby</Text>
+                  <Text style={styles.dropdownSubText}>Offene Lobbies anzeigen</Text>
+                </TouchableOpacity>
+                
+                <View style={styles.dropdownSeparator} />
+                
+                <TouchableOpacity 
+                  style={styles.dropdownButton}
+                  onPress={handleCreateLobby}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.dropdownButtonText}>➕ Create a Lobby</Text>
+                  <Text style={styles.dropdownSubText}>Neue Lobby erstellen</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
 
           {/* Game Info Dropdown */}
           <View style={styles.gameInfoButtonContainer}>
@@ -213,15 +263,28 @@ const styles = StyleSheet.create({
     borderColor: '#ff6b8a',
   },
   onlineButton: {
-    backgroundColor: '#2a2a3e',
+    backgroundColor: '#0f3460',
     paddingVertical: 20,
     paddingHorizontal: 24,
     borderRadius: 16,
     alignItems: 'center',
     flexDirection: 'row',
-    opacity: 0.6,
+    elevation: 8,
+    shadowColor: '#0f3460',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
     borderWidth: 2,
-    borderColor: '#444',
+    borderColor: '#1e4a73',
+    position: 'relative',
+  },
+  onlineButtonActive: {
+    borderBottomLeftRadius: 4,
+    borderBottomRightRadius: 4,
+    backgroundColor: '#1e4a73',
+  },
+  onlineButtonContainer: {
+    marginBottom: 16,
   },
   onlineButtonDisabled: {
     backgroundColor: '#2a2a3e',

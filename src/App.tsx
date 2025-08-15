@@ -1,9 +1,11 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { CreateLobbyScreen } from './screens/CreateLobbyScreen';
 import { GameModeSettingsScreen } from './screens/GameModeSettingsScreen';
 import { GameRoundsScreen } from './screens/GameRoundsScreen';
 import { GameStartingScreen } from './screens/GameStartingScreen';
 import { ImposterLastChanceScreen } from './screens/ImposterLastChanceScreen';
+import { LobbyBrowserScreen } from './screens/LobbyBrowserScreen';
 import { MainLobbyScreen } from './screens/MainLobbyScreen';
 import { NameInputScreen } from './screens/NameInputScreen';
 import { OfflineGameScreen } from './screens/OfflineGameScreen';
@@ -49,6 +51,13 @@ export const App: React.FC = () => {
         return <WordGuessResultsScreen />;
       case 'roundContinuation':
         return <RoundContinuationScreen />;
+      case 'lobbyBrowser':
+        return <LobbyBrowserScreen />;
+      case 'createLobby':
+        return <CreateLobbyScreen />;
+      case 'gameRoom':
+        // TODO: Implement GameRoomScreen
+        return <MainLobbyScreen />; // Placeholder for now
       default:
         return <NameInputScreen />;
     }
