@@ -12,6 +12,7 @@ import { NameInputScreen } from './screens/NameInputScreen';
 import { OfflineGameScreen } from './screens/OfflineGameScreen';
 import { OfflineSetupScreen } from './screens/OfflineSetupScreen';
 import { OnlineNameInputScreen } from './screens/OnlineNameInputScreen';
+import { OnlineRoleCardsScreen } from './screens/OnlineRoleCardsScreen';
 import RoundContinuationScreen from './screens/RoundContinuationScreen';
 import { VotingAnimationScreen } from './screens/VotingAnimationScreen';
 import { VotingResultsScreen } from './screens/VotingResultsScreen';
@@ -63,6 +64,8 @@ export const App: React.FC = () => {
         return <OnlineNameInputScreen mode="create" />;
       case 'gameRoom':
         return <GameRoomScreen />;
+      case 'onlineRoleCards':
+        return <OnlineRoleCardsScreen />;
       default:
         return <NameInputScreen />;
     }

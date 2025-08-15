@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
     Alert,
     SafeAreaView,
@@ -30,6 +30,20 @@ export const GameRoomScreen: React.FC = () => {
   };
   
   const [players, setPlayers] = useState(getPlayersArray(currentLobby));
+  const [isLoading, setIsLoading] = useState(false);
+
+  const refreshLobby = useCallback(async () => {
+    if (!currentLobby) return;
+    
+    try {
+      const lobbyData = await OnlineService.getInstance().getLobby(currentLobby.id);
+      setPlayers(getPlayersArray(lobbyData));
+      // Update the lobby data in the store
+      setCurrentLobby(lobbyData);
+    } catch (error) {
+      console.error('Failed to refresh lobby:', error);
+    }
+  }, [currentLobby, setCurrentLobby]);
 
   useEffect(() => {
     if (!currentLobby) {
@@ -52,8 +66,14 @@ export const GameRoomScreen: React.FC = () => {
       }
     );
 
-    return disconnect;
-  }, [currentLobby, setCurrentPhase]);
+    // Refresh lobby data every few seconds
+    const refreshInterval = setInterval(refreshLobby, 3000);
+
+    return () => {
+      disconnect();
+      clearInterval(refreshInterval);
+    };
+  }, [currentLobby, setCurrentPhase, refreshLobby]);
 
   const handleLeaveLobby = async () => {
     if (!currentLobby) return;
@@ -68,12 +88,25 @@ export const GameRoomScreen: React.FC = () => {
     }
   };
 
-  const handleStartGame = () => {
-    Alert.alert('Info', 'Spiel starten wird in einer zukünftigen Version implementiert.');
-  };
-
-  const handleToggleReady = () => {
-    Alert.alert('Info', 'Bereit-Status wird in einer zukünftigen Version implementiert.');
+  const handleStartGame = async () => {
+    if (!currentLobby) return;
+    
+    setIsLoading(true);
+    try {
+      // Hier würden wir später eine API-Anfrage zum Server machen
+      // Für jetzt simulieren wir das Spiel starten
+      
+      // TODO: API-Aufruf zum Server um das Spiel zu starten
+      // const result = await OnlineService.getInstance().startGame(currentLobby.id);
+      
+      // Direkt zu einem Online-Rollenkarten-Screen gehen
+      setCurrentPhase('onlineRoleCards');
+    } catch (error) {
+      console.error('Failed to start game:', error);
+      Alert.alert('Fehler', 'Fehler beim Starten des Spiels.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (!currentLobby) {
@@ -143,7 +176,7 @@ export const GameRoomScreen: React.FC = () => {
                     {player.name === playerName && ' (Du)'}
                   </Text>
                   <Text style={styles.playerStatus}>
-                    {player.isReady ? '✅ Bereit' : '⏳ Nicht bereit'}
+                    Online
                   </Text>
                 </View>
               </View>
@@ -184,29 +217,30 @@ export const GameRoomScreen: React.FC = () => {
       </ScrollView>
 
       <View style={styles.bottomActions}>
-        <TouchableOpacity
-          style={styles.readyButton}
-          onPress={handleToggleReady}
-        >
-          <Text style={styles.readyButtonText}>⏱️ Bereit</Text>
-        </TouchableOpacity>
-
         {isHost && (
           <TouchableOpacity
             style={[
               styles.startButton,
-              players.length < 3 && styles.startButtonDisabled
+              (players.length < 3 || isLoading) && styles.startButtonDisabled
             ]}
             onPress={handleStartGame}
-            disabled={players.length < 3}
+            disabled={players.length < 3 || isLoading}
           >
             <Text style={[
               styles.startButtonText,
-              players.length < 3 && styles.startButtonTextDisabled
+              (players.length < 3 || isLoading) && styles.startButtonTextDisabled
             ]}>
-              🚀 Spiel starten
+              {isLoading ? '⏳ Starte Spiel...' : '🚀 Spiel starten'}
             </Text>
           </TouchableOpacity>
+        )}
+        
+        {!isHost && (
+          <View style={styles.waitingContainer}>
+            <Text style={styles.waitingText}>
+              Warten auf Host zum Starten des Spiels...
+            </Text>
+          </View>
         )}
       </View>
     </SafeAreaView>
@@ -341,16 +375,16 @@ const styles = StyleSheet.create({
     borderTopColor: '#2a2a3e',
     gap: 12,
   },
-  readyButton: {
-    backgroundColor: '#0f3460',
-    paddingVertical: 14,
+  waitingContainer: {
+    backgroundColor: '#2a2a3e',
+    paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
   },
-  readyButtonText: {
+  waitingText: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#fff',
+    color: '#bbb',
+    textAlign: 'center',
   },
   startButton: {
     backgroundColor: '#e94560',
