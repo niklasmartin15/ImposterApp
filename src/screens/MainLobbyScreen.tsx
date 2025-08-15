@@ -25,16 +25,16 @@ export const MainLobbyScreen: React.FC = () => {
   };
 
   const handleJoinLobby = () => {
-    // Navigate to lobby browser screen
+    // Navigate to online name input for joining
     const { setCurrentPhase } = useGameStore.getState();
-    setCurrentPhase('lobbyBrowser');
+    setCurrentPhase('onlineNameInputJoin');
     setShowOnlineDropdown(false);
   };
 
   const handleCreateLobby = () => {
-    // Navigate to create lobby screen
+    // Navigate to online name input for creating
     const { setCurrentPhase } = useGameStore.getState();
-    setCurrentPhase('createLobby');
+    setCurrentPhase('onlineNameInputCreate');
     setShowOnlineDropdown(false);
   };
 

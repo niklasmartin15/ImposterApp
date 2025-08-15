@@ -10,6 +10,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import OnlineService from '../services/OnlineService';
 import { useGameStore } from '../stores/gameStore';
 
 export const CreateLobbyScreen: React.FC = () => {
@@ -35,7 +36,7 @@ export const CreateLobbyScreen: React.FC = () => {
     setCurrentPhase('mainLobby');
   };
 
-  const handleCreateLobby = () => {
+  const handleCreateLobby = async () => {
     if (!lobbyName.trim()) {
       Alert.alert('Fehler', 'Bitte gib einen Lobby-Namen ein.');
       return;
@@ -46,22 +47,36 @@ export const CreateLobbyScreen: React.FC = () => {
       return;
     }
 
-    // TODO: Implement actual lobby creation logic
-    console.log('Creating lobby with settings:', {
-      lobbyName,
-      maxPlayers,
-      gameMode,
-      isPasswordProtected,
-      password: isPasswordProtected ? password : undefined,
-      wordDifficulty,
-      maxRounds,
-      timerEnabled,
-      timerDuration: timerEnabled ? timerDuration : undefined,
-    });
+    try {
+      const { playerName } = useGameStore.getState();
+      
+      const lobbyData = {
+        name: lobbyName,
+        maxPlayers,
+        gameMode,
+        isPasswordProtected,
+        password: isPasswordProtected ? password : undefined,
+        wordDifficulty,
+        maxRounds,
+        timerEnabled,
+        timerDuration: timerEnabled ? timerDuration : undefined,
+        hostName: playerName,
+      };
 
-    // For now, navigate to a placeholder game room
-    const { setCurrentPhase } = useGameStore.getState();
-    setCurrentPhase('gameRoom');
+      const result = await OnlineService.getInstance().createLobby(lobbyData);
+      
+      if (result.success) {
+        // Store the created lobby in the game store
+        const { setCurrentLobby, setCurrentPhase } = useGameStore.getState();
+        setCurrentLobby(result.lobby);
+        setCurrentPhase('gameRoom');
+      } else {
+        Alert.alert('Fehler', 'Konnte Lobby nicht erstellen. Versuche es erneut.');
+      }
+    } catch (error) {
+      console.error('Failed to create lobby:', error);
+      Alert.alert('Fehler', 'Fehler beim Erstellen der Lobby.');
+    }
   };
 
   const renderOptionButton = (

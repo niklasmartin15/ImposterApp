@@ -2,6 +2,19 @@ import { create } from 'zustand';
 import { getDifficultyDisplayName, getRandomWordPair, getRandomWordPairByDifficulty } from '../data/wordPairs';
 import { GameMode, GamePhase, GameRound, OfflineGameSettings, PlayerClue, Vote, VotingState, WordDifficulty } from '../types/game';
 
+interface OnlineLobby {
+  id: string;
+  name: string;
+  players: any[];
+  maxPlayers: number;
+  host: string;
+  gameMode: string;
+  isPasswordProtected: boolean;
+  status: string;
+  hostId?: string;
+  settings?: any;
+}
+
 interface GameState {
   // Player info
   playerName: string;
@@ -13,10 +26,16 @@ interface GameState {
   // Offline game settings
   offlineSettings: OfflineGameSettings;
   
+  // Online state
+  currentLobby: OnlineLobby | null;
+  isOnlineMode: boolean;
+  
   // Actions
   setPlayerName: (name: string) => void;
   setCurrentPhase: (phase: GamePhase) => void;
   generatePlayerId: () => void;
+  setCurrentLobby: (lobby: OnlineLobby | null) => void;
+  setOnlineMode: (isOnline: boolean) => void;
   setOfflinePlayerCount: (count: number) => void;
   setOfflineImposterCount: (count: number) => void;
   setOfflinePlayerName: (index: number, name: string) => void;
@@ -51,6 +70,11 @@ export const useGameStore = create<GameState>((set, get) => ({
   playerName: '',
   playerId: '',
   currentPhase: 'mainLobby',
+  
+  // Online state
+  currentLobby: null,
+  isOnlineMode: false,
+  
   offlineSettings: {
     playerCount: 4,
     imposterCount: 1,
@@ -647,4 +671,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   getWordDifficultyDisplayName: (difficulty: WordDifficulty) => {
     return getDifficultyDisplayName(difficulty);
   },
+
+  // Online actions
+  setCurrentLobby: (lobby: OnlineLobby | null) => set({ currentLobby: lobby }),
+  setOnlineMode: (isOnline: boolean) => set({ isOnlineMode: isOnline }),
 }));

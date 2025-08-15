@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { CreateLobbyScreen } from './screens/CreateLobbyScreen';
 import { GameModeSettingsScreen } from './screens/GameModeSettingsScreen';
+import { GameRoomScreen } from './screens/GameRoomScreen';
 import { GameRoundsScreen } from './screens/GameRoundsScreen';
 import { GameStartingScreen } from './screens/GameStartingScreen';
 import { ImposterLastChanceScreen } from './screens/ImposterLastChanceScreen';
@@ -10,6 +11,7 @@ import { MainLobbyScreen } from './screens/MainLobbyScreen';
 import { NameInputScreen } from './screens/NameInputScreen';
 import { OfflineGameScreen } from './screens/OfflineGameScreen';
 import { OfflineSetupScreen } from './screens/OfflineSetupScreen';
+import { OnlineNameInputScreen } from './screens/OnlineNameInputScreen';
 import RoundContinuationScreen from './screens/RoundContinuationScreen';
 import { VotingAnimationScreen } from './screens/VotingAnimationScreen';
 import { VotingResultsScreen } from './screens/VotingResultsScreen';
@@ -55,9 +57,12 @@ export const App: React.FC = () => {
         return <LobbyBrowserScreen />;
       case 'createLobby':
         return <CreateLobbyScreen />;
+      case 'onlineNameInputJoin':
+        return <OnlineNameInputScreen mode="join" />;
+      case 'onlineNameInputCreate':
+        return <OnlineNameInputScreen mode="create" />;
       case 'gameRoom':
-        // TODO: Implement GameRoomScreen
-        return <MainLobbyScreen />; // Placeholder for now
+        return <GameRoomScreen />;
       default:
         return <NameInputScreen />;
     }

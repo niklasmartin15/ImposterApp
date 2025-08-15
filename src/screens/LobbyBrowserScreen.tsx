@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
     ActivityIndicator,
+    Alert,
     RefreshControl,
     SafeAreaView,
     ScrollView,
@@ -9,6 +10,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
+import OnlineService from '../services/OnlineService';
 import { useGameStore } from '../stores/gameStore';
 
 interface OnlineLobby {
@@ -21,37 +23,6 @@ interface OnlineLobby {
   isPasswordProtected: boolean;
 }
 
-// Mock data for demonstration
-const mockLobbies: OnlineLobby[] = [
-  {
-    id: '1',
-    name: 'Casual Game',
-    players: 4,
-    maxPlayers: 8,
-    host: 'Player1',
-    gameMode: 'Standard',
-    isPasswordProtected: false,
-  },
-  {
-    id: '2',
-    name: 'Pro Players Only',
-    players: 6,
-    maxPlayers: 10,
-    host: 'ProGamer',
-    gameMode: 'Hard Mode',
-    isPasswordProtected: true,
-  },
-  {
-    id: '3',
-    name: 'Friends Night',
-    players: 3,
-    maxPlayers: 6,
-    host: 'BestHost',
-    gameMode: 'Fun Mode',
-    isPasswordProtected: false,
-  },
-];
-
 export const LobbyBrowserScreen: React.FC = () => {
   const [lobbies, setLobbies] = useState<OnlineLobby[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -60,11 +31,15 @@ export const LobbyBrowserScreen: React.FC = () => {
   useEffect(() => {
     const fetchLobbiesData = async () => {
       setIsLoading(true);
-      // Simulate API call
-      setTimeout(() => {
-        setLobbies(mockLobbies);
+      try {
+        const fetchedLobbies = await OnlineService.getInstance().getLobbies();
+        setLobbies(fetchedLobbies);
+      } catch (error) {
+        console.error('Failed to fetch lobbies:', error);
+        Alert.alert('Fehler', 'Konnte Lobbies nicht laden. Versuche es später erneut.');
+      } finally {
         setIsLoading(false);
-      }, 1000);
+      }
     };
     
     fetchLobbiesData();
@@ -72,19 +47,36 @@ export const LobbyBrowserScreen: React.FC = () => {
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    // Simulate refresh
-    setTimeout(() => {
-      setLobbies(mockLobbies);
+    try {
+      const fetchedLobbies = await OnlineService.getInstance().getLobbies();
+      setLobbies(fetchedLobbies);
+    } catch (error) {
+      console.error('Failed to refresh lobbies:', error);
+      Alert.alert('Fehler', 'Konnte Lobbies nicht aktualisieren.');
+    } finally {
       setRefreshing(false);
-    }, 500);
+    }
   };
 
-  const handleJoinLobby = (lobbyId: string) => {
-    // TODO: Implement join lobby logic
-    console.log('Joining lobby:', lobbyId);
-    // For now, navigate to a placeholder
-    const { setCurrentPhase } = useGameStore.getState();
-    setCurrentPhase('gameRoom');
+  const handleJoinLobby = async (lobbyId: string) => {
+    try {
+      setIsLoading(true);
+      const result = await OnlineService.getInstance().joinLobby(lobbyId);
+      
+      if (result.success) {
+        // Store the lobby in the game store
+        const { setCurrentLobby, setCurrentPhase } = useGameStore.getState();
+        setCurrentLobby(result.lobby);
+        setCurrentPhase('gameRoom');
+      } else {
+        Alert.alert('Fehler', 'Konnte der Lobby nicht beitreten. Versuche es erneut.');
+      }
+    } catch (error) {
+      console.error('Failed to join lobby:', error);
+      Alert.alert('Fehler', 'Fehler beim Beitreten der Lobby.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleBackToMenu = () => {
