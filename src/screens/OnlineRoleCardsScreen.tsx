@@ -15,6 +15,7 @@ interface OnlinePlayerRole {
   playerName: string;
   isImposter: boolean;
   hasSeenCard: boolean;
+  isReady: boolean;
 }
 
 export const OnlineRoleCardsScreen: React.FC = () => {
@@ -47,6 +48,7 @@ export const OnlineRoleCardsScreen: React.FC = () => {
       playerName: name,
       isImposter: imposterIndices.includes(index),
       hasSeenCard: false,
+      isReady: false,
     }));
 
     setPlayerRoles(roles);
@@ -73,11 +75,27 @@ export const OnlineRoleCardsScreen: React.FC = () => {
     );
   };
 
-  const handleContinueToGame = () => {
-    // Check if current player has seen their card
+  const handleToggleReady = () => {
     const currentPlayerRole = playerRoles.find(role => role.playerName === playerName);
     if (!currentPlayerRole?.hasSeenCard) {
       Alert.alert('Hinweis', 'Du musst zuerst deine Rollenkarte ansehen.');
+      return;
+    }
+
+    setPlayerRoles(prev => 
+      prev.map(role => 
+        role.playerName === playerName 
+          ? { ...role, isReady: !role.isReady }
+          : role
+      )
+    );
+  };
+
+  const handleContinueToGame = () => {
+    // Check if all players are ready
+    const allPlayersReady = playerRoles.every(role => role.isReady);
+    if (!allPlayersReady) {
+      Alert.alert('Hinweis', 'Alle Spieler müssen bereit sein bevor das Spiel startet.');
       return;
     }
 
@@ -95,28 +113,21 @@ export const OnlineRoleCardsScreen: React.FC = () => {
     return playerRoles.find(role => role.playerName === playerName);
   };
 
-  const getPlayerCard = (role: OnlinePlayerRole) => {
-    const isCurrentPlayer = role.playerName === playerName;
-    
-    if (!isCurrentPlayer) {
-      return (
-        <View style={[styles.playerCard, styles.otherPlayerCard]}>
-          <Text style={styles.playerName}>{role.playerName}</Text>
-          <View style={styles.cardBack}>
-            <Text style={styles.cardBackText}>🎭</Text>
-            <Text style={styles.cardBackLabel}>Rollenkarte</Text>
-          </View>
-        </View>
-      );
-    }
+  const getOtherPlayers = () => {
+    return playerRoles.filter(role => role.playerName !== playerName);
+  };
 
-    if (!role.hasSeenCard) {
+  const renderMyCard = () => {
+    const myRole = getCurrentPlayerRole();
+    if (!myRole) return null;
+
+    if (!myRole.hasSeenCard) {
       return (
         <TouchableOpacity 
-          style={[styles.playerCard, styles.currentPlayerCard]}
-          onPress={() => handleCardPress(role.playerName)}
+          style={[styles.myCard, styles.cardClosed]}
+          onPress={() => handleCardPress(myRole.playerName)}
         >
-          <Text style={styles.playerName}>{role.playerName} (Du)</Text>
+          <Text style={styles.cardTitle}>Deine Rollenkarte</Text>
           <View style={styles.cardBack}>
             <Text style={styles.cardBackText}>🎭</Text>
             <Text style={styles.cardBackLabel}>Tippen zum Aufdecken</Text>
@@ -126,10 +137,10 @@ export const OnlineRoleCardsScreen: React.FC = () => {
     }
 
     return (
-      <View style={[styles.playerCard, styles.currentPlayerCard, styles.cardRevealed]}>
-        <Text style={styles.playerName}>{role.playerName} (Du)</Text>
+      <View style={[styles.myCard, styles.cardOpen]}>
+        <Text style={styles.cardTitle}>Deine Rolle</Text>
         <View style={styles.cardFront}>
-          {role.isImposter ? (
+          {myRole.isImposter ? (
             <>
               <Text style={styles.roleTitle}>🕵️ IMPOSTER</Text>
               <Text style={styles.wordText}>Dein Hinweis:</Text>
@@ -153,10 +164,6 @@ export const OnlineRoleCardsScreen: React.FC = () => {
     );
   };
 
-  const allPlayersSeenCards = playerRoles.every(role => 
-    role.playerName === playerName ? role.hasSeenCard : true
-  );
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -167,51 +174,75 @@ export const OnlineRoleCardsScreen: React.FC = () => {
       </View>
 
       <ScrollView style={styles.content}>
-        <Text style={styles.sectionTitle}>Spieler Rollen</Text>
+        <Text style={styles.sectionTitle}>Deine Rollenkarte</Text>
         <Text style={styles.instruction}>
-          Tippe auf deine Karte um deine Rolle zu sehen. Die anderen Karten bleiben verdeckt.
+          Tippe auf deine Karte um deine Rolle zu sehen.
         </Text>
 
-        <View style={styles.cardsContainer}>
-          {playerRoles.map((role, index) => (
-            <View key={index} style={styles.cardWrapper}>
-              {getPlayerCard(role)}
-            </View>
-          ))}
-        </View>
+        {renderMyCard()}
 
         {getCurrentPlayerRole()?.hasSeenCard && (
-          <View style={styles.gameInfo}>
-            <Text style={styles.gameInfoTitle}>📋 Spiel-Informationen</Text>
-            <View style={styles.infoItem}>
-              <Text style={styles.infoLabel}>Imposter:</Text>
-              <Text style={styles.infoValue}>
-                {playerRoles.filter(r => r.isImposter).length} von {playerRoles.length}
-              </Text>
+          <>
+            <Text style={[styles.sectionTitle, { marginTop: 20 }]}>Andere Spieler</Text>
+            <View style={styles.playersContainer}>
+              {getOtherPlayers().map((player, index) => (
+                <View key={index} style={styles.playerItem}>
+                  <Text style={styles.playerItemName}>{player.playerName}</Text>
+                  <Text style={styles.playerStatus}>
+                    {player.isReady ? '✅ Bereit' : '⏳ Nicht bereit'}
+                  </Text>
+                </View>
+              ))}
             </View>
-            <View style={styles.infoItem}>
-              <Text style={styles.infoLabel}>Spielmodus:</Text>
-              <Text style={styles.infoValue}>{currentLobby?.gameMode || 'Standard'}</Text>
+
+            <View style={styles.gameInfo}>
+              <Text style={styles.gameInfoTitle}>📋 Spiel-Informationen</Text>
+              <View style={styles.infoItem}>
+                <Text style={styles.infoLabel}>Spieler bereit:</Text>
+                <Text style={styles.infoValue}>
+                  {playerRoles.filter(r => r.isReady).length} von {playerRoles.length}
+                </Text>
+              </View>
+              <View style={styles.infoItem}>
+                <Text style={styles.infoLabel}>Spielmodus:</Text>
+                <Text style={styles.infoValue}>{currentLobby?.gameMode || 'Standard'}</Text>
+              </View>
             </View>
-          </View>
+          </>
         )}
       </ScrollView>
 
       <View style={styles.bottomActions}>
-        {allPlayersSeenCards ? (
-          <TouchableOpacity
-            style={styles.continueButton}
-            onPress={handleContinueToGame}
-          >
-            <Text style={styles.continueButtonText}>▶️ Spiel fortsetzen</Text>
-          </TouchableOpacity>
+        {getCurrentPlayerRole()?.hasSeenCard ? (
+          <>
+            <TouchableOpacity
+              style={[
+                styles.readyButton,
+                getCurrentPlayerRole()?.isReady && styles.readyButtonActive
+              ]}
+              onPress={handleToggleReady}
+            >
+              <Text style={[
+                styles.readyButtonText,
+                getCurrentPlayerRole()?.isReady && styles.readyButtonTextActive
+              ]}>
+                {getCurrentPlayerRole()?.isReady ? '✅ Bereit' : '⏱️ Bereit'}
+              </Text>
+            </TouchableOpacity>
+
+            {playerRoles.every(role => role.isReady) && (
+              <TouchableOpacity
+                style={styles.continueButton}
+                onPress={handleContinueToGame}
+              >
+                <Text style={styles.continueButtonText}>▶️ Spiel starten</Text>
+              </TouchableOpacity>
+            )}
+          </>
         ) : (
           <View style={styles.waitingContainer}>
             <Text style={styles.waitingText}>
-              {getCurrentPlayerRole()?.hasSeenCard 
-                ? 'Warten auf andere Spieler...'
-                : 'Tippe auf deine Karte um zu beginnen'
-              }
+              Tippe auf deine Karte um zu beginnen
             </Text>
           </View>
         )}
@@ -265,33 +296,25 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     lineHeight: 20,
   },
-  cardsContainer: {
-    gap: 12,
-  },
-  cardWrapper: {
-    marginBottom: 8,
-  },
-  playerCard: {
+  // My Card Styles
+  myCard: {
     backgroundColor: '#2a2a3e',
     borderRadius: 12,
-    padding: 16,
+    padding: 20,
+    marginBottom: 20,
     borderWidth: 2,
-    borderColor: '#3a3a4e',
   },
-  otherPlayerCard: {
-    opacity: 0.7,
-  },
-  currentPlayerCard: {
+  cardClosed: {
     borderColor: '#e94560',
   },
-  cardRevealed: {
+  cardOpen: {
     borderColor: '#2ecc71',
   },
-  playerName: {
-    fontSize: 16,
+  cardTitle: {
+    fontSize: 18,
     fontWeight: '600',
     color: '#fff',
-    marginBottom: 12,
+    marginBottom: 16,
     textAlign: 'center',
   },
   cardBack: {
@@ -328,6 +351,29 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textAlign: 'center',
   },
+  // Players List Styles
+  playersContainer: {
+    gap: 8,
+    marginBottom: 20,
+  },
+  playerItem: {
+    backgroundColor: '#2a2a3e',
+    borderRadius: 8,
+    padding: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  playerItemName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  playerStatus: {
+    fontSize: 14,
+    color: '#bbb',
+  },
+  // Game Info
   gameInfo: {
     backgroundColor: '#2a2a3e',
     borderRadius: 12,
@@ -355,14 +401,32 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#fff',
   },
+  // Bottom Actions
   bottomActions: {
     padding: 20,
     borderTopWidth: 1,
     borderTopColor: '#2a2a3e',
     gap: 12,
   },
-  continueButton: {
+  readyButton: {
+    backgroundColor: '#0f3460',
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  readyButtonActive: {
     backgroundColor: '#2ecc71',
+  },
+  readyButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  readyButtonTextActive: {
+    color: '#fff',
+  },
+  continueButton: {
+    backgroundColor: '#e94560',
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
