@@ -128,15 +128,43 @@ class OnlineService {
     }
   }
 
+  // Start game (host only)
+  async startGame(lobbyId: string) {
+    try {
+      const response = await fetch(`${this.baseUrl}/api/lobbies/${lobbyId}/start`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          hostId: this.playerId,
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.log('Server not available, using mock start game');
+      return { success: true, lobby: this.getMockLobby() };
+    }
+  }
+
   // Get lobby details
   async getLobby(lobbyId: string) {
     try {
+      console.log(`Fetching lobby ${lobbyId} from server...`);
       const response = await fetch(`${this.baseUrl}/api/lobbies/${lobbyId}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return await response.json();
+      const data = await response.json();
+      console.log(`Received lobby data:`, JSON.stringify(data, null, 2));
+      return data;
     } catch (error) {
+      console.error('Error fetching lobby:', error);
       console.log('Server not available, using mock lobby');
       return this.getMockLobby();
     }

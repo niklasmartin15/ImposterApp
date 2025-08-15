@@ -12,7 +12,7 @@ import OnlineService from '../services/OnlineService';
 import { useGameStore } from '../stores/gameStore';
 
 export const GameRoomScreen: React.FC = () => {
-  const { currentLobby, playerName, setCurrentPhase, setCurrentLobby } = useGameStore();
+  const { currentLobby, playerName, playerId, setCurrentPhase, setCurrentLobby } = useGameStore();
   
   // Ensure players is always an array
   const getPlayersArray = (lobby: any) => {
@@ -37,13 +37,23 @@ export const GameRoomScreen: React.FC = () => {
     
     try {
       const lobbyData = await OnlineService.getInstance().getLobby(currentLobby.id);
+      console.log('Refreshed lobby data:', JSON.stringify(lobbyData, null, 2));
       setPlayers(getPlayersArray(lobbyData));
+      
+      // Check if game has started
+      if (lobbyData.status === 'inGame') {
+        console.log('Game started, navigating to role cards...');
+        setCurrentLobby(lobbyData);
+        setCurrentPhase('onlineRoleCards');
+        return;
+      }
+      
       // Update the lobby data in the store
       setCurrentLobby(lobbyData);
     } catch (error) {
       console.error('Failed to refresh lobby:', error);
     }
-  }, [currentLobby, setCurrentLobby]);
+  }, [currentLobby, setCurrentLobby, setCurrentPhase]);
 
   useEffect(() => {
     if (!currentLobby) {
@@ -93,14 +103,16 @@ export const GameRoomScreen: React.FC = () => {
     
     setIsLoading(true);
     try {
-      // Hier würden wir später eine API-Anfrage zum Server machen
-      // Für jetzt simulieren wir das Spiel starten
+      // Use the API to start the game
+      const result = await OnlineService.getInstance().startGame(currentLobby.id);
       
-      // TODO: API-Aufruf zum Server um das Spiel zu starten
-      // const result = await OnlineService.getInstance().startGame(currentLobby.id);
-      
-      // Direkt zu einem Online-Rollenkarten-Screen gehen
-      setCurrentPhase('onlineRoleCards');
+      if (result.success) {
+        // Update the lobby in store and navigate to role cards
+        setCurrentLobby(result.lobby);
+        setCurrentPhase('onlineRoleCards');
+      } else {
+        Alert.alert('Fehler', result.error || 'Fehler beim Starten des Spiels.');
+      }
     } catch (error) {
       console.error('Failed to start game:', error);
       Alert.alert('Fehler', 'Fehler beim Starten des Spiels.');

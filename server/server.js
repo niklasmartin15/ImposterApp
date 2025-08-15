@@ -178,6 +178,91 @@ app.post('/api/lobbies/:lobbyId/join', (req, res) => {
   });
 });
 
+// Start game in lobby
+app.post('/api/lobbies/:lobbyId/start', (req, res) => {
+  const { lobbyId } = req.params;
+  const { hostId } = req.body;
+  const lobby = lobbies[lobbyId];
+  
+  if (!lobby) {
+    return res.status(404).json({
+      success: false,
+      error: 'Lobby not found',
+    });
+  }
+  
+  // Verify that the requester is the host
+  if (lobby.hostId !== hostId) {
+    return res.status(403).json({
+      success: false,
+      error: 'Only the host can start the game',
+    });
+  }
+  
+  // Check if enough players
+  if (lobby.players.length < 3) {
+    return res.status(400).json({
+      success: false,
+      error: 'Need at least 3 players to start the game',
+    });
+  }
+  
+  // Update lobby status to 'inGame'
+  lobby.status = 'inGame';
+  lobby.gameStartedAt = new Date();
+  
+  console.log(`POST /api/lobbies/${lobbyId}/start - Game started by host`);
+  res.json({
+    success: true,
+    lobby: {
+      ...lobby,
+      password: undefined,
+    },
+  });
+});
+
+// Start game
+app.post('/api/lobbies/:lobbyId/start', (req, res) => {
+  const { lobbyId } = req.params;
+  const { hostId } = req.body;
+  const lobby = lobbies[lobbyId];
+  
+  if (!lobby) {
+    return res.status(404).json({
+      success: false,
+      error: 'Lobby not found',
+    });
+  }
+  
+  // Only host can start the game
+  if (lobby.hostId !== hostId) {
+    return res.status(403).json({
+      success: false,
+      error: 'Only the host can start the game',
+    });
+  }
+  
+  // Check minimum players
+  if (lobby.players.length < 3) {
+    return res.status(400).json({
+      success: false,
+      error: 'Need at least 3 players to start',
+    });
+  }
+  
+  // Update lobby status to 'inGame'
+  lobby.status = 'inGame';
+  
+  console.log(`POST /api/lobbies/${lobbyId}/start - Game started by host`);
+  res.json({
+    success: true,
+    lobby: {
+      ...lobby,
+      password: undefined,
+    },
+  });
+});
+
 // Leave a lobby
 app.post('/api/lobbies/:lobbyId/leave', (req, res) => {
   const { lobbyId } = req.params;
